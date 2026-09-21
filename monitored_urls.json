@@ -1,0 +1,65 @@
+[
+  {
+    "url": "https://www.falabella.com/falabella-cl/product/16843454/Consola-PlayStation-5-Slim-Standard/16843455",
+    "name": "PlayStation 5 Slim Standard - Falabella",
+    "target_price": 499990,
+    "threshold_percent": 10.0,
+    "active": false
+  },
+  {
+    "url": "https://simple.ripley.cl/consola-playstation-5-slim-standard-2000398417932p",
+    "name": "PlayStation 5 Slim Standard - Ripley",
+    "target_price": 499990,
+    "threshold_percent": 10.0,
+    "active": false
+  },
+  {
+    "url": "https://www.paris.cl/consola-playstation-5-slim-standard-1-tb-536418999.html",
+    "name": "PlayStation 5 Slim Standard - Paris",
+    "target_price": 499990,
+    "threshold_percent": 10.0,
+    "active": false
+  },
+  {
+    "url": "https://www.hites.com/consola-sony-playstation-5-slim-con-lector-de-disco-919507001.html",
+    "name": "PlayStation 5 Slim - Hites",
+    "target_price": 499990,
+    "threshold_percent": 10.0,
+    "active": false
+  },
+  {
+    "url": "https://www.sodimac.cl/sodimac-cl/product/110292837/Taladro-Percutor-Inalambrico-18V/110292838",
+    "name": "Taladro Percutor Inalámbrico - Sodimac",
+    "target_price": 59990,
+    "threshold_percent": 15.0,
+    "active": false
+  },
+  {
+    "url": "https://www.easy.cl/taladro-percutor-inalambrico-18v-bauker-1102928/p",
+    "name": "Taladro Percutor 18V - Easy",
+    "target_price": 59990,
+    "threshold_percent": 15.0,
+    "active": false
+  },
+  {
+    "url": "https://www.abc.cl/telefonia/celulares/smartphones/iphone-15-128gb-negro.html",
+    "name": "iPhone 15 128GB - ABC",
+    "target_price": 699990,
+    "threshold_percent": 8.0,
+    "active": false
+  },
+  {
+    "url": "https://www.entel.cl/equipos/apple/iphone-15-128gb/",
+    "name": "iPhone 15 128GB - Entel",
+    "target_price": 699990,
+    "threshold_percent": 8.0,
+    "active": false
+  },
+  {
+    "url": "https://www.theway.cl/preventa-16092026-pokemon-tcg-30th-celebration-elite-trainer-box-ingles",
+    "name": "ETB 30 Aniversario",
+    "target_price": 110000,
+    "threshold_percent": 8.0,
+    "active": true
+  }
+]

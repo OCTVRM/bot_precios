@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  price_tracker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bot_precios_worker
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      # Persistencia de base de datos local si se utiliza SQLite
+      - ./data:/app/data
+    environment:
+      - PYTHONUNBUFFERED=1

@@ -1,0 +1,283 @@
+{
+  "stores": [
+    {
+      "id": "falabella",
+      "name": "Falabella",
+      "domains": ["falabella.com", "www.falabella.com"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1.product-title", "h1[data-name]", "h1"],
+        "price": [
+          ".prices-0 .primary",
+          "span.copy10",
+          "span.primary-price",
+          "[data-variant='headline-small']",
+          ".fa--prices-0"
+        ],
+        "image": ["img.image-gallery", "meta[property='og:image']"]
+      },
+      "category_selectors": {
+        "card": ["div.pod-item", "div[data-pod='catalogue-pod']", "div.search-results-4-grid > div", ".grid-pod"],
+        "link": ["a.pod-link", "a[href*='/product/']", "a"],
+        "title": [".pod-head", "b[id^='testId-pod-displaySubTitle']", ".pod-subTitle"],
+        "price": [".prices-0 .primary", "span.copy10", "span.primary-price", "[data-variant='headline-small']"],
+        "image": ["img.pod-image", "img"]
+      },
+      "affiliate_param": "aff_source",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "paris",
+      "name": "Paris",
+      "domains": ["paris.cl", "www.paris.cl"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1.pdp-title", "h1.product-name", "h1"],
+        "price": [
+          ".default-price .price",
+          ".price__sale",
+          ".price-offer",
+          "[data-price]"
+        ],
+        "image": ["meta[property='og:image']"]
+      },
+      "category_selectors": {
+        "card": ["div.product-tile", "li.grid-tile", ".product-card", ".item-wrapper"],
+        "link": ["a.product-name-link", "a.thumb-link", "a[href*='.html']", "a"],
+        "title": ["a.product-name-link", ".item-title", ".pdp-link", "h2", "h3"],
+        "price": [".default-price .price", ".price__sale", ".price-offer", "[data-price]"],
+        "image": ["img.tile-image", "img"]
+      },
+      "affiliate_param": "utm_source",
+      "affiliate_tag": "afiliados"
+    },
+    {
+      "id": "ripley",
+      "name": "Ripley",
+      "domains": ["simple.ripley.cl", "ripley.cl", "www.ripley.cl"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1.product-header__title", "h1.product-title", "h1"],
+        "price": [
+          ".product-prices__offer-price",
+          ".product-price",
+          ".catalog-prices__offer-price"
+        ],
+        "image": ["meta[property='og:image']"]
+      },
+      "category_selectors": {
+        "card": ["div.catalog-product-item", ".catalog-grid__item", ".product-item"],
+        "link": ["a.catalog-product-item", "a[href*='simple.ripley.cl']", "a"],
+        "title": [".catalog-product-details__name", ".product-header__title", "h3"],
+        "price": [".catalog-prices__offer-price", ".catalog-prices__card-price", ".product-price"],
+        "image": ["img.catalog-product-details__image", "img"]
+      },
+      "affiliate_param": "source",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "hites",
+      "name": "Hites",
+      "domains": ["hites.com", "www.hites.com"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1.product-name", "h1.pdp-title", "h1"],
+        "price": [
+          ".price-item .sales",
+          ".prices .sales .value",
+          ".hites-price",
+          ".price-sales"
+        ],
+        "image": ["meta[property='og:image']"]
+      },
+      "category_selectors": {
+        "card": ["div.product-item", "div.product-tile", ".item-card"],
+        "link": ["a.product-tile__name", "a.thumb-link", "a[href*='.html']", "a"],
+        "title": [".product-tile__name", ".pdp-link a", ".link"],
+        "price": [".price-item .sales", ".price-sales", ".hites-price", ".prices .sales .value"],
+        "image": ["img.tile-image", "img"]
+      },
+      "affiliate_param": "utm_source",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "sodimac",
+      "name": "Sodimac",
+      "domains": ["sodimac.cl", "www.sodimac.cl"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1.product-title", "h1"],
+        "price": [
+          ".prices-0 .primary",
+          "span.copy10",
+          ".primary-price",
+          "[data-price]"
+        ],
+        "image": ["meta[property='og:image']"]
+      },
+      "category_selectors": {
+        "card": ["div.pod-item", "div[data-pod='catalogue-pod']", ".search-results-pod"],
+        "link": ["a.pod-link", "a[href*='/product/']", "a"],
+        "title": [".pod-head", "b[id^='testId-pod-displaySubTitle']", ".pod-subTitle"],
+        "price": [".prices-0 .primary", "span.copy10", ".primary-price"],
+        "image": ["img.pod-image", "img"]
+      },
+      "affiliate_param": "aff_source",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "easy",
+      "name": "Easy",
+      "domains": ["easy.cl", "www.easy.cl"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1.vtex-store-components-3-x-productBrand", "h1.product-name", "h1"],
+        "price": [
+          ".easycl-easy-components-3-x-sellingPriceValue",
+          ".vtex-product-price-1-x-sellingPriceValue",
+          ".vtex-store-components-3-x-sellingPrice",
+          ".price-best"
+        ],
+        "image": ["meta[property='og:image']"]
+      },
+      "category_selectors": {
+        "card": ["div.vtex-search-result-3-x-galleryItem", ".product-card", ".vtex-product-summary-2-x-element"],
+        "link": ["a.vtex-product-summary-2-x-clearLink", "a[href*='/p']", "a"],
+        "title": [".vtex-product-summary-2-x-nameContainer", ".product-name", "h2"],
+        "price": [".easycl-easy-components-3-x-sellingPriceValue", ".vtex-product-price-1-x-sellingPriceValue", ".price-best"],
+        "image": ["img.vtex-product-summary-2-x-image", "img"]
+      },
+      "affiliate_param": "utm_source",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "abc",
+      "name": "ABC / Abcdin",
+      "domains": ["abc.cl", "www.abc.cl", "abcdin.cl", "www.abcdin.cl"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1.product-name", "h1.vtex-store-components-3-x-productBrand", "h1"],
+        "price": [
+          ".vtex-product-price-1-x-sellingPriceValue",
+          ".product-price",
+          ".sales-price",
+          ".price"
+        ],
+        "image": ["meta[property='og:image']"]
+      },
+      "category_selectors": {
+        "card": ["div.vtex-search-result-3-x-galleryItem", ".product-item", ".vtex-product-summary-2-x-element"],
+        "link": ["a.vtex-product-summary-2-x-clearLink", "a[href*='.html']", "a"],
+        "title": [".vtex-product-summary-2-x-nameContainer", ".product-name", "h3"],
+        "price": [".vtex-product-price-1-x-sellingPriceValue", ".sales-price", ".product-price"],
+        "image": ["img.vtex-product-summary-2-x-image", "img"]
+      },
+      "affiliate_param": "utm_source",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "entel",
+      "name": "Entel",
+      "domains": ["entel.cl", "www.entel.cl"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1.titulo-equipo", "h1.product-title", "h1"],
+        "price": [
+          ".precio-cuota",
+          ".precio-oferta",
+          ".price-final",
+          ".m-card-price__price"
+        ],
+        "image": ["meta[property='og:image']"]
+      },
+      "category_selectors": {
+        "card": ["div.card-equipo", ".product-card", ".catalogo-card"],
+        "link": ["a.card-equipo__link", "a[href*='/equipos/']", "a"],
+        "title": [".card-equipo__title", ".nombre-equipo", "h3"],
+        "price": [".card-equipo__price", ".precio-oferta", ".precio-cuota"],
+        "image": ["img.card-equipo__img", "img"]
+      },
+      "affiliate_param": "utm_source",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "amazon",
+      "name": "Amazon",
+      "domains": ["amazon.com", "amazon.es", "amazon.com.mx", "www.amazon.com", "www.amazon.es"],
+      "use_json_ld": false,
+      "selectors": {
+        "title": ["#productTitle", "h1.a-size-large", "h1"],
+        "price": [
+          "#corePriceDisplay_desktop_feature_div .a-price .a-offscreen",
+          "#corePrice_feature_div .a-price .a-offscreen",
+          ".apexPriceToPay .a-offscreen",
+          "#priceblock_ourprice"
+        ],
+        "image": ["#landingImage", "meta[property='og:image']"]
+      },
+      "category_selectors": {
+        "card": ["div[id^='gridItemRoot']", "div.s-result-item[data-asin]:not([data-asin=''])", "div.zg-grid-general-faceout"],
+        "link": ["a.a-link-normal[href*='/dp/']", "a.a-link-normal[href*='/gp/product/']", "a.a-link-normal"],
+        "title": ["div[class*='_p13n-zg-list-grid-desktop_truncationStyles']", "h2 a span", "span.a-size-medium", "a.a-link-normal span"],
+        "price": ["span.a-price span.a-offscreen", "span._cDEzb_p13n-sc-price_3mJ9Z", ".a-price .a-offscreen"],
+        "image": ["img.a-dynamic-image", "img"]
+      },
+      "affiliate_param": "tag",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "mercadolibre",
+      "name": "Mercado Libre",
+      "domains": [
+        "mercadolibre.cl",
+        "www.mercadolibre.cl",
+        "articulo.mercadolibre.cl",
+        "mercadolibre.com",
+        "mercadolibre.com.ar",
+        "mercadolibre.com.mx"
+      ],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1.ui-pdp-title", "h1"],
+        "price": [
+          ".ui-pdp-price__second-line .andes-money-amount__fraction",
+          ".ui-pdp-price .andes-money-amount__fraction"
+        ],
+        "image": ["meta[property='og:image']"]
+      },
+      "category_selectors": {
+        "card": ["li.ui-search-layout__item", "li.items-list__item", "div.ui-search-result", "div.promotion-item", "div.ui-recommendations-card", ".poly-card"],
+        "link": ["a.ui-search-link", "a.ui-search-item__group__element", "a.poly-component__title", "a[href*='mercadolibre']"],
+        "title": ["h2.ui-search-item__title", "h3.ui-search-item__title", "p.ui-search-item__title", "h2.poly-box", "a.poly-component__title"],
+        "price": [".ui-search-price__second-line .andes-money-amount__fraction", ".andes-money-amount__fraction", ".price-tag-fraction"],
+        "image": ["img.ui-search-result-image__element", "img.poly-component__picture", "img"]
+      },
+      "affiliate_param": "matt_tool",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "theway",
+      "name": "The Way",
+      "domains": ["theway.cl", "www.theway.cl"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1.product-title", "h1.page-title", "h1"],
+        "price": [
+          ".product-price",
+          ".price",
+          "meta[property='product:price:amount']"
+        ],
+        "image": ["meta[property='og:image']", ".product-image img"]
+      },
+      "category_selectors": {
+        "card": ["div.product-block", "div.product-card", ".product-item", ".col-product"],
+        "link": ["a.product-link", "a[href*='/']"],
+        "title": [".product-title", ".title a", "h3"],
+        "price": [".product-price", ".price", ".money"],
+        "image": ["img.product-img", "img"]
+      },
+      "affiliate_param": "ref",
+      "affiliate_tag": ""
+    }
+  ]
+}

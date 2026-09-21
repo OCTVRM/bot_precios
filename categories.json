@@ -1,0 +1,214 @@
+{
+  "categories": [
+    {
+      "id": "celulares",
+      "name": "Celulares y Smartphones",
+      "default_threshold_percent": 15.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "falabella": "https://www.falabella.com/falabella-cl/category/cat2018/Celulares-y-Telefonia",
+        "paris": "https://www.paris.cl/tecnologia/celulares/",
+        "ripley": "https://simple.ripley.cl/tecno/telefonia/celulares",
+        "hites": "https://www.hites.com/tecnologia/celulares/smartphones/",
+        "entel": "https://www.entel.cl/equipos/",
+        "abc": "https://www.abc.cl/telefonia/celulares/smartphones.html",
+        "mercadolibre": "https://listado.mercadolibre.cl/celulares-telefonos/celulares-smartphones/",
+        "amazon": "https://www.amazon.com/gp/bestsellers/wireless/2407749011"
+      }
+    },
+    {
+      "id": "televisores",
+      "name": "Televisores y Smart TV",
+      "default_threshold_percent": 20.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "falabella": "https://www.falabella.com/falabella-cl/category/cat1012/Televisores",
+        "paris": "https://www.paris.cl/electro/television/",
+        "ripley": "https://simple.ripley.cl/electro/television",
+        "hites": "https://www.hites.com/electro-y-tecnologia/televisores/",
+        "abc": "https://www.abc.cl/tv-audio/televisores.html",
+        "mercadolibre": "https://listado.mercadolibre.cl/electronica-audio-video/televisores/",
+        "amazon": "https://www.amazon.com/gp/bestsellers/electronics/1266092011"
+      }
+    },
+    {
+      "id": "computadores",
+      "name": "Computadores y All in One",
+      "default_threshold_percent": 15.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "falabella": "https://www.falabella.com/falabella-cl/category/cat40051/Computadores-All-in-One-y-Desktop",
+        "paris": "https://www.paris.cl/tecnologia/computadores/all-in-one-desktop/",
+        "ripley": "https://simple.ripley.cl/tecno/computacion/computadores-de-escritorio",
+        "mercadolibre": "https://listado.mercadolibre.cl/computacion/pc-escritorio/",
+        "amazon": "https://www.amazon.com/gp/bestsellers/pc/565098"
+      }
+    },
+    {
+      "id": "notebook",
+      "name": "Notebooks y Portátiles",
+      "default_threshold_percent": 15.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "falabella": "https://www.falabella.com/falabella-cl/category/cat5860031/Notebooks",
+        "paris": "https://www.paris.cl/tecnologia/computadores/notebooks/",
+        "ripley": "https://simple.ripley.cl/tecno/computacion/notebooks",
+        "hites": "https://www.hites.com/tecnologia/computacion/notebooks/",
+        "abc": "https://www.abc.cl/computacion/notebooks.html",
+        "mercadolibre": "https://listado.mercadolibre.cl/computacion/notebooks/",
+        "amazon": "https://www.amazon.com/gp/bestsellers/pc/565108"
+      }
+    },
+    {
+      "id": "electrodomesticos",
+      "name": "Electrodomésticos de Cocina y Hogar",
+      "default_threshold_percent": 20.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "falabella": "https://www.falabella.com/falabella-cl/category/cat3134/Electrodomesticos-Cocina",
+        "paris": "https://www.paris.cl/electro/electrodomesticos/",
+        "ripley": "https://simple.ripley.cl/electro/electrohogar",
+        "hites": "https://www.hites.com/electro-y-tecnologia/electrohogar/",
+        "sodimac": "https://www.sodimac.cl/sodimac-cl/category/cat10002/Electrohogar",
+        "easy": "https://www.easy.cl/electrohogar",
+        "abc": "https://www.abc.cl/electrohogar/electrodomesticos.html",
+        "mercadolibre": "https://listado.mercadolibre.cl/electrodomesticos/pequenos-electrodomesticos/",
+        "amazon": "https://www.amazon.com/gp/bestsellers/kitchen/289916"
+      }
+    },
+    {
+      "id": "pokemon_tcg",
+      "name": "Pokémon TCG y Cartas Coleccionables",
+      "default_threshold_percent": 15.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "theway": "https://www.theway.cl/pokemon-tcg",
+        "mercadolibre": "https://listado.mercadolibre.cl/juegos-juguetes/juegos-mesa-cartas/pokemon-tcg",
+        "amazon": "https://www.amazon.com/gp/bestsellers/toys-and-games/2522044011"
+      }
+    },
+    {
+      "id": "consolas_videojuegos",
+      "name": "Consolas y Videojuegos",
+      "default_threshold_percent": 15.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "falabella": "https://www.falabella.com/falabella-cl/category/cat20019/Consolas-y-Videojuegos",
+        "paris": "https://www.paris.cl/tecnologia/consolas-videojuegos/",
+        "ripley": "https://simple.ripley.cl/tecno/videojuegos",
+        "hites": "https://www.hites.com/tecnologia/videojuegos/",
+        "mercadolibre": "https://listado.mercadolibre.cl/consolas-videojuegos/",
+        "amazon": "https://www.amazon.com/gp/bestsellers/videogames/"
+      }
+    },
+    {
+      "id": "audio",
+      "name": "Audio y Audífonos",
+      "default_threshold_percent": 20.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "falabella": "https://www.falabella.com/falabella-cl/category/cat2005/Audio-y-Musica",
+        "paris": "https://www.paris.cl/tecnologia/audio/",
+        "ripley": "https://simple.ripley.cl/electro/audio",
+        "hites": "https://www.hites.com/tecnologia/audio/",
+        "mercadolibre": "https://listado.mercadolibre.cl/electronica-audio-video/audio/",
+        "amazon": "https://www.amazon.com/gp/bestsellers/electronics/172541"
+      }
+    },
+    {
+      "id": "smartwatches",
+      "name": "Smartwatches y Wearables",
+      "default_threshold_percent": 15.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "falabella": "https://www.falabella.com/falabella-cl/category/cat4290063/Smartwatches-y-Wearables",
+        "paris": "https://www.paris.cl/tecnologia/smartwatches-wearables/",
+        "ripley": "https://simple.ripley.cl/tecno/smartwatches-wearables",
+        "entel": "https://www.entel.cl/equipos/smartwatches/",
+        "mercadolibre": "https://listado.mercadolibre.cl/smartwatches/",
+        "amazon": "https://www.amazon.com/gp/bestsellers/wireless/7939901011"
+      }
+    },
+    {
+      "id": "monitores_gamer",
+      "name": "Monitores y Periféricos Gamer",
+      "default_threshold_percent": 15.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "falabella": "https://www.falabella.com/falabella-cl/category/cat40053/Monitores",
+        "paris": "https://www.paris.cl/tecnologia/computadores/monitores/",
+        "ripley": "https://simple.ripley.cl/tecno/computacion/monitores",
+        "mercadolibre": "https://listado.mercadolibre.cl/computacion/monitores-accesorios/monitores/",
+        "amazon": "https://www.amazon.com/gp/bestsellers/pc/1292115011"
+      }
+    },
+    {
+      "id": "linea_blanca",
+      "name": "Línea Blanca y Climatización",
+      "default_threshold_percent": 20.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "falabella": "https://www.falabella.com/falabella-cl/category/cat4005/Linea-Blanca",
+        "paris": "https://www.paris.cl/linea-blanca/",
+        "ripley": "https://simple.ripley.cl/electro/linea-blanca",
+        "sodimac": "https://www.sodimac.cl/sodimac-cl/category/cat10001/Linea-Blanca",
+        "easy": "https://www.easy.cl/linea-blanca",
+        "abc": "https://www.abc.cl/linea-blanca.html",
+        "mercadolibre": "https://listado.mercadolibre.cl/electrodomesticos/lavado-refrigeracion/"
+      }
+    },
+    {
+      "id": "herramientas",
+      "name": "Herramientas Eléctricas y Hogar",
+      "default_threshold_percent": 20.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "sodimac": "https://www.sodimac.cl/sodimac-cl/category/cat10003/Herramientas-y-Maquinarias",
+        "easy": "https://www.easy.cl/herramientas-y-maquinarias",
+        "mercadolibre": "https://listado.mercadolibre.cl/herramientas/",
+        "amazon": "https://www.amazon.com/gp/bestsellers/hi/551238"
+      }
+    },
+    {
+      "id": "juguetes_coleccionables",
+      "name": "Juguetes y Figuras Coleccionables",
+      "default_threshold_percent": 20.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "falabella": "https://www.falabella.com/falabella-cl/category/cat3025/Juguetes",
+        "paris": "https://www.paris.cl/jugueteria/",
+        "ripley": "https://simple.ripley.cl/infantil/jugueteria",
+        "theway": "https://www.theway.cl/juegos-de-mesa",
+        "mercadolibre": "https://listado.mercadolibre.cl/juegos-juguetes/",
+        "amazon": "https://www.amazon.com/gp/bestsellers/toys-and-games/"
+      }
+    },
+    {
+      "id": "belleza_perfumeria",
+      "name": "Belleza y Perfumería",
+      "default_threshold_percent": 25.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "falabella": "https://www.falabella.com/falabella-cl/category/cat3053/Perfumes",
+        "paris": "https://www.paris.cl/belleza/perfumes/",
+        "ripley": "https://simple.ripley.cl/belleza/perfumeria",
+        "mercadolibre": "https://listado.mercadolibre.cl/belleza-cuidado-personal/perfumes/",
+        "amazon": "https://www.amazon.com/gp/bestsellers/beauty/11056591"
+      }
+    }
+  ]
+}
