@@ -23,6 +23,11 @@ class Base(DeclarativeBase):
 connect_args = {}
 if settings.DATABASE_URL.startswith("sqlite"):
     connect_args["check_same_thread"] = False
+elif "asyncpg" in settings.DATABASE_URL:
+    # Crucial para PgBouncer / Supabase Transaction Pooler (puerto 6543):
+    # Deshabilita el caché de sentencias preparadas para evitar DuplicatePreparedStatementError
+    connect_args["statement_cache_size"] = 0
+    connect_args["prepared_statement_cache_size"] = 0
 
 engine: AsyncEngine = create_async_engine(
     settings.DATABASE_URL,
