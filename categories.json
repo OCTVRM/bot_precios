@@ -202,8 +202,50 @@
       "stores": {
         "falabella": "https://www.falabella.com/falabella-cl/category/cat3053/Perfumes",
         "paris": "https://www.paris.cl/belleza/perfumes/",
-        "ripley": "https://simple.ripley.cl/belleza/perfumeria",
-        "mercadolibre": "https://listado.mercadolibre.cl/belleza-cuidado-personal/perfumes/"
+        "ripley": "https://simple.ripley.cl/belleza/perfumeria"
+      }
+    },
+    {
+      "id": "hardware_gamer",
+      "name": "Hardware Gamer y Tarjetas de Video",
+      "default_threshold_percent": 15.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "pcfactory": "https://www.pcfactory.cl/tarjetas-graficas",
+        "winpy": "https://www.winpy.cl/partes-y-piezas/tarjetas-graficas/",
+        "spdigital": "https://www.spdigital.cl/componentes/tarjetas-de-video/",
+        "mercadolibre": "https://listado.mercadolibre.cl/computacion/componentes-pc/tarjetas-video/",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=tarjetas+de+video"
+      }
+    },
+    {
+      "id": "neumaticos_automotriz",
+      "name": "Neumáticos y Automotriz",
+      "default_threshold_percent": 20.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "autoplanet": "https://www.autoplanet.cl/c/neumaticos-y-llantas/neumaticos",
+        "sodimac": "https://www.sodimac.cl/sodimac-cl/category/cat10007/Neumaticos",
+        "easy": "https://www.easy.cl/automotriz/neumaticos",
+        "mercadolibre": "https://listado.mercadolibre.cl/accesorios-vehiculos/neumaticos/",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=neumaticos"
+      }
+    },
+    {
+      "id": "zapatillas_deporte",
+      "name": "Zapatillas y Calzado Deportivo",
+      "default_threshold_percent": 25.0,
+      "error_threshold_percent": 55.0,
+      "active": true,
+      "stores": {
+        "reebok": "https://www.reebok.cl/calzado",
+        "underarmour": "https://www.underarmour.cl/collections/zapatilla",
+        "adidas": "https://www.adidas.cl/calzado",
+        "mercadolibre": "https://tienda.mercadolibre.cl/adidas",
+        "falabella": "https://www.falabella.com/falabella-cl/category/cat40050/Zapatillas-Hombre",
+        "paris": "https://www.paris.cl/zapatos/zapatillas/"
       }
     }
   ]

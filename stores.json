@@ -459,6 +459,146 @@
       },
       "affiliate_param": "ref",
       "affiliate_tag": ""
+    },
+    {
+      "id": "pcfactory",
+      "name": "PC Factory",
+      "domains": ["pcfactory.cl", "www.pcfactory.cl"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1.product-single__title", "h1", ".product-name"],
+        "price": [".product-price", ".price", ".val-precio", "span.price", ".product-single__price"],
+        "image": ["meta[property='og:image']", "img.product-image"]
+      },
+      "category_selectors": {
+        "card": [".card", ".product-card", ".box-producto", "div[data-sku]"],
+        "link": ["a[href*='/producto/']", "a"],
+        "title": [".product-title", "h2", "h3", ".name"],
+        "price": [".price", ".product-price", ".val-precio"],
+        "image": ["img"]
+      },
+      "affiliate_param": "ref",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "winpy",
+      "name": "Winpy",
+      "domains": ["winpy.cl", "www.winpy.cl"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1", ".product-title", "p.model"],
+        "price": ["p.valor", "h2", ".val-precio", ".precio", ".price"],
+        "image": ["meta[property='og:image']", "img"]
+      },
+      "category_selectors": {
+        "card": ["article", ".box-producto", ".producto", ".item", "div.col-md-3", ".product-item"],
+        "link": ["a[href*='/venta/']", "a"],
+        "title": ["p.model", "h3", "h2", ".titulo", ".name"],
+        "price": ["p.valor", ".precio", ".val-precio", ".price", "p"],
+        "image": ["img"]
+      },
+      "affiliate_param": "ref",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "spdigital",
+      "name": "SP Digital",
+      "domains": ["spdigital.cl", "www.spdigital.cl"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1", ".product-title"],
+        "price": [".product-price", ".price", ".val-precio", "[data-price]"],
+        "image": ["meta[property='og:image']"]
+      },
+      "category_selectors": {
+        "card": [".product-card", ".card", ".item", "div[data-product]"],
+        "link": ["a[href*='/producto/']", "a[href*='/componentes/']", "a"],
+        "title": [".product-title", "h3", "h2"],
+        "price": [".price", ".product-price"],
+        "image": ["img"]
+      },
+      "affiliate_param": "ref",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "autoplanet",
+      "name": "AutoPlanet",
+      "domains": ["autoplanet.cl", "www.autoplanet.cl"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1", ".product-name"],
+        "price": [".price", ".product-price", ".special-price"],
+        "image": ["meta[property='og:image']"]
+      },
+      "category_selectors": {
+        "card": [".product-item", ".item", ".product-card", ".vtex-product-summary-2-x-container"],
+        "link": ["a[href*='/p']", "a[href*='/producto/']", "a"],
+        "title": [".product-name", "h3", "h2"],
+        "price": [".price", ".special-price"],
+        "image": ["img"]
+      },
+      "affiliate_param": "ref",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "reebok",
+      "name": "Reebok Chile",
+      "domains": ["reebok.cl", "www.reebok.cl"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1.vtex-store-components-3-x-productNameContainer", "h1", "span.vtex-store-components-3-x-productBrand"],
+        "price": [".vtex-product-price-1-x-sellingPrice", ".vtex-price", "span.vtex-product-price-1-x-currencyInteger", ".price"],
+        "image": ["meta[property='og:image']", "img.vtex-store-components-3-x-productImageTag"]
+      },
+      "category_selectors": {
+        "card": [".vtex-product-summary-2-x-container", ".vtex-search-result-3-x-galleryItem", ".product-summary"],
+        "link": ["a.vtex-product-summary-2-x-clearLink", "a[href*='/p']", "a"],
+        "title": [".vtex-product-summary-2-x-brandName", "h2", "h3", "span.vtex-product-summary-2-x-nameContainer"],
+        "price": [".vtex-product-summary-2-x-sellingPrice", ".vtex-product-price-1-x-currencyInteger", ".price"],
+        "image": ["img"]
+      },
+      "affiliate_param": "ref",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "underarmour",
+      "name": "Under Armour Chile",
+      "domains": ["underarmour.cl", "www.underarmour.cl"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1.product-title", "h1", ".product__title"],
+        "price": [".price-item--sale", ".price-item--regular", ".price", ".product-price"],
+        "image": ["meta[property='og:image']", "img.product__media-image"]
+      },
+      "category_selectors": {
+        "card": [".product-item", ".grid-item", ".card", ".product-card"],
+        "link": ["a[href*='/products/']", "a.product-link", "a"],
+        "title": [".product-item__title", ".card-title", "h3", "h2"],
+        "price": [".price-item", ".price", ".money"],
+        "image": ["img"]
+      },
+      "affiliate_param": "ref",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "adidas",
+      "name": "Adidas Chile",
+      "domains": ["adidas.cl", "www.adidas.cl"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1[data-auto-id='product-title']", "h1", ".product-title"],
+        "price": ["[data-auto-id='gl-price-item']", ".gl-price-item", ".price"],
+        "image": ["meta[property='og:image']"]
+      },
+      "category_selectors": {
+        "card": [".grid-item", ".product-card", "div[data-grid-id]"],
+        "link": ["a[href*='.html']", "a"],
+        "title": [".glass-product-card__title", "p[data-auto-id='product-card-title']", "h3"],
+        "price": [".gl-price-item", ".price"],
+        "image": ["img"]
+      },
+      "affiliate_param": "ref",
+      "affiliate_tag": ""
     }
   ]
 }

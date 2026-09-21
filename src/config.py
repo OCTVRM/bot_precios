@@ -31,6 +31,25 @@ class Settings(BaseSettings):
         default="",
         description="ID del canal o grupo de Telegram donde se emitirán las alertas",
     )
+    TELEGRAM_ADMIN_ID: Optional[int] = Field(
+        default=None,
+        description="ID numérico de Telegram del administrador para aprobar comprobantes de pago",
+    )
+    SUBSCRIPTION_PRICE_CLP: int = Field(
+        default=7990,
+        description="Precio mensual de la suscripción VIP en pesos chilenos (CLP)",
+    )
+    BANK_TRANSFER_DETAILS: str = Field(
+        default=(
+            "🏦 <b>Datos de Transferencia Bancaria:</b>\n"
+            "• <b>Banco:</b> BancoEstado / Cualquier Banco\n"
+            "• <b>Tipo de Cuenta:</b> Cuenta RUT / Vista / Corriente\n"
+            "• <b>Monto:</b> $7.990 CLP\n"
+            "• <b>Asunto:</b> Canal VIP Ofertas\n\n"
+            "📸 <i>Una vez realizada la transferencia, envía la foto o captura del comprobante directamente a este chat.</i>"
+        ),
+        description="Instrucciones con los datos de cuenta bancaria que el bot envía al usuario para el pago",
+    )
 
     # Scheduler & Detección
     CHECK_INTERVAL_MINUTES: int = Field(

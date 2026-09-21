@@ -64,8 +64,13 @@ async def main() -> None:
     polling_task = None
     if settings.TELEGRAM_BOT_TOKEN:
         try:
-            polling_task = asyncio.create_task(dp.start_polling(notifier.bot))
-            logger.info("Telegram Polling activado.")
+            polling_task = asyncio.create_task(
+                dp.start_polling(
+                    notifier.bot,
+                    allowed_updates=["message", "callback_query", "chat_join_request"],
+                )
+            )
+            logger.info("Telegram Polling activado (mensajes, callbacks y solicitudes de unión).")
         except Exception as ex:
             logger.warning(f"No se pudo iniciar polling de Telegram: {ex}")
     else:
