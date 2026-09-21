@@ -739,6 +739,106 @@
       },
       "affiliate_param": "utm_source",
       "affiliate_tag": ""
+    },
+    {
+      "id": "jumbo",
+      "name": "Jumbo",
+      "domains": ["jumbo.cl", "www.jumbo.cl"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1.product-title", "h1"],
+        "price": [".price", "span.price", ".product-price"],
+        "image": ["meta[property='og:image']"]
+      },
+      "category_selectors": {
+        "card": [".product-card", "article", ".product-item"],
+        "link": ["a[href*='/p']", "a"],
+        "title": [".product-title", "h2", "h3"],
+        "price": [".price", "span.price"],
+        "image": ["img"]
+      },
+      "affiliate_param": "utm_source",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "santaisabel",
+      "name": "Santa Isabel",
+      "domains": ["santaisabel.cl", "www.santaisabel.cl"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1.product-title", "h1"],
+        "price": [".price", "span.price", ".product-price"],
+        "image": ["meta[property='og:image']"]
+      },
+      "category_selectors": {
+        "card": [".product-card", "article", ".product-item"],
+        "link": ["a[href*='/p']", "a"],
+        "title": [".product-title", "h2", "h3"],
+        "price": [".price", "span.price"],
+        "image": ["img"]
+      },
+      "affiliate_param": "utm_source",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "labarra",
+      "name": "La Barra (CCU)",
+      "domains": ["labarra.cl", "www.labarra.cl"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1", ".product-name"],
+        "price": [".price", ".product-price", "span[class*='price']"],
+        "image": ["meta[property='og:image']"]
+      },
+      "category_selectors": {
+        "card": ["div[class*='product']", "article", "a[href*='/producto/']"],
+        "link": ["a[href*='/producto/']", "a"],
+        "title": ["h2", "h3", "div[class*='title']"],
+        "price": ["span[class*='price']", ".price"],
+        "image": ["img"]
+      },
+      "affiliate_param": "utm_source",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "ahumada",
+      "name": "Farmacias Ahumada",
+      "domains": ["farmaciasahumada.cl", "www.farmaciasahumada.cl"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1.product-name", "h1"],
+        "price": [".price .sales", ".price", "span.value"],
+        "image": ["meta[property='og:image']"]
+      },
+      "category_selectors": {
+        "card": [".product-tile", ".product-item"],
+        "link": ["a.link", "a[href*='.html']", "a"],
+        "title": ["a.link", "h2", "h3", ".product-name"],
+        "price": [".price .sales", ".sales", ".price"],
+        "image": ["img.tile-image", "img"]
+      },
+      "affiliate_param": "utm_source",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "booz",
+      "name": "Booz",
+      "domains": ["booz.cl", "www.booz.cl"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1"],
+        "price": ["span:not(.line-through)", ".price"],
+        "image": ["meta[property='og:image']"]
+      },
+      "category_selectors": {
+        "card": ["a[href*='/productos/']", "div[class*='product']"],
+        "link": ["a[href*='/productos/']", "a"],
+        "title": ["h2", "h3", "span"],
+        "price": ["span"],
+        "image": ["img"]
+      },
+      "affiliate_param": "utm_source",
+      "affiliate_tag": ""
     }
   ]
 }

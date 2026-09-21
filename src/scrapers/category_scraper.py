@@ -1,6 +1,7 @@
 import json
 import logging
 import random
+import re
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple
 from urllib.parse import urljoin, urlparse
@@ -98,25 +99,50 @@ class CategoryScraper:
     def _extract_from_json_ld(
         self, soup: BeautifulSoup, page_url: str, max_items: int
     ) -> List[ScrapedCategoryProduct]:
-        """Busca ItemList o colecciones en Schema.org JSON-LD."""
+        """Busca ItemList o colecciones en Schema.org JSON-LD, soportando anidación y grafos."""
         items: List[ScrapedCategoryProduct] = []
+
+        def collect_nodes(data) -> list:
+            nodes = []
+            if isinstance(data, list):
+                for el in data:
+                    nodes.extend(collect_nodes(el))
+            elif isinstance(data, dict):
+                nodes.append(data)
+                if "mainEntity" in data:
+                    nodes.extend(collect_nodes(data["mainEntity"]))
+                if "@graph" in data:
+                    nodes.extend(collect_nodes(data["@graph"]))
+            return nodes
+
         for script in soup.find_all("script", type="application/ld+json"):
             try:
                 data = json.loads(script.string or "")
-                raw_list = data if isinstance(data, list) else [data]
+                raw_list = collect_nodes(data)
                 for node in raw_list:
                     if node.get("@type") == "ItemList" and "itemListElement" in node:
                         elements = node["itemListElement"]
                         for idx, el in enumerate(elements, start=1):
                             raw_url = el.get("url")
+                            title = ""
                             if not raw_url and isinstance(el.get("item"), dict):
                                 raw_url = el["item"].get("url")
-                                title = el["item"].get("name") or el.get("name") or "Producto"
+                                title = el["item"].get("name") or el.get("name") or ""
                             else:
-                                title = el.get("name") or "Producto"
+                                title = el.get("name") or ""
 
                             if raw_url:
                                 full_url = urljoin(page_url, raw_url)
+                                # Si el título vino vacío o genérico, derivarlo de la URL
+                                if not title or title.lower() in ["producto", "item", "default"]:
+                                    path_segment = urlparse(full_url).path.rstrip("/").split("/")[-1]
+                                    clean_segment = path_segment.replace(".html", "").replace(".p", "")
+                                    # Quitar prefijos numéricos como 451081-
+                                    clean_segment = re.sub(r'^\d+[-_]', '', clean_segment)
+                                    # Reemplazar guiones y guiones bajos por espacios
+                                    clean_title = re.sub(r'[-_]+', ' ', clean_segment).strip().title()
+                                    title = clean_title if clean_title else "Producto"
+
                                 items.append(
                                     ScrapedCategoryProduct(
                                         url=full_url,

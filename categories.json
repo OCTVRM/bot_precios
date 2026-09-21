@@ -270,6 +270,88 @@
         "paris": "https://www.paris.cl/search?q=alimento+perros",
         "mercadolibre": "https://listado.mercadolibre.cl/animales-mascotas/alimentos-perros/"
       }
+    },
+    {
+      "id": "supermercado_despensa",
+      "name": "Supermercado, Abarrotes y Despensa",
+      "default_threshold_percent": 20.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "jumbo": "https://www.jumbo.cl/despensa",
+        "santaisabel": "https://www.santaisabel.cl/despensa",
+        "falabella": "https://www.falabella.com/falabella-cl/category/cat14920002/Despensa",
+        "mercadolibre": "https://listado.mercadolibre.cl/alimentos-bebidas/despensa/"
+      }
+    },
+    {
+      "id": "bebes_maternidad_panales",
+      "name": "Bebés, Maternidad y Pañales",
+      "default_threshold_percent": 20.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "jumbo": "https://www.jumbo.cl/bebe-y-jugueteria/bebe/panales",
+        "ahumada": "https://www.farmaciasahumada.cl/mama-y-bebe/panales",
+        "falabella": "https://www.falabella.com/falabella-cl/category/cat16620002/Panales-y-toallitas",
+        "paris": "https://www.paris.cl/bebe-ninos/mundo-bebe/panales-y-toallas/",
+        "mercadolibre": "https://listado.mercadolibre.cl/bebes/panales-desechables/"
+      }
+    },
+    {
+      "id": "farmacia_dermocosmetica",
+      "name": "Farmacia, Dermocosmética y Cuidado Personal",
+      "default_threshold_percent": 20.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "ahumada": "https://www.farmaciasahumada.cl/dermocosmetica",
+        "falabella": "https://www.falabella.com/falabella-cl/category/cat20010/Belleza-y-Cuidado-Personal",
+        "paris": "https://www.paris.cl/belleza/cuidado-facial/",
+        "mercadolibre": "https://listado.mercadolibre.cl/belleza-cuidado-personal/cuidado-de-la-piel/"
+      }
+    },
+    {
+      "id": "licores_cervezas_vinos",
+      "name": "Licores, Cervezas y Destilados",
+      "default_threshold_percent": 20.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "labarra": "https://labarra.cl/categoria/cervezas-288",
+        "booz": "https://booz.cl/catalogo/cervezas",
+        "jumbo": "https://www.jumbo.cl/vinos-cervezas-y-licores/cervezas",
+        "santaisabel": "https://www.santaisabel.cl/vinos-cervezas-y-licores/cervezas",
+        "falabella": "https://www.falabella.com/falabella-cl/category/cat14920004/Licores-y-Bebidas",
+        "mercadolibre": "https://listado.mercadolibre.cl/alimentos-bebidas/bebidas/bebidas-alcoholicas/"
+      }
+    },
+    {
+      "id": "herramientas_maquinarias",
+      "name": "Herramientas Eléctricas y Maquinarias",
+      "default_threshold_percent": 15.0,
+      "error_threshold_percent": 45.0,
+      "active": true,
+      "stores": {
+        "sodimac": "https://sodimac.falabella.com/sodimac-cl/search?Ntt=taladro",
+        "easy": "https://www.easy.cl/herramientas",
+        "falabella": "https://www.falabella.com/falabella-cl/category/cat20038/Herramientas-electricas",
+        "mercadolibre": "https://listado.mercadolibre.cl/herramientas-construccion/"
+      }
+    },
+    {
+      "id": "climatizacion_hogar",
+      "name": "Climatización y Calefacción",
+      "default_threshold_percent": 15.0,
+      "error_threshold_percent": 45.0,
+      "active": true,
+      "stores": {
+        "sodimac": "https://sodimac.falabella.com/sodimac-cl/search?Ntt=aire+acondicionado",
+        "easy": "https://www.easy.cl/climatizacion",
+        "falabella": "https://www.falabella.com/falabella-cl/category/cat40018/Climatizacion",
+        "paris": "https://www.paris.cl/electro/climatizacion/",
+        "ripley": "https://simple.ripley.cl/electro/climatizacion"
+      }
     }
   ]
 }
