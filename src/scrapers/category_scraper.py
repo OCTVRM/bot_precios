@@ -260,8 +260,13 @@ class CategoryScraper:
             for p_sel in sel.price:
                 p_elem = card.select_one(p_sel)
                 if p_elem and p_elem.get_text(strip=True):
+                    raw_p = p_elem.get_text(strip=True)
                     try:
-                        price = BaseScraper.clean_price(p_elem.get_text(strip=True))
+                        price = BaseScraper.clean_price(raw_p)
+                        if store_rule.id == "amazon":
+                            raw_l = raw_p.lower()
+                            if "usd" in raw_l or "us$" in raw_l or price < 500.0:
+                                price = float(round(price * 960.0))
                         break
                     except Exception:
                         continue

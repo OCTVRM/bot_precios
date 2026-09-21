@@ -14,19 +14,42 @@ class AmazonScraper(BaseScraper):
     def __init__(self):
         super().__init__(store_name="Amazon")
 
-    def build_affiliate_url(self, url: str) -> str:
-        """Inyecta el tag de asociado de Amazon en la URL."""
-        if not settings.AMAZON_AFFILIATE_TAG:
-            return url
-
+    @staticmethod
+    def get_canonical_url(url: str) -> str:
+        """Normaliza cualquier URL de Amazon a su formato canónico limpio /dp/{ASIN} con moneda CLP."""
+        match = re.search(r"/(?:dp|gp/product)/([A-Z0-9]{10})", url)
         parsed = urlparse(url)
+        netloc = parsed.netloc.lower() if parsed.netloc else "www.amazon.com"
+        if match:
+            asin = match.group(1)
+            return f"https://{netloc}/dp/{asin}?currency=CLP&language=es_US"
+
+        # Si no tiene ASIN estándar, al menos inyectar currency=CLP
         query_params = parse_qs(parsed.query)
-        # Inyectar o sobrescribir el tag de afiliado
+        if "currency" not in query_params:
+            query_params["currency"] = ["CLP"]
+        if "language" not in query_params:
+            query_params["language"] = ["es_US"]
+        return urlunparse((
+            parsed.scheme,
+            parsed.netloc,
+            parsed.path,
+            parsed.params,
+            urlencode(query_params, doseq=True),
+            parsed.fragment,
+        ))
+
+    def build_affiliate_url(self, url: str) -> str:
+        """Inyecta el tag de asociado de Amazon en la URL canónica."""
+        canonical = self.get_canonical_url(url)
+        if not settings.AMAZON_AFFILIATE_TAG:
+            return canonical
+
+        parsed = urlparse(canonical)
+        query_params = parse_qs(parsed.query)
         query_params["tag"] = [settings.AMAZON_AFFILIATE_TAG]
-        
-        # Eliminar parámetros efímeros o de sesión que puedan romper el rastreo
-        for drop_key in ["ref_", "ref", "pd_rd_r", "pd_rd_w", "pd_rd_wg", "pf_rd_r", "pf_rd_p"]:
-            query_params.pop(drop_key, None)
+        query_params["currency"] = ["CLP"]
+        query_params["language"] = ["es_US"]
 
         new_query = urlencode(query_params, doseq=True)
         return urlunparse((
@@ -40,7 +63,8 @@ class AmazonScraper(BaseScraper):
 
     async def scrape(self, url: str) -> ScrapedItem:
         """Extrae el precio, título y disponibilidad de un producto en Amazon."""
-        html = await self.fetch_html(url)
+        target_url = self.get_canonical_url(url)
+        html = await self.fetch_html(target_url)
         soup = BeautifulSoup(html, "html.parser")
 
         # Detección de CAPTCHA o bloqueo de Amazon
@@ -48,7 +72,7 @@ class AmazonScraper(BaseScraper):
         page_title = title_tag.get_text(strip=True) if title_tag else ""
         if "Robot Check" in page_title or "Amazon CAPTCHA" in page_title:
             logger.warning("Amazon presentó un CAPTCHA/Robot Check. Intentando con scraping dinámico...")
-            html = await self.fetch_html_dynamic(url)
+            html = await self.fetch_html_dynamic(target_url)
             soup = BeautifulSoup(html, "html.parser")
 
         # 1. Extracción de Título
@@ -99,6 +123,16 @@ class AmazonScraper(BaseScraper):
             raise ValueError(f"No se pudo localizar el precio en la página de Amazon: {url}")
 
         price = self.clean_price(price_raw)
+
+        # Conversión automática USD -> CLP si el servidor recibe el precio en dólares
+        # En Chile ningún producto de las categorías monitoreadas cuesta < $500 pesos.
+        raw_lower = price_raw.lower()
+        if "usd" in raw_lower or "us$" in raw_lower or price < 500.0:
+            usd_val = price
+            price = float(round(price * 960.0))
+            logger.info(
+                f"[Amazon] Detectado precio en USD ({usd_val}). Convertido a CLP: ${price:,.0f} CLP"
+            )
 
         # 3. Disponibilidad / Stock
         in_stock = True

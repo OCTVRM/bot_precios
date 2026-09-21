@@ -42,6 +42,12 @@ class PriceTrackingService:
         old_price = product.precio_actual
         now = datetime.datetime.now(datetime.timezone.utc)
 
+        # Salvaguarda de consistencia de divisa (USD vs CLP en Amazon):
+        # Si la base de datos tenía un precio en pesos chilenos (old_price >= 1000) y el nuevo precio es < 500 (en USD):
+        if product.tienda.lower() == "amazon" and current_price < 500.0 and old_price is not None and old_price >= 1000.0:
+            current_price = float(round(current_price * 960.0))
+            item.price = current_price
+
         # Actualizar título si no estaba definido o cambió
         if item.title and (not product.nombre or product.nombre == "Pendiente"):
             product.nombre = item.title
