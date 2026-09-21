@@ -278,6 +278,186 @@
       },
       "affiliate_param": "ref",
       "affiliate_tag": ""
+    },
+    {
+      "id": "collectorcenter",
+      "name": "Collector Center",
+      "domains": ["collectorcenter.cl", "www.collectorcenter.cl"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1.product-title", "h1.product-single__title", "h1"],
+        "price": [".price__current .price-item", ".price", "span.price-item--sale"],
+        "image": ["meta[property='og:image']", "img.product-single__photo"]
+      },
+      "category_selectors": {
+        "card": [".product-card", ".card-wrapper", ".grid__item", "div[data-product-id]"],
+        "link": ["a.product-card__link", "a[href*='/products/']", "a"],
+        "title": [".product-card__title", ".card__heading", "h3"],
+        "price": [".price-item", ".price", ".money"],
+        "image": ["img"]
+      },
+      "affiliate_param": "ref",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "tiendalacomarca",
+      "name": "La Comarca",
+      "domains": ["tiendalacomarca.cl", "www.tiendalacomarca.cl"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1.product-single__title", "h1.product-title", "h1"],
+        "price": [".price-item--sale", ".price-item", ".product-price", ".price"],
+        "image": ["meta[property='og:image']"]
+      },
+      "category_selectors": {
+        "card": [".grid-view-item", ".product-card", ".grid__item", ".card-wrapper"],
+        "link": ["a[href*='/products/']", "a.grid-view-item__link", "a"],
+        "title": [".product-card__title", ".grid-view-item__title", ".card__heading", "h4", "h3"],
+        "price": [".product-price__price", ".price-item--sale", ".price-item", ".product-price", ".money", ".price"],
+        "image": ["img.grid-view-item__image", "img"]
+      },
+      "affiliate_param": "ref",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "piedrabruja",
+      "name": "Piedra Bruja",
+      "domains": ["piedrabruja.cl", "www.piedrabruja.cl"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1.product-title", "h1"],
+        "price": [".price-item--sale", ".price-item", ".product__price", ".price"],
+        "image": ["meta[property='og:image']"]
+      },
+      "category_selectors": {
+        "card": [".product-card", ".grid__item", ".card-wrapper"],
+        "link": ["a[href*='/products/']", "a"],
+        "title": [".product-card__title", ".card__heading", "h3"],
+        "price": [".price-item", ".price", ".money"],
+        "image": ["img"]
+      },
+      "affiliate_param": "ref",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "drawn",
+      "name": "Drawn TCG",
+      "domains": ["drawn.cl", "www.drawn.cl"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1.product-title", "h1"],
+        "price": [".price-item--sale", ".price-item", ".price"],
+        "image": ["meta[property='og:image']"]
+      },
+      "category_selectors": {
+        "card": [".product-card", ".card-wrapper", ".grid__item"],
+        "link": ["a[href*='/products/']", "a"],
+        "title": [".product-card__title", ".card__heading", "h3"],
+        "price": [".price-item", ".price", ".money"],
+        "image": ["img"]
+      },
+      "affiliate_param": "ref",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "charizstore",
+      "name": "Chariz Store",
+      "domains": ["charizstore.cl", "www.charizstore.cl"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1.product_title", "h1"],
+        "price": [".price .woocommerce-Price-amount", ".price ins .amount", ".price"],
+        "image": ["meta[property='og:image']"]
+      },
+      "category_selectors": {
+        "card": ["li.product", ".product-type-simple", ".product-grid-item"],
+        "link": ["a.woocommerce-LoopProduct-link", "a[href*='/product/']", "a"],
+        "title": [".woocommerce-loop-product__title", "h2", "h3"],
+        "price": [".woocommerce-Price-amount", ".price", ".amount"],
+        "image": ["img"]
+      },
+      "affiliate_param": "ref",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "playtcg",
+      "name": "Play TCG",
+      "domains": ["playtcg.cl", "www.playtcg.cl"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1.product-title", "h1.page-title", "h1"],
+        "price": [".product-price", ".price", "meta[property='product:price:amount']"],
+        "image": ["meta[property='og:image']"]
+      },
+      "category_selectors": {
+        "card": [".product-block", ".product-item", ".col-product"],
+        "link": ["a.product-link", "a[href*='/']", "a"],
+        "title": [".product-block__title", ".product-title", ".title a", "h3"],
+        "price": [".product-block__price", ".product-price", ".price", ".money"],
+        "image": ["img"]
+      },
+      "affiliate_param": "ref",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "thirdimpact",
+      "name": "Third Impact",
+      "domains": ["thirdimpact.cl", "www.thirdimpact.cl"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1.product-title", "h1"],
+        "price": [".price-item", ".product-price", ".price"],
+        "image": ["meta[property='og:image']"]
+      },
+      "category_selectors": {
+        "card": [".product-card", ".card-wrapper", ".product-item"],
+        "link": ["a[href*='/product/']", "a[href*='/products/']", "a"],
+        "title": [".product-card__title", ".card__heading", "h3", ".title"],
+        "price": [".price-item", ".price", ".money"],
+        "image": ["img"]
+      },
+      "affiliate_param": "ref",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "huntercardtcg",
+      "name": "Hunter Card TCG",
+      "domains": ["huntercardtcg.com", "www.huntercardtcg.com"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1.product_title", "h1"],
+        "price": [".price .woocommerce-Price-amount", ".price ins .amount", ".price"],
+        "image": ["meta[property='og:image']"]
+      },
+      "category_selectors": {
+        "card": ["li.product", ".product-grid-item"],
+        "link": ["a.woocommerce-LoopProduct-link", "a[href*='/producto/']", "a"],
+        "title": [".woocommerce-loop-product__title", "h2", "h3"],
+        "price": [".woocommerce-Price-amount", ".price", ".amount"],
+        "image": ["img"]
+      },
+      "affiliate_param": "ref",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "pokestop",
+      "name": "PokeStop",
+      "domains": ["pokestop.cl", "www.pokestop.cl"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1.product-title", "h1.js-product-name", "h1"],
+        "price": [".js-price-display", ".item-price", ".price-item", ".price", ".money"],
+        "image": ["meta[property='og:image']", "img.js-product-slide-img", "img"]
+      },
+      "category_selectors": {
+        "card": ["div.item-product", "div.js-item-product", "div.item", ".product-card", ".card-wrapper"],
+        "link": ["a[href*='/productos/']", "a.item-image-container", "a.item-link", "a"],
+        "title": [".item-name", ".product-card__title", ".card-title", "h3", "h2"],
+        "price": [".item-price", ".js-price-display", ".price-item", ".price", ".money"],
+        "image": ["img.item-image", "img"]
+      },
+      "affiliate_param": "ref",
+      "affiliate_tag": ""
     }
   ]
 }

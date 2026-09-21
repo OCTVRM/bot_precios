@@ -40,7 +40,6 @@ class CategoryScraper:
             "User-Agent": random.choice(self._user_agents),
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
             "Accept-Language": "es-ES,es;q=0.9,en-US;q=0.8,en;q=0.7",
-            "Accept-Encoding": "gzip, deflate, br",
             "DNT": "1",
             "Connection": "keep-alive",
             "Upgrade-Insecure-Requests": "1",
@@ -288,6 +287,8 @@ class CategoryScraper:
         seen = set()
         product_indicators = [
             "/product/",
+            "/products/",
+            "/producto/",
             "/p/",
             "/dp/",
             "/gp/product/",
@@ -419,7 +420,7 @@ class CategoryCrawlerService:
                     session.add(new_prod)
                     total_added += 1
 
-        await session.flush()
+        await session.commit()
         logger.info(
             f"Categoría '{cat_item.name}' sincronizada: {total_added} agregados, {total_updated} actualizados."
         )

@@ -89,6 +89,15 @@
       "active": true,
       "stores": {
         "theway": "https://www.theway.cl/pokemon-tcg",
+        "collectorcenter": "https://collectorcenter.cl/collections/ver-todo-pokemon",
+        "tiendalacomarca": "https://www.tiendalacomarca.cl/collections/pokemon-sellado",
+        "piedrabruja": "https://piedrabruja.cl/collections/pokemon",
+        "drawn": "https://drawn.cl/collections/sellado-pokemon",
+        "charizstore": "https://www.charizstore.cl/product-category/preventa/",
+        "playtcg": "https://www.playtcg.cl/productos-sellados/productos-pokemon-tcg",
+        "thirdimpact": "https://www.thirdimpact.cl/collection/pokemon-trading-card-game",
+        "huntercardtcg": "https://www.huntercardtcg.com/categoria-producto/pokemon-tcg/",
+        "pokestop": "https://pokestop.cl/productos",
         "mercadolibre": "https://listado.mercadolibre.cl/juegos-juguetes/juegos-mesa-cartas/pokemon-tcg",
         "amazon": "https://www.amazon.com/gp/bestsellers/toys-and-games/2522044011"
       }
