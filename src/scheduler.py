@@ -36,22 +36,26 @@ class PriceTrackerScheduler:
                 products = await self.price_service.get_active_products(session)
                 logger.info(f"Se encontraron {len(products)} productos activos para monitorear.")
 
-                if not products:
-                    return
+            if not products:
+                return
 
-                async def process_with_limit(product):
-                    async with self._semaphore:
-                        try:
-                            # Pausa ligera aleatoria entre peticiones para emular comportamiento orgánico
-                            await asyncio.sleep(1.0)
-                            await self.price_service.process_product(session, product)
-                        except Exception as ex:
-                            logger.error(
-                                f"Error procesando producto {product.id} ({product.url_original}): {ex}"
-                            )
+            from src.models import Product
 
-                # Ejecutar verificaciones concurrentes controladas
-                await asyncio.gather(*(process_with_limit(prod) for prod in products))
+            async def process_with_limit(product_id: int):
+                async with self._semaphore:
+                    try:
+                        # Pausa ligera entre peticiones para emular comportamiento orgánico
+                        await asyncio.sleep(0.5)
+                        async with get_db_session() as item_session:
+                            prod = await item_session.get(Product, product_id)
+                            if prod and prod.activo:
+                                await self.price_service.process_product(item_session, prod)
+                                await item_session.commit()
+                    except Exception as ex:
+                        logger.error(f"Error procesando producto ID {product_id}: {ex}")
+
+            # Ejecutar verificaciones concurrentes controladas
+            await asyncio.gather(*(process_with_limit(prod.id) for prod in products))
 
             logger.info("=== Ciclo de verificación finalizado exitosamente ===")
         except Exception as ex:

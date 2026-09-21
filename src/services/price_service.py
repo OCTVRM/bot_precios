@@ -81,8 +81,9 @@ class PriceTrackingService:
             )
 
             if threshold_met or target_met:
-                # Comprobación de anti-spam y cooldown
+                # Comprobación estricta de anti-spam y cooldown (12 horas)
                 in_cooldown = False
+                time_since_alert_str = ""
                 if product.ultima_alerta_en is not None:
                     # Asegurar comparación timezone-aware
                     last_alert = product.ultima_alerta_en
@@ -93,13 +94,21 @@ class PriceTrackingService:
                     cooldown_delta = datetime.timedelta(hours=settings.ALERT_COOLDOWN_HOURS)
                     if time_since_alert < cooldown_delta:
                         in_cooldown = True
+                        hours_left = (cooldown_delta - time_since_alert).total_seconds() / 3600
+                        time_since_alert_str = f"emitida hace {time_since_alert.total_seconds() / 3600:.1f}h, faltan {hours_left:.1f}h"
 
-                # Excepción del cooldown: Si el precio es menor al mínimo histórico anterior, se alerta de inmediato
                 is_all_time_low = (
                     product.precio_minimo is None or current_price < product.precio_minimo
                 )
 
-                if not in_cooldown or is_all_time_low:
+                # Regla de oro: NO enviar más de una vez durante 12 horas la misma oferta
+                if in_cooldown:
+                    logger.info(
+                        f"Oferta retenida para [{product.tienda}] ID {product.id} por cooldown anti-spam "
+                        f"({settings.ALERT_COOLDOWN_HOURS}h). {time_since_alert_str}."
+                    )
+                    should_alert = False
+                else:
                     should_alert = True
                     affiliate_url = item.affiliate_url or scraper.build_affiliate_url(product.url_original)
                     alert_payload = AlertPayload(
@@ -114,11 +123,6 @@ class PriceTrackingService:
                         image_url=item.image_url,
                         category=product.categoria,
                         is_price_error=(discount_percent >= settings.ERROR_DISCOUNT_THRESHOLD_PERCENT),
-                    )
-                else:
-                    logger.info(
-                        f"Descuento detectado en ID {product.id} pero retenido por cooldown anti-spam "
-                        f"({settings.ALERT_COOLDOWN_HOURS}h)."
                     )
 
         # Actualizar estado del producto

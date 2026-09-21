@@ -599,6 +599,66 @@
       },
       "affiliate_param": "ref",
       "affiliate_tag": ""
+    },
+    {
+      "id": "superzoo",
+      "name": "SuperZoo Chile",
+      "domains": ["superzoo.cl", "www.superzoo.cl"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1.product-name", "h1", ".product-title"],
+        "price": [".price", ".product-price", ".regular-price", ".special-price"],
+        "image": ["meta[property='og:image']", "img.product-image"]
+      },
+      "category_selectors": {
+        "card": [".item", ".product-item", ".product-card", "div[data-product-id]"],
+        "link": ["a[href*='.html']", "a[href*='/alimentos/']", "a[href*='/accesorios/']", "a"],
+        "title": [".product-name", "h2", "h3", ".name"],
+        "price": [".price", ".product-price", ".regular-price"],
+        "image": ["img"]
+      },
+      "affiliate_param": "ref",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "samsung",
+      "name": "Samsung Chile",
+      "domains": ["samsung.com", "www.samsung.com"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1.product-details__title", "h1", ".pd-header-navigation__headline"],
+        "price": [".cost-box__price-now", ".price", "span[data-price]", ".pd-buying-price__new-price"],
+        "image": ["meta[property='og:image']"]
+      },
+      "category_selectors": {
+        "card": [".pd03-product-card", ".card", ".product-card", "div[data-modelcode]"],
+        "link": ["a[href*='/buy/']", "a[href*='/smartphones/']", "a[href*='/tvs/']", "a[href*='/watches/']", "a"],
+        "title": [".pd03-product-card__product-name", "h3", "h2", ".product-name"],
+        "price": [".pd03-product-card__price-main", ".price"],
+        "image": ["img"]
+      },
+      "affiliate_param": "cid",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "huawei",
+      "name": "Huawei Chile",
+      "domains": ["consumer.huawei.com", "huawei.com"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1", ".product-title", ".title"],
+        "price": [".price", ".product-price", ".current-price", "span.money"],
+        "image": ["meta[property='og:image']"]
+      },
+      "category_selectors": {
+        "card": [".product-card", ".card", ".box", ".grid-item"],
+        "link": ["a[href*='/offer/']", "a[href*='/wearables/']", "a[href*='/audio/']", "a[href*='/phones/']", "a"],
+        "title": [".product-name", "h3", "h2", ".title"],
+        "price": [".price", ".product-price", ".current-price"],
+        "image": ["img"]
+      },
+      "affiliate_param": "tag",
+      "affiliate_tag": ""
     }
   ]
 }

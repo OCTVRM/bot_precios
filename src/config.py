@@ -61,8 +61,8 @@ class Settings(BaseSettings):
         description="Frecuencia en horas para redescubrir y sincronizar el Top 10 de categorías",
     )
     ALERT_COOLDOWN_HOURS: int = Field(
-        default=6,
-        description="Horas mínimas antes de enviar otra alerta del mismo producto, salvo que baje aún más",
+        default=12,
+        description="Horas mínimas antes de enviar otra alerta del mismo producto para evitar saturación",
     )
     DEFAULT_DISCOUNT_THRESHOLD_PERCENT: float = Field(
         default=15.0,

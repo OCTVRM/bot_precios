@@ -13,7 +13,8 @@
         "hites": "https://www.hites.com/tecnologia/celulares/smartphones/",
         "entel": "https://www.entel.cl/equipos/",
         "abc": "https://www.abc.cl/telefonia/celulares/smartphones.html",
-        "mercadolibre": "https://listado.mercadolibre.cl/celulares-telefonos/celulares-smartphones/"
+        "mercadolibre": "https://listado.mercadolibre.cl/celulares-telefonos/celulares-smartphones/",
+        "samsung": "https://www.samsung.com/cl/smartphones/all-smartphones/"
       }
     },
     {
@@ -28,7 +29,8 @@
         "ripley": "https://simple.ripley.cl/electro/television",
         "hites": "https://www.hites.com/electro-y-tecnologia/televisores/",
         "abc": "https://www.abc.cl/tv-audio/televisores.html",
-        "mercadolibre": "https://listado.mercadolibre.cl/electronica-audio-video/televisores/"
+        "mercadolibre": "https://listado.mercadolibre.cl/electronica-audio-video/televisores/",
+        "samsung": "https://www.samsung.com/cl/tvs/all-tvs/"
       }
     },
     {
@@ -56,7 +58,8 @@
         "ripley": "https://simple.ripley.cl/tecno/computacion/notebooks",
         "hites": "https://www.hites.com/tecnologia/computacion/notebooks/",
         "abc": "https://www.abc.cl/computacion/notebooks.html",
-        "mercadolibre": "https://listado.mercadolibre.cl/computacion/notebooks/"
+        "mercadolibre": "https://listado.mercadolibre.cl/computacion/notebooks/",
+        "huawei": "https://consumer.huawei.com/cl/offer/computadores/"
       }
     },
     {
@@ -121,7 +124,8 @@
         "paris": "https://www.paris.cl/tecnologia/audio/",
         "ripley": "https://simple.ripley.cl/electro/audio",
         "hites": "https://www.hites.com/tecnologia/audio/",
-        "mercadolibre": "https://listado.mercadolibre.cl/electronica-audio-video/audio/"
+        "mercadolibre": "https://listado.mercadolibre.cl/electronica-audio-video/audio/",
+        "huawei": "https://consumer.huawei.com/cl/offer/audio/"
       }
     },
     {
@@ -135,7 +139,9 @@
         "paris": "https://www.paris.cl/tecnologia/smartwatches-wearables/",
         "ripley": "https://simple.ripley.cl/tecno/smartwatches-wearables",
         "entel": "https://www.entel.cl/equipos/smartwatches/",
-        "mercadolibre": "https://listado.mercadolibre.cl/smartwatches/"
+        "mercadolibre": "https://listado.mercadolibre.cl/smartwatches/",
+        "samsung": "https://www.samsung.com/cl/watches/all-watches/",
+        "huawei": "https://consumer.huawei.com/cl/offer/wearables/"
       }
     },
     {
@@ -246,6 +252,19 @@
         "mercadolibre": "https://tienda.mercadolibre.cl/adidas",
         "falabella": "https://www.falabella.com/falabella-cl/category/cat40050/Zapatillas-Hombre",
         "paris": "https://www.paris.cl/zapatos/zapatillas/"
+      }
+    },
+    {
+      "id": "mascotas_perros_gatos",
+      "name": "Alimentos y Accesorios para Perros y Gatos",
+      "default_threshold_percent": 15.0,
+      "error_threshold_percent": 45.0,
+      "active": true,
+      "stores": {
+        "superzoo": "https://www.superzoo.cl/perro/alimentos/alimentos-seco",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=alimento+perros",
+        "paris": "https://www.paris.cl/search?q=alimento+perros",
+        "mercadolibre": "https://listado.mercadolibre.cl/animales-mascotas/alimentos-perros/"
       }
     }
   ]
