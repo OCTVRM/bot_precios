@@ -19,7 +19,8 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-# Copiar el código fuente de la aplicación
+# Copiar el código fuente de la aplicación y catálogos de configuración
+COPY stores.json categories.json monitored_urls.json ./
 COPY src/ ./src/
 
 # Usuario sin privilegios por seguridad
