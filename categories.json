@@ -262,6 +262,10 @@
       "active": true,
       "stores": {
         "superzoo": "https://www.superzoo.cl/perro/alimentos/alimentos-seco",
+        "clubdeperrosygatos": "https://www.clubdeperrosygatos.cl/categorias/alimento/alimento-para-perros/",
+        "petdelivery": "https://petdelivery.shop/tienda/",
+        "tusmascotas": "https://www.tusmascotas.cl/categoria-producto/perros/alimentos-perros/",
+        "mercadocarozzi": "https://mercadocarozzi.cl/mascotas.html",
         "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=alimento+perros",
         "paris": "https://www.paris.cl/search?q=alimento+perros",
         "mercadolibre": "https://listado.mercadolibre.cl/animales-mascotas/alimentos-perros/"

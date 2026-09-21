@@ -659,6 +659,86 @@
       },
       "affiliate_param": "tag",
       "affiliate_tag": ""
+    },
+    {
+      "id": "clubdeperrosygatos",
+      "name": "Club de Perros y Gatos",
+      "domains": ["clubdeperrosygatos.cl", "www.clubdeperrosygatos.cl"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1.product_title", "h1"],
+        "price": [".price .woocommerce-Price-amount", ".price ins .amount", ".price"],
+        "image": ["meta[property='og:image']"]
+      },
+      "category_selectors": {
+        "card": ["article.cpg-product-card", ".cpg-product-card", "li.product", ".product"],
+        "link": ["a[href*='/producto/']", "a"],
+        "title": [".cpg-product-card__title", "h2", "h3", ".woocommerce-loop-product__title"],
+        "price": [".price .woocommerce-Price-amount", ".woocommerce-Price-amount", ".price"],
+        "image": ["img"]
+      },
+      "affiliate_param": "ref",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "petdelivery",
+      "name": "Pet Delivery",
+      "domains": ["petdelivery.shop", "www.petdelivery.shop"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1.product_title", "h1"],
+        "price": [".price .woocommerce-Price-amount", ".price ins .amount", ".price"],
+        "image": ["meta[property='og:image']"]
+      },
+      "category_selectors": {
+        "card": ["li.product", ".product", ".product-item"],
+        "link": ["a[href*='.shop/']", "a"],
+        "title": [".woocommerce-loop-product__title", "h2", "h3"],
+        "price": [".price .woocommerce-Price-amount", ".woocommerce-Price-amount", ".price"],
+        "image": ["img"]
+      },
+      "affiliate_param": "ref",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "tusmascotas",
+      "name": "Tus Mascotas",
+      "domains": ["tusmascotas.cl", "www.tusmascotas.cl"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1.product_title", "h1"],
+        "price": [".price .woocommerce-Price-amount", ".price ins .amount", ".price"],
+        "image": ["meta[property='og:image']"]
+      },
+      "category_selectors": {
+        "card": ["li.product", ".product", "div.product-small", ".product-grid-item"],
+        "link": ["a[href*='/producto/']", "a[href*='/categoria-producto/']", "a"],
+        "title": [".woocommerce-loop-product__title", "h2", "h3", ".product-title"],
+        "price": [".price .woocommerce-Price-amount", ".woocommerce-Price-amount", ".price"],
+        "image": ["img"]
+      },
+      "affiliate_param": "ref",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "mercadocarozzi",
+      "name": "Mercado Carozzi (Master Dog / Master Cat)",
+      "domains": ["mercadocarozzi.cl", "www.mercadocarozzi.cl"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1.page-title", "h1"],
+        "price": [".special-price .price", ".price-box .price", ".price"],
+        "image": ["meta[property='og:image']"]
+      },
+      "category_selectors": {
+        "card": [".item.product-item", ".product-item", "li.item"],
+        "link": ["a.product-item-link", "a[href*='.html']", "a"],
+        "title": [".product-item-name", "strong.product-item-name a", "h2", "h3"],
+        "price": [".special-price .price", ".price-box .price", ".price"],
+        "image": ["img.product-image-photo", "img"]
+      },
+      "affiliate_param": "utm_source",
+      "affiliate_tag": ""
     }
   ]
 }
