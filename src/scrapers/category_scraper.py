@@ -378,6 +378,8 @@ class CategoryCrawlerService:
         total_added = 0
         total_updated = 0
 
+        seen_batch_urls = set()
+
         for store_id in cat_item.stores.keys():
             store_rule = find_store_rule_by_id(store_id)
             store_name = store_rule.name if store_rule else store_id.capitalize()
@@ -387,6 +389,10 @@ class CategoryCrawlerService:
             )
 
             for prod in products:
+                if not prod.url or prod.url in seen_batch_urls:
+                    continue
+                seen_batch_urls.add(prod.url)
+
                 stmt = select(Product).where(Product.url_original == prod.url)
                 existing = (await session.execute(stmt)).scalar_one_or_none()
 
@@ -439,10 +445,17 @@ class CategoryCrawlerService:
         for cat in catalog.categories:
             if not cat.active:
                 continue
-            added, updated = await self.sync_category(
-                session=session, category_id=cat.id, max_products=max_products
-            )
-            results[cat.id] = (added, updated)
+            try:
+                added, updated = await self.sync_category(
+                    session=session, category_id=cat.id, max_products=max_products
+                )
+                results[cat.id] = (added, updated)
+            except Exception as ex:
+                logger.error(
+                    f"Error sincronizando categoría '{cat.name}' ({cat.id}): {ex}"
+                )
+                await session.rollback()
+                results[cat.id] = (0, 0)
 
         logger.info("=== Sincronización de todas las categorías completada exitosamente ===")
         return results
