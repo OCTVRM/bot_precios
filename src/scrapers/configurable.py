@@ -52,12 +52,32 @@ class ConfigurableScraper(BaseScraper):
 
         # Estrategia 1: Schema.org JSON-LD si la tienda lo tiene habilitado
         if self.rule.use_json_ld:
+            target_path = urlparse(url).path.rstrip("/")
+            found_product = False
             for script in soup.find_all("script", type="application/ld+json"):
+                if found_product:
+                    break
                 try:
                     data = json.loads(script.string or "")
                     items = data if isinstance(data, list) else [data]
                     for item in items:
                         if item.get("@type") == "Product":
+                            # Validar que no sea un producto relacionado/carrusel de otra URL
+                            item_url = None
+                            main_entity = item.get("mainEntityOfPage")
+                            if isinstance(main_entity, dict):
+                                item_url = main_entity.get("@id") or main_entity.get("url")
+                            elif isinstance(main_entity, str):
+                                item_url = main_entity
+                            elif "url" in item:
+                                item_url = item.get("url")
+
+                            if item_url:
+                                item_path = urlparse(item_url).path.rstrip("/")
+                                if target_path and item_path and target_path != item_path:
+                                    # Pertenece a un producto relacionado, ignorar
+                                    continue
+
                             title = item.get("name", title)
                             offers = item.get("offers", {})
                             if isinstance(offers, dict) and "price" in offers:
@@ -69,6 +89,7 @@ class ConfigurableScraper(BaseScraper):
                             if "image" in item:
                                 img = item["image"]
                                 image_url = img if isinstance(img, str) else (img[0] if isinstance(img, list) else None)
+                            found_product = True
                             break
                 except Exception as ex:
                     logger.debug(f"[{self.rule.name}] Error leyendo JSON-LD: {ex}")

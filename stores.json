@@ -443,7 +443,7 @@
       "id": "pokestop",
       "name": "PokeStop",
       "domains": ["pokestop.cl", "www.pokestop.cl"],
-      "use_json_ld": true,
+      "use_json_ld": false,
       "selectors": {
         "title": ["h1.product-title", "h1.js-product-name", "h1"],
         "price": [".js-price-display", ".item-price", ".price-item", ".price", ".money"],
