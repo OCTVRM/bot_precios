@@ -139,8 +139,8 @@ class PriceTrackingService:
         return should_alert, alert_payload
 
     async def get_active_products(self, session: AsyncSession):
-        """Retorna la lista de productos activos para monitoreo."""
-        stmt = select(Product).where(Product.activo.is_(True))
+        """Retorna la lista de productos activos para monitoreo (excluyendo tiendas desactivadas)."""
+        stmt = select(Product).where(Product.activo.is_(True), Product.tienda != "Amazon")
         result = await session.execute(stmt)
         return result.scalars().all()
 

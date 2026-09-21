@@ -27,6 +27,7 @@ class CategorySelectors(BaseModel):
 class StoreRule(BaseModel):
     id: str
     name: str
+    active: bool = True
     domains: List[str]
     use_json_ld: bool = True
     selectors: StoreSelectors = Field(default_factory=StoreSelectors)

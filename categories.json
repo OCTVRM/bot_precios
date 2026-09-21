@@ -13,8 +13,7 @@
         "hites": "https://www.hites.com/tecnologia/celulares/smartphones/",
         "entel": "https://www.entel.cl/equipos/",
         "abc": "https://www.abc.cl/telefonia/celulares/smartphones.html",
-        "mercadolibre": "https://listado.mercadolibre.cl/celulares-telefonos/celulares-smartphones/",
-        "amazon": "https://www.amazon.com/gp/bestsellers/wireless/2407749011"
+        "mercadolibre": "https://listado.mercadolibre.cl/celulares-telefonos/celulares-smartphones/"
       }
     },
     {
@@ -29,8 +28,7 @@
         "ripley": "https://simple.ripley.cl/electro/television",
         "hites": "https://www.hites.com/electro-y-tecnologia/televisores/",
         "abc": "https://www.abc.cl/tv-audio/televisores.html",
-        "mercadolibre": "https://listado.mercadolibre.cl/electronica-audio-video/televisores/",
-        "amazon": "https://www.amazon.com/gp/bestsellers/electronics/1266092011"
+        "mercadolibre": "https://listado.mercadolibre.cl/electronica-audio-video/televisores/"
       }
     },
     {
@@ -43,8 +41,7 @@
         "falabella": "https://www.falabella.com/falabella-cl/category/cat40051/Computadores-All-in-One-y-Desktop",
         "paris": "https://www.paris.cl/tecnologia/computadores/all-in-one-desktop/",
         "ripley": "https://simple.ripley.cl/tecno/computacion/computadores-de-escritorio",
-        "mercadolibre": "https://listado.mercadolibre.cl/computacion/pc-escritorio/",
-        "amazon": "https://www.amazon.com/gp/bestsellers/pc/565098"
+        "mercadolibre": "https://listado.mercadolibre.cl/computacion/pc-escritorio/"
       }
     },
     {
@@ -59,8 +56,7 @@
         "ripley": "https://simple.ripley.cl/tecno/computacion/notebooks",
         "hites": "https://www.hites.com/tecnologia/computacion/notebooks/",
         "abc": "https://www.abc.cl/computacion/notebooks.html",
-        "mercadolibre": "https://listado.mercadolibre.cl/computacion/notebooks/",
-        "amazon": "https://www.amazon.com/gp/bestsellers/pc/565108"
+        "mercadolibre": "https://listado.mercadolibre.cl/computacion/notebooks/"
       }
     },
     {
@@ -77,8 +73,7 @@
         "sodimac": "https://www.sodimac.cl/sodimac-cl/category/cat10002/Electrohogar",
         "easy": "https://www.easy.cl/electrohogar",
         "abc": "https://www.abc.cl/electrohogar/electrodomesticos.html",
-        "mercadolibre": "https://listado.mercadolibre.cl/electrodomesticos/pequenos-electrodomesticos/",
-        "amazon": "https://www.amazon.com/gp/bestsellers/kitchen/289916"
+        "mercadolibre": "https://listado.mercadolibre.cl/electrodomesticos/pequenos-electrodomesticos/"
       }
     },
     {
@@ -98,8 +93,7 @@
         "thirdimpact": "https://www.thirdimpact.cl/collection/pokemon-trading-card-game",
         "huntercardtcg": "https://www.huntercardtcg.com/categoria-producto/pokemon-tcg/",
         "pokestop": "https://pokestop.cl/productos",
-        "mercadolibre": "https://listado.mercadolibre.cl/juegos-juguetes/juegos-mesa-cartas/pokemon-tcg",
-        "amazon": "https://www.amazon.com/gp/bestsellers/toys-and-games/2522044011"
+        "mercadolibre": "https://listado.mercadolibre.cl/juegos-juguetes/juegos-mesa-cartas/pokemon-tcg"
       }
     },
     {
@@ -113,8 +107,7 @@
         "paris": "https://www.paris.cl/tecnologia/consolas-videojuegos/",
         "ripley": "https://simple.ripley.cl/tecno/videojuegos",
         "hites": "https://www.hites.com/tecnologia/videojuegos/",
-        "mercadolibre": "https://listado.mercadolibre.cl/consolas-videojuegos/",
-        "amazon": "https://www.amazon.com/gp/bestsellers/videogames/"
+        "mercadolibre": "https://listado.mercadolibre.cl/consolas-videojuegos/"
       }
     },
     {
@@ -128,8 +121,7 @@
         "paris": "https://www.paris.cl/tecnologia/audio/",
         "ripley": "https://simple.ripley.cl/electro/audio",
         "hites": "https://www.hites.com/tecnologia/audio/",
-        "mercadolibre": "https://listado.mercadolibre.cl/electronica-audio-video/audio/",
-        "amazon": "https://www.amazon.com/gp/bestsellers/electronics/172541"
+        "mercadolibre": "https://listado.mercadolibre.cl/electronica-audio-video/audio/"
       }
     },
     {
@@ -143,8 +135,7 @@
         "paris": "https://www.paris.cl/tecnologia/smartwatches-wearables/",
         "ripley": "https://simple.ripley.cl/tecno/smartwatches-wearables",
         "entel": "https://www.entel.cl/equipos/smartwatches/",
-        "mercadolibre": "https://listado.mercadolibre.cl/smartwatches/",
-        "amazon": "https://www.amazon.com/gp/bestsellers/wireless/7939901011"
+        "mercadolibre": "https://listado.mercadolibre.cl/smartwatches/"
       }
     },
     {
@@ -157,8 +148,7 @@
         "falabella": "https://www.falabella.com/falabella-cl/category/cat40053/Monitores",
         "paris": "https://www.paris.cl/tecnologia/computadores/monitores/",
         "ripley": "https://simple.ripley.cl/tecno/computacion/monitores",
-        "mercadolibre": "https://listado.mercadolibre.cl/computacion/monitores-accesorios/monitores/",
-        "amazon": "https://www.amazon.com/gp/bestsellers/pc/1292115011"
+        "mercadolibre": "https://listado.mercadolibre.cl/computacion/monitores-accesorios/monitores/"
       }
     },
     {
@@ -186,8 +176,7 @@
       "stores": {
         "sodimac": "https://www.sodimac.cl/sodimac-cl/category/cat10003/Herramientas-y-Maquinarias",
         "easy": "https://www.easy.cl/herramientas-y-maquinarias",
-        "mercadolibre": "https://listado.mercadolibre.cl/herramientas/",
-        "amazon": "https://www.amazon.com/gp/bestsellers/hi/551238"
+        "mercadolibre": "https://listado.mercadolibre.cl/herramientas/"
       }
     },
     {
@@ -201,8 +190,7 @@
         "paris": "https://www.paris.cl/jugueteria/",
         "ripley": "https://simple.ripley.cl/infantil/jugueteria",
         "theway": "https://www.theway.cl/juegos-de-mesa",
-        "mercadolibre": "https://listado.mercadolibre.cl/juegos-juguetes/",
-        "amazon": "https://www.amazon.com/gp/bestsellers/toys-and-games/"
+        "mercadolibre": "https://listado.mercadolibre.cl/juegos-juguetes/"
       }
     },
     {
@@ -215,8 +203,7 @@
         "falabella": "https://www.falabella.com/falabella-cl/category/cat3053/Perfumes",
         "paris": "https://www.paris.cl/belleza/perfumes/",
         "ripley": "https://simple.ripley.cl/belleza/perfumeria",
-        "mercadolibre": "https://listado.mercadolibre.cl/belleza-cuidado-personal/perfumes/",
-        "amazon": "https://www.amazon.com/gp/bestsellers/beauty/11056591"
+        "mercadolibre": "https://listado.mercadolibre.cl/belleza-cuidado-personal/perfumes/"
       }
     }
   ]

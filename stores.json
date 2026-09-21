@@ -203,6 +203,7 @@
     {
       "id": "amazon",
       "name": "Amazon",
+      "active": false,
       "domains": ["amazon.com", "amazon.es", "amazon.com.mx", "www.amazon.com", "www.amazon.es"],
       "use_json_ld": false,
       "selectors": {
