@@ -22,10 +22,10 @@ async def handle_health(request: web.Request) -> web.Response:
 
 
 def create_health_app() -> web.Application:
-    """Crea la aplicación web aiohttp para healthcheck."""
+    """Crea la aplicación web aiohttp para healthcheck (soporta GET y HEAD automáticamente)."""
     app = web.Application()
-    app.router.add_get("/", handle_health)
-    app.router.add_get("/health", handle_health)
+    for path in ("/", "/health", "/healthz", "/ping"):
+        app.router.add_get(path, handle_health)
     return app
 
 

@@ -1,3 +1,4 @@
+import asyncio
 import datetime
 import json
 import logging
@@ -464,11 +465,20 @@ class CategoryCrawlerService:
             page_url = url if current_page == 1 else self._get_page_url(url, current_page)
             try:
                 html = await self.scraper.fetch_html(page_url)
-                page_items = self.scraper.parse_category_page(
-                    html=html, page_url=page_url, store_id=store_id, max_items=effective_limit
+                # Delegar el parseo pesado de BeautifulSoup a un hilo secundario
+                # para no bloquear el bucle de eventos ni retrasar healthchecks de Render
+                page_items = await asyncio.to_thread(
+                    self.scraper.parse_category_page,
+                    html=html,
+                    page_url=page_url,
+                    store_id=store_id,
+                    max_items=effective_limit,
                 )
                 if not page_items:
                     break
+
+                # Pausa cooperativa para permitir atención inmediata de healthchecks
+                await asyncio.sleep(0.3)
 
                 new_count = 0
                 for p in page_items:
@@ -530,6 +540,8 @@ class CategoryCrawlerService:
             products = await self.crawl_category_store(
                 store_id=store_id, category_item=cat_item, max_products=max_products
             )
+            # Ceder el event loop entre tiendas para evitar saturación de CPU
+            await asyncio.sleep(0.5)
 
             for prod in products:
                 if not prod.url or prod.url in seen_batch_urls:
@@ -663,6 +675,8 @@ class CategoryCrawlerService:
                     session=session, category_id=cat.id, max_products=max_products
                 )
                 results[cat.id] = (added, updated)
+                # Pausa cooperativa entre categorías para que el servidor responda healthchecks
+                await asyncio.sleep(1.0)
             except Exception as ex:
                 logger.error(
                     f"Error sincronizando categoría '{cat.name}' ({cat.id}): {ex}"

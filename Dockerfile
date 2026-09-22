@@ -27,5 +27,8 @@ COPY src/ ./src/
 RUN useradd -m appuser && chown -R appuser /app
 USER appuser
 
+# Exponer puerto HTTP para el healthcheck de Render / Cloud
+EXPOSE 10000
+
 # Comando de inicio del daemon
 CMD ["python", "-m", "src.main"]

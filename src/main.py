@@ -20,38 +20,8 @@ async def main() -> None:
     logger.info(f"Intervalo de Top 10 por categoría: cada {settings.CATEGORY_SYNC_INTERVAL_HOURS} horas")
     logger.info(f"Canal de Telegram destino: {settings.TELEGRAM_CHAT_ID or 'DESACTIVADO (Sin Token/ID)'}")
 
-    # 1. Inicializar esquema de Base de Datos
-    await init_db()
-
-    # 2. Sincronizar productos declarados en monitored_urls.json
-    from src.database import get_db_session
-    from src.services.price_service import PriceTrackingService
-    async with get_db_session() as session:
-        service = PriceTrackingService()
-        await service.sync_monitored_urls_file(session)
-
-    # 3. Instanciar scheduler
-    scheduler = PriceTrackerScheduler(price_service=service)
-    scheduler.start()
-
-    # 4. Lanzar verificación inicial de precios y categorías en segundo plano
-    asyncio.create_task(scheduler.run_check_cycle())
-    asyncio.create_task(scheduler.run_category_sync_cycle())
-
-    stop_event = asyncio.Event()
-
-    def handle_signal(sig, frame):
-        logger.info(f"Señal de interrupción recibida ({sig}). Iniciando apagado ordenado...")
-        stop_event.set()
-
-    # Manejo de señales para Windows y Unix
-    for sig in (signal.SIGINT, signal.SIGTERM):
-        try:
-            signal.signal(sig, handle_signal)
-        except Exception:
-            pass
-
-    # 4. Iniciar servidor HTTP de healthcheck (para Render, Koyeb, etc.)
+    # 1. Iniciar servidor HTTP de healthcheck DE INMEDIATO (Vital para Render, Koyeb, etc.)
+    # Render envía el healthcheck durante los primeros 5 segundos del arranque del contenedor.
     health_runner = None
     if settings.ENABLE_HEALTHCHECK:
         try:
@@ -59,6 +29,20 @@ async def main() -> None:
             health_runner = await start_health_server(settings.PORT)
         except Exception as ex:
             logger.warning(f"No se pudo iniciar el servidor de healthcheck: {ex}")
+
+    # 2. Inicializar esquema de Base de Datos
+    await init_db()
+
+    # 3. Sincronizar productos declarados en monitored_urls.json
+    from src.database import get_db_session
+    from src.services.price_service import PriceTrackingService
+    async with get_db_session() as session:
+        service = PriceTrackingService()
+        await service.sync_monitored_urls_file(session)
+
+    # 4. Instanciar scheduler
+    scheduler = PriceTrackerScheduler(price_service=service)
+    scheduler.start()
 
     # 5. Iniciar Telegram Polling si el token fue provisto
     polling_task = None
@@ -77,6 +61,30 @@ async def main() -> None:
         logger.warning(
             "TELEGRAM_BOT_TOKEN no configurado en .env. El bot operará sin notificaciones directas a Telegram."
         )
+
+    # 6. Lanzar verificación inicial diferida (evita saturar CPU en frío y asegura healthcheck limpio en Render)
+    async def delayed_initial_cycles():
+        await asyncio.sleep(5)
+        logger.info("Iniciando ciclo inicial de verificación de precios...")
+        asyncio.create_task(scheduler.run_check_cycle())
+        await asyncio.sleep(15)
+        logger.info("Iniciando ciclo inicial de sincronización de categorías...")
+        asyncio.create_task(scheduler.run_category_sync_cycle())
+
+    asyncio.create_task(delayed_initial_cycles())
+
+    stop_event = asyncio.Event()
+
+    def handle_signal(sig, frame):
+        logger.info(f"Señal de interrupción recibida ({sig}). Iniciando apagado ordenado...")
+        stop_event.set()
+
+    # Manejo de señales para Windows y Unix
+    for sig in (signal.SIGINT, signal.SIGTERM):
+        try:
+            signal.signal(sig, handle_signal)
+        except Exception:
+            pass
 
     try:
         while not stop_event.is_set():

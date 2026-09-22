@@ -26,5 +26,19 @@ async def test_health_endpoints():
         data_health = await resp_health.json()
         assert data_health["status"] == "healthy"
         assert "timestamp" in data_health
+
+        # Test método HEAD en / y /health
+        resp_head_root = await client.head("/")
+        assert resp_head_root.status == 200
+
+        resp_head_health = await client.head("/health")
+        assert resp_head_health.status == 200
+
+        # Test rutas adicionales /healthz y /ping
+        resp_healthz = await client.get("/healthz")
+        assert resp_healthz.status == 200
+
+        resp_ping = await client.get("/ping")
+        assert resp_ping.status == 200
     finally:
         await client.close()
