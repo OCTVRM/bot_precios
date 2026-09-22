@@ -47,6 +47,8 @@ class ConfigurableScraper(BaseScraper):
 
         title = None
         price = None
+        normal_price = None
+        discount_percent = None
         in_stock = True
         image_url = None
 
@@ -62,7 +64,7 @@ class ConfigurableScraper(BaseScraper):
                     items = data if isinstance(data, list) else [data]
                     for item in items:
                         if item.get("@type") == "Product":
-                            # Validar que no sea un producto relacionado/carrusel de otra URL
+                            # Validar pertenencia a la URL actual
                             item_url = None
                             main_entity = item.get("mainEntityOfPage")
                             if isinstance(main_entity, dict):
@@ -72,10 +74,20 @@ class ConfigurableScraper(BaseScraper):
                             elif "url" in item:
                                 item_url = item.get("url")
 
-                            if item_url:
+                            if item_url and target_path:
                                 item_path = urlparse(item_url).path.rstrip("/")
-                                if target_path and item_path and target_path != item_path:
-                                    # Pertenece a un producto relacionado, ignorar
+                                # En Sodimac/Falabella, el @id a menudo incluye el SKU al final
+                                # o difiere levemente en el slug. Verificamos coincidencia flexible
+                                match_path = (target_path == item_path)
+                                if not match_path and item_path:
+                                    if target_path.startswith(item_path) or item_path.startswith(target_path):
+                                        match_path = True
+                                    else:
+                                        t_ids = [p for p in target_path.split("/") if p.isdigit() and len(p) >= 5]
+                                        i_ids = [p for p in item_path.split("/") if p.isdigit() and len(p) >= 5]
+                                        if t_ids and i_ids and set(t_ids).intersection(set(i_ids)):
+                                            match_path = True
+                                if not match_path:
                                     continue
 
                             title = item.get("name", title)
@@ -84,8 +96,23 @@ class ConfigurableScraper(BaseScraper):
                                 price = float(offers["price"])
                                 if offers.get("availability") == "https://schema.org/OutOfStock":
                                     in_stock = False
-                            elif isinstance(offers, list) and len(offers) > 0 and "price" in offers[0]:
-                                price = float(offers[0]["price"])
+                            elif isinstance(offers, list) and len(offers) > 0:
+                                valid_prices = []
+                                for off in offers:
+                                    if isinstance(off, dict) and "price" in off:
+                                        try:
+                                            valid_prices.append(float(off["price"]))
+                                        except Exception:
+                                            pass
+                                        if off.get("availability") == "https://schema.org/OutOfStock":
+                                            in_stock = False
+                                if valid_prices:
+                                    price = min(valid_prices)
+                                    if len(valid_prices) > 1 and max(valid_prices) > price:
+                                        normal_price = max(valid_prices)
+                            elif isinstance(offers, list) and len(offers) == 0:
+                                in_stock = False
+
                             if "image" in item:
                                 img = item["image"]
                                 image_url = img if isinstance(img, str) else (img[0] if isinstance(img, list) else None)
@@ -95,32 +122,72 @@ class ConfigurableScraper(BaseScraper):
                     logger.debug(f"[{self.rule.name}] Error leyendo JSON-LD: {ex}")
 
         # Estrategia 2: Extracción en páginas Next.js (__NEXT_DATA__)
-        if price is None or not title:
-            next_data_script = soup.find("script", id="__NEXT_DATA__", type="application/json")
-            if next_data_script and next_data_script.string:
-                try:
-                    nd = json.loads(next_data_script.string)
-                    page_props = nd.get("props", {}).get("pageProps", {})
-                    # Buscar recursivamente o en propiedades comunes de producto
-                    prod_data = (
-                        page_props.get("product")
-                        or page_props.get("productData")
-                        or page_props.get("initialData", {}).get("product")
-                    )
-                    if isinstance(prod_data, dict):
-                        if not title:
-                            title = prod_data.get("name") or prod_data.get("displayName") or prod_data.get("title")
-                        if price is None:
-                            # Precios pueden venir en prices, price, o priceSpecification
-                            prices_list = prod_data.get("prices") or []
-                            if isinstance(prices_list, list) and len(prices_list) > 0:
-                                price_val = prices_list[0].get("price") or prices_list[0].get("originalPrice")
-                                if price_val:
-                                    price = self.clean_price(str(price_val))
-                            elif "price" in prod_data:
-                                price = self.clean_price(str(prod_data["price"]))
-                except Exception as ex:
-                    logger.debug(f"[{self.rule.name}] Error leyendo __NEXT_DATA__: {ex}")
+        next_data_script = soup.find("script", id="__NEXT_DATA__", type="application/json")
+        if next_data_script and next_data_script.string:
+            try:
+                nd = json.loads(next_data_script.string)
+                page_props = nd.get("props", {}).get("pageProps", {})
+                prod_data = (
+                    page_props.get("product")
+                    or page_props.get("productData")
+                    or page_props.get("initialData", {}).get("product")
+                )
+                if isinstance(prod_data, dict):
+                    if not title:
+                        title = prod_data.get("name") or prod_data.get("displayName") or prod_data.get("title")
+
+                    if prod_data.get("isOutOfStock") is True or prod_data.get("isPurchaseable") is False:
+                        in_stock = False
+
+                    # Estructura Falabella / Sodimac con variants
+                    variants = prod_data.get("variants") or []
+                    if isinstance(variants, list) and len(variants) > 0:
+                        cur_id = str(prod_data.get("currentVariant") or prod_data.get("primaryVariantId") or "")
+                        target_var = next((v for v in variants if isinstance(v, dict) and str(v.get("id")) == cur_id), None)
+                        if not target_var and isinstance(variants[0], dict):
+                            target_var = variants[0]
+
+                        if target_var:
+                            if target_var.get("availability") == "out_of_stock":
+                                in_stock = False
+                            var_prices = target_var.get("prices") or []
+                            for p_entry in var_prices:
+                                if not isinstance(p_entry, dict):
+                                    continue
+                                p_type = (p_entry.get("type") or "").lower()
+                                raw_val = p_entry.get("price")
+                                val_str = raw_val[0] if isinstance(raw_val, list) and raw_val else str(raw_val or "")
+                                if not val_str:
+                                    continue
+                                parsed_p = self.clean_price(val_str)
+                                if "normal" in p_type or "list" in p_type:
+                                    if normal_price is None or parsed_p > normal_price:
+                                        normal_price = parsed_p
+                                elif "event" in p_type or "offer" in p_type or "sale" in p_type or "cmr" in p_type:
+                                    if price is None or parsed_p < price:
+                                        price = parsed_p
+                                elif price is None:
+                                    price = parsed_p
+
+                            badge = target_var.get("discountBadge") or prod_data.get("discountBadge")
+                            if isinstance(badge, dict) and badge.get("label"):
+                                lbl = badge["label"].replace("%", "").replace("-", "").strip()
+                                try:
+                                    discount_percent = float(lbl)
+                                except Exception:
+                                    pass
+
+                    # Fallback de propiedades directas de precio
+                    if price is None:
+                        prices_list = prod_data.get("prices") or []
+                        if isinstance(prices_list, list) and len(prices_list) > 0:
+                            price_val = prices_list[0].get("price") or prices_list[0].get("originalPrice")
+                            if price_val:
+                                price = self.clean_price(str(price_val))
+                        elif "price" in prod_data:
+                            price = self.clean_price(str(prod_data["price"]))
+            except Exception as ex:
+                logger.debug(f"[{self.rule.name}] Error leyendo __NEXT_DATA__: {ex}")
 
         # Estrategia 3: Selectores CSS configurados en stores.json
         if not title:
@@ -165,6 +232,14 @@ class ConfigurableScraper(BaseScraper):
             if og_img and og_img.get("content"):
                 image_url = og_img["content"]
 
+        # Calcular porcentaje de descuento si tenemos precio normal y de oferta
+        if normal_price and price and normal_price > price and discount_percent is None:
+            discount_percent = round(((normal_price - price) / normal_price) * 100, 1)
+
+        # Si no hay precio pero el producto está agotado
+        if price is None and not in_stock:
+            raise ValueError(f"[{self.rule.name}] El producto se encuentra agotado (sin stock) en la tienda: {url}")
+
         if price is None:
             raise ValueError(f"[{self.rule.name}] No fue posible extraer el precio en la URL: {url}")
 
@@ -173,6 +248,8 @@ class ConfigurableScraper(BaseScraper):
         return ScrapedItem(
             title=title.strip() if title else f"Producto {self.rule.name}",
             price=price,
+            normal_price=normal_price,
+            discount_percent=discount_percent,
             in_stock=in_stock,
             image_url=image_url,
             affiliate_url=affiliate_url,

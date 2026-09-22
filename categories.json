@@ -352,6 +352,80 @@
         "paris": "https://www.paris.cl/electro/climatizacion/",
         "ripley": "https://simple.ripley.cl/electro/climatizacion"
       }
+    },
+    {
+      "id": "muebles_living_sofas",
+      "name": "Living, Sofás, Sillones y Futones",
+      "default_threshold_percent": 20.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "sodimac": "https://www.sodimac.cl/sodimac-cl/lista/cat16610015/Living---Sala-de-Estar",
+        "falabella": "https://www.falabella.com/falabella-cl/category/cat2064/Muebles-de-Living",
+        "paris": "https://www.paris.cl/muebles/living-sala-estar/",
+        "ripley": "https://simple.ripley.cl/muebles/living-y-sala-de-estar/sofas-y-sillones",
+        "easy": "https://www.easy.cl/muebles",
+        "mercadolibre": "https://listado.mercadolibre.cl/hogar-muebles/muebles-hogar/living/sillones-sofas/"
+      }
+    },
+    {
+      "id": "dormitorio_colchones",
+      "name": "Dormitorio, Camas y Colchones",
+      "default_threshold_percent": 20.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "sodimac": "https://www.sodimac.cl/sodimac-cl/search?Ntt=colchon",
+        "falabella": "https://www.falabella.com/falabella-cl/category/cat2015/Colchones",
+        "paris": "https://www.paris.cl/dormitorio/colchones/",
+        "ripley": "https://simple.ripley.cl/dormitorio/colchones",
+        "easy": "https://www.easy.cl/dormitorio",
+        "mercadolibre": "https://listado.mercadolibre.cl/hogar-muebles/camas-colchones-accesorios/colchones/"
+      }
+    },
+    {
+      "id": "muebles_oficina_sillas",
+      "name": "Muebles de Oficina, Escritorios y Sillas Gamer",
+      "default_threshold_percent": 20.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "sodimac": "https://www.sodimac.cl/sodimac-cl/search?Ntt=silla+gamer",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=sillas+gamer",
+        "paris": "https://www.paris.cl/muebles/oficina/sillas-escritorio/",
+        "ripley": "https://simple.ripley.cl/tecno/computacion/sillas-gamer",
+        "pcfactory": "https://www.pcfactory.cl/sillas-gamer",
+        "mercadolibre": "https://listado.mercadolibre.cl/hogar-muebles/muebles-hogar/oficina/sillas/"
+      }
+    },
+    {
+      "id": "terraza_jardin",
+      "name": "Terraza, Muebles de Jardín y Parrillas",
+      "default_threshold_percent": 20.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "sodimac": "https://www.sodimac.cl/sodimac-cl/search?Ntt=juego+terraza",
+        "falabella": "https://www.falabella.com/falabella-cl/category/cat2016/Muebles-de-Terraza",
+        "easy": "https://www.easy.cl/muebles",
+        "paris": "https://www.paris.cl/muebles/terraza/",
+        "ripley": "https://simple.ripley.cl/muebles/terraza",
+        "mercadolibre": "https://listado.mercadolibre.cl/hogar-muebles/jardin-aire-libre/muebles-jardin/"
+      }
+    },
+    {
+      "id": "comedor_cocina",
+      "name": "Comedor, Mesas y Muebles de Cocina",
+      "default_threshold_percent": 20.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "sodimac": "https://www.sodimac.cl/sodimac-cl/search?Ntt=juego+de+comedor",
+        "falabella": "https://www.falabella.com/falabella-cl/category/cat2063/Juegos-de-Comedor",
+        "paris": "https://www.paris.cl/muebles/comedor/",
+        "ripley": "https://simple.ripley.cl/muebles/comedor",
+        "mercadolibre": "https://listado.mercadolibre.cl/hogar-muebles/muebles-hogar/comedor/"
+      }
     }
   ]
 }

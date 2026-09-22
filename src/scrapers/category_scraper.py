@@ -1,10 +1,11 @@
+import datetime
 import json
 import logging
 import random
 import re
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple
-from urllib.parse import urljoin, urlparse
+from urllib.parse import parse_qs, urlencode, urljoin, urlparse, urlunparse
 
 from bs4 import BeautifulSoup
 import httpx
@@ -26,6 +27,8 @@ class ScrapedCategoryProduct:
     url: str
     title: str
     price: Optional[float] = None
+    normal_price: Optional[float] = None
+    discount_percent: Optional[float] = None
     image_url: Optional[str] = None
     position: int = 1
 
@@ -59,7 +62,7 @@ class CategoryScraper:
             return resp.text
 
     def parse_category_page(
-        self, html: str, page_url: str, store_id: Optional[str] = None, max_items: int = 10
+        self, html: str, page_url: str, store_id: Optional[str] = None, max_items: int = 50
     ) -> List[ScrapedCategoryProduct]:
         """
         Extrae hasta max_items productos desde el HTML usando estrategia multinivel:
@@ -195,14 +198,59 @@ class CategoryScraper:
                     )
 
                     price_val = None
+                    normal_val = None
+                    discount_val = None
                     prices_list = prod.get("prices") or []
-                    if isinstance(prices_list, list) and len(prices_list) > 0:
+                    for p_item in prices_list:
+                        if not isinstance(p_item, dict):
+                            continue
+                        p_type = (p_item.get("type") or "").lower()
+                        raw_p = p_item.get("price") or p_item.get("originalPrice")
+                        if isinstance(raw_p, list) and raw_p:
+                            raw_p = raw_p[0]
+                        if not raw_p:
+                            continue
+                        try:
+                            clean_p = BaseScraper.clean_price(str(raw_p))
+                            if "normal" in p_type or "list" in p_type or p_item.get("crossed") is True:
+                                if normal_val is None or clean_p > normal_val:
+                                    normal_val = clean_p
+                            elif "event" in p_type or "offer" in p_type or "sale" in p_type or "cmr" in p_type:
+                                if price_val is None or clean_p < price_val:
+                                    price_val = clean_p
+                            elif price_val is None:
+                                price_val = clean_p
+                        except Exception:
+                            pass
+
+                    # Fallback si no hubo tipos explícitos
+                    if price_val is None and prices_list:
                         raw_p = prices_list[0].get("price") or prices_list[0].get("originalPrice")
+                        if isinstance(raw_p, list) and raw_p:
+                            raw_p = raw_p[0]
                         if raw_p:
                             try:
                                 price_val = BaseScraper.clean_price(str(raw_p))
                             except Exception:
                                 pass
+
+                    # Badge de descuento
+                    badge = prod.get("discountBadge")
+                    if isinstance(badge, dict) and badge.get("label"):
+                        lbl = badge["label"].replace("%", "").replace("-", "").strip()
+                        try:
+                            discount_val = float(lbl)
+                        except Exception:
+                            pass
+
+                    if normal_val and price_val and normal_val > price_val and discount_val is None:
+                        discount_val = round(((normal_val - price_val) / normal_val) * 100, 1)
+
+                    img_url = None
+                    media_list = prod.get("media") or prod.get("mediaUrls") or []
+                    if isinstance(media_list, list) and media_list:
+                        m0 = media_list[0]
+                        img_url = m0.get("url") if isinstance(m0, dict) else str(m0)
 
                     if url_val:
                         full_url = urljoin(page_url, url_val)
@@ -211,6 +259,9 @@ class CategoryScraper:
                                 url=full_url,
                                 title=title_val.strip(),
                                 price=price_val,
+                                normal_price=normal_val,
+                                discount_percent=discount_val,
+                                image_url=img_url,
                                 position=idx,
                             )
                         )
@@ -320,6 +371,7 @@ class CategoryScraper:
             "/product/",
             "/products/",
             "/producto/",
+            "/articulo/",
             "/p/",
             "/dp/",
             "/gp/product/",
@@ -356,42 +408,101 @@ class CategoryScraper:
 class CategoryCrawlerService:
     """Orquestador para descubrir y registrar en la BD los Top 10 productos por categoría."""
 
-    def __init__(self, scraper: Optional[CategoryScraper] = None):
+    def __init__(self, scraper: Optional[CategoryScraper] = None, notifier=None):
         self.scraper = scraper or CategoryScraper()
+        if notifier is not None:
+            self.notifier = notifier
+        else:
+            try:
+                from src.services.notifier import TelegramNotifier
+                self.notifier = TelegramNotifier()
+            except Exception:
+                self.notifier = None
+
+    @staticmethod
+    def _get_page_url(base_url: str, page_num: int) -> str:
+        """Construye la URL paginada según el formato de cada tienda."""
+        if "mercadolibre.cl" in base_url:
+            offset = (page_num - 1) * 50 + 1
+            if "_Desde_" in base_url:
+                return re.sub(r'_Desde_\d+', f'_Desde_{offset}', base_url)
+            return base_url.rstrip("/") + f"_Desde_{offset}"
+        parsed = urlparse(base_url)
+        qs = parse_qs(parsed.query)
+        qs["page"] = [str(page_num)]
+        new_query = urlencode(qs, doseq=True)
+        return urlunparse((parsed.scheme, parsed.netloc, parsed.path, parsed.params, new_query, parsed.fragment))
 
     async def crawl_category_store(
-        self, store_id: str, category_item: CategoryItem, max_products: int = 10
+        self, store_id: str, category_item: CategoryItem, max_products: int = 50
     ) -> List[ScrapedCategoryProduct]:
-        """Rastrea el ranking/listado de una tienda para una categoría dada."""
+        """
+        Rastrea el listado de una tienda para una categoría dada,
+        soportando paginación para alcanzar hasta max_products (o el límite ampliado para macro-tiendas).
+        """
         url = category_item.stores.get(store_id.lower())
         if not url:
             logger.debug(f"La tienda '{store_id}' no está configurada para '{category_item.name}'.")
             return []
 
+        # Determinar límite efectivo: si es macro-tienda con catálogo amplio, ampliar si está configurado
+        major_stores = {"falabella", "sodimac", "ripley", "paris", "mercadolibre", "easy"}
+        major_limit = getattr(settings, "MAJOR_STORES_PRODUCTS_LIMIT", 80)
+        effective_limit = max(max_products, major_limit) if store_id.lower() in major_stores else max_products
+
         logger.info(
-            f"Escaneando Top {max_products} para [{store_id.upper()}] en '{category_item.name}': {url}"
+            f"Escaneando Top {effective_limit} para [{store_id.upper()}] en '{category_item.name}': {url}"
         )
-        try:
-            html = await self.scraper.fetch_html(url)
-            items = self.scraper.parse_category_page(
-                html=html, page_url=url, store_id=store_id, max_items=max_products
-            )
-            logger.info(
-                f"[{store_id.upper()}] Detectados {len(items)} productos en '{category_item.name}'."
-            )
-            return items
-        except Exception as ex:
-            logger.error(
-                f"Error al rastrear categoría '{category_item.name}' en tienda '{store_id}': {ex}"
-            )
-            return []
+        items: List[ScrapedCategoryProduct] = []
+        seen_urls = set()
+
+        # Paginación inteligente: si 1 página no es suficiente para alcanzar effective_limit, consultar pág 2 y 3
+        current_page = 1
+        max_pages = 3 if effective_limit > 30 else 1
+
+        while current_page <= max_pages and len(items) < effective_limit:
+            page_url = url if current_page == 1 else self._get_page_url(url, current_page)
+            try:
+                html = await self.scraper.fetch_html(page_url)
+                page_items = self.scraper.parse_category_page(
+                    html=html, page_url=page_url, store_id=store_id, max_items=effective_limit
+                )
+                if not page_items:
+                    break
+
+                new_count = 0
+                for p in page_items:
+                    if p.url not in seen_urls:
+                        seen_urls.add(p.url)
+                        p.position = len(items) + 1
+                        items.append(p)
+                        new_count += 1
+                        if len(items) >= effective_limit:
+                            break
+
+                # Si una página subsiguiente no aporta nuevos productos, detener paginación
+                if new_count == 0:
+                    break
+
+                current_page += 1
+            except Exception as ex:
+                logger.error(
+                    f"Error al rastrear categoría '{category_item.name}' (pág {current_page}) en tienda '{store_id}': {ex}"
+                )
+                break
+
+        logger.info(
+            f"[{store_id.upper()}] Detectados {len(items)} productos en '{category_item.name}'."
+        )
+        return items
 
     async def sync_category(
-        self, session: AsyncSession, category_id: str, max_products: int = 10
+        self, session: AsyncSession, category_id: str, max_products: int = 50
     ) -> Tuple[int, int]:
         """
         Sincroniza los productos de una categoría específica en todas sus tiendas configuradas.
         Inserta nuevos productos o actualiza los existentes con la categoría.
+        Alerta inmediatamente si un producto nuevo o actualizado presenta un descuento relevante de catálogo.
         Retorna (agregados, actualizados).
         """
         catalog = load_categories_catalog()
@@ -410,6 +521,7 @@ class CategoryCrawlerService:
         total_updated = 0
 
         seen_batch_urls = set()
+        now_utc = datetime.datetime.now(datetime.timezone.utc)
 
         for store_id in cat_item.stores.keys():
             store_rule = find_store_rule_by_id(store_id)
@@ -427,6 +539,11 @@ class CategoryCrawlerService:
                 stmt = select(Product).where(Product.url_original == prod.url)
                 existing = (await session.execute(stmt)).scalar_one_or_none()
 
+                # Calcular descuento de catálogo si está disponible
+                catalog_discount = prod.discount_percent
+                if catalog_discount is None and prod.normal_price and prod.price and prod.normal_price > prod.price:
+                    catalog_discount = round(((prod.normal_price - prod.price) / prod.normal_price) * 100, 1)
+
                 if existing:
                     # Actualizar metadatos si era necesario
                     modified = False
@@ -440,6 +557,39 @@ class CategoryCrawlerService:
                         existing.precio_actual = prod.price
                         existing.precio_minimo = prod.price
                         modified = True
+                    elif prod.price and existing.precio_actual is not None and prod.price < existing.precio_actual:
+                        # Bajada de precio en producto ya monitoreado
+                        reduction = existing.precio_actual - prod.price
+                        pct = (reduction / existing.precio_actual) * 100
+                        existing.precio_actual = prod.price
+                        if existing.precio_minimo is None or prod.price < existing.precio_minimo:
+                            existing.precio_minimo = prod.price
+                        modified = True
+
+                        if pct >= cat_item.default_threshold_percent and self.notifier:
+                            aff_url = prod.url
+                            if store_rule:
+                                from src.scrapers.configurable import ConfigurableScraper
+                                aff_url = ConfigurableScraper(store_rule).build_affiliate_url(prod.url)
+                            from src.services.notifier import AlertPayload
+                            payload = AlertPayload(
+                                title=existing.nombre or prod.title,
+                                store=store_name,
+                                old_price=existing.precio_actual + reduction,
+                                new_price=prod.price,
+                                discount_percent=pct,
+                                affiliate_url=aff_url,
+                                is_all_time_low=True,
+                                image_url=prod.image_url,
+                                category=cat_item.name,
+                                is_price_error=(pct >= settings.ERROR_DISCOUNT_THRESHOLD_PERCENT),
+                            )
+                            try:
+                                await self.notifier.send_alert(payload)
+                                existing.ultima_alerta_en = now_utc
+                            except Exception as ex:
+                                logger.warning(f"Error despachando alerta de actualización: {ex}")
+
                     if modified:
                         total_updated += 1
                 else:
@@ -457,6 +607,38 @@ class CategoryCrawlerService:
                     session.add(new_prod)
                     total_added += 1
 
+                    # ¡Alerta instantánea para ofertas de catálogo en productos nuevos!
+                    if catalog_discount and prod.price and catalog_discount >= cat_item.default_threshold_percent:
+                        ref_price = prod.normal_price or (prod.price / (1 - (catalog_discount / 100)))
+                        is_price_error = (catalog_discount >= settings.ERROR_DISCOUNT_THRESHOLD_PERCENT)
+                        new_prod.ultima_alerta_en = now_utc
+
+                        if self.notifier:
+                            aff_url = prod.url
+                            if store_rule:
+                                from src.scrapers.configurable import ConfigurableScraper
+                                aff_url = ConfigurableScraper(store_rule).build_affiliate_url(prod.url)
+                            from src.services.notifier import AlertPayload
+                            payload = AlertPayload(
+                                title=prod.title,
+                                store=store_name,
+                                old_price=ref_price,
+                                new_price=prod.price,
+                                discount_percent=catalog_discount,
+                                affiliate_url=aff_url,
+                                is_all_time_low=True,
+                                image_url=prod.image_url,
+                                category=cat_item.name,
+                                is_price_error=is_price_error,
+                            )
+                            try:
+                                await self.notifier.send_alert(payload)
+                                logger.info(
+                                    f"¡Alerta de oferta de catálogo despachada! [{store_name}] {prod.title} (-{catalog_discount:.1f}%)"
+                                )
+                            except Exception as alert_err:
+                                logger.warning(f"Error despachando alerta de catálogo para {prod.title}: {alert_err}")
+
         await session.commit()
         logger.info(
             f"Categoría '{cat_item.name}' sincronizada: {total_added} agregados, {total_updated} actualizados."
@@ -464,7 +646,7 @@ class CategoryCrawlerService:
         return total_added, total_updated
 
     async def sync_all_categories(
-        self, session: AsyncSession, max_products: int = 10
+        self, session: AsyncSession, max_products: int = 50
     ) -> Dict[str, Tuple[int, int]]:
         """
         Sincroniza los Top productos de todas las categorías activas registradas en categories.json.

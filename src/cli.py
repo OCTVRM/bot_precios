@@ -161,7 +161,7 @@ async def add_category_store(category_id: str, store_id: str, url: str) -> None:
         print(f"[!] No se encontró la categoría con ID '{category_id}'. Usa 'categories' para ver disponibles.")
 
 
-async def sync_categories_cmd(category_id: Optional[str] = None, max_items: int = 10) -> None:
+async def sync_categories_cmd(category_id: Optional[str] = None, max_items: int = 50) -> None:
     """Descubre y sincroniza en la BD los Top productos por categoría."""
     await init_db()
     from src.scrapers.category_scraper import CategoryCrawlerService
@@ -377,11 +377,11 @@ def main() -> None:
 
     # Subcomando: sync-categories
     sync_cat_parser = subparsers.add_parser(
-        "sync-categories", help="Escanear y registrar el Top 10 de productos por categoría en la BD"
+        "sync-categories", help="Escanear y registrar productos por categoría en la BD"
     )
     sync_cat_parser.add_argument("--category", required=False, default=None, help="ID de categoría específica a sincronizar")
     sync_cat_parser.add_argument(
-        "--max", type=int, required=False, default=10, help="Cantidad máxima de productos por tienda (por defecto 10)"
+        "--max", type=int, required=False, default=50, help="Cantidad máxima de productos por tienda (por defecto 50)"
     )
 
     # Subcomando: test-alert

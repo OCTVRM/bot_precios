@@ -58,7 +58,15 @@ class Settings(BaseSettings):
     )
     CATEGORY_SYNC_INTERVAL_HOURS: int = Field(
         default=12,
-        description="Frecuencia en horas para redescubrir y sincronizar el Top 10 de categorías",
+        description="Frecuencia en horas para redescubrir y sincronizar el catálogo de categorías",
+    )
+    CATEGORY_PRODUCTS_LIMIT: int = Field(
+        default=50,
+        description="Cantidad máxima de productos a extraer por tienda en cada categoría",
+    )
+    MAJOR_STORES_PRODUCTS_LIMIT: int = Field(
+        default=80,
+        description="Cantidad máxima de productos para macro-tiendas con catálogos masivos (Sodimac, Falabella, Paris, Ripley, Mercado Libre)",
     )
     ALERT_COOLDOWN_HOURS: int = Field(
         default=12,

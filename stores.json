@@ -103,23 +103,24 @@
     {
       "id": "sodimac",
       "name": "Sodimac",
-      "domains": ["sodimac.cl", "www.sodimac.cl"],
+      "domains": ["sodimac.cl", "www.sodimac.cl", "sodimac.falabella.com"],
       "use_json_ld": true,
       "selectors": {
-        "title": ["h1.product-title", "h1"],
+        "title": ["h1.product-title", "h1[data-name]", "h1"],
         "price": [
           ".prices-0 .primary",
           "span.copy10",
           ".primary-price",
+          "[data-variant='headline-small']",
           "[data-price]"
         ],
-        "image": ["meta[property='og:image']"]
+        "image": ["meta[property='og:image']", "img.image-gallery"]
       },
       "category_selectors": {
-        "card": ["div.pod-item", "div[data-pod='catalogue-pod']", ".search-results-pod"],
-        "link": ["a.pod-link", "a[href*='/product/']", "a"],
-        "title": [".pod-head", "b[id^='testId-pod-displaySubTitle']", ".pod-subTitle"],
-        "price": [".prices-0 .primary", "span.copy10", ".primary-price"],
+        "card": ["div.pod-item", "div[data-pod='catalogue-pod']", ".search-results-pod", "div.pod", ".grid-pod"],
+        "link": ["a.pod-link", "a[href*='/articulo/']", "a[href*='/product/']", "a"],
+        "title": [".pod-head", "b[id^='testId-pod-displaySubTitle']", ".pod-subTitle", ".pod-head b"],
+        "price": [".prices-0 .primary", "span.copy10", ".primary-price", "[data-variant='headline-small']"],
         "image": ["img.pod-image", "img"]
       },
       "affiliate_param": "aff_source",

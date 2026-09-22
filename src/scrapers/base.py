@@ -15,6 +15,8 @@ class ScrapedItem:
     """Estructura de datos normalizada para el resultado de un scraper."""
     title: str
     price: float
+    normal_price: Optional[float] = None
+    discount_percent: Optional[float] = None
     currency: str = "CLP"
     in_stock: bool = True
     image_url: Optional[str] = None

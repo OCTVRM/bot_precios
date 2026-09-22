@@ -80,6 +80,17 @@ class PriceTrackingService:
                 and current_price < old_price
             )
 
+            # Condición 3: Oferta de catálogo recién descubierta o no alertada (Precio lista vs Precio oferta)
+            if not threshold_met and not target_met and product.ultima_alerta_en is None:
+                cat_disc = item.discount_percent
+                ref_p = item.normal_price
+                if cat_disc is None and ref_p and ref_p > current_price:
+                    cat_disc = ((ref_p - current_price) / ref_p) * 100
+                if cat_disc and cat_disc >= product.umbral_descuento_porcentaje:
+                    threshold_met = True
+                    discount_percent = cat_disc
+                    old_price = ref_p or (current_price / (1 - cat_disc / 100))
+
             if threshold_met or target_met:
                 # Comprobación estricta de anti-spam y cooldown (12 horas)
                 in_cooldown = False
@@ -101,8 +112,9 @@ class PriceTrackingService:
                     product.precio_minimo is None or current_price < product.precio_minimo
                 )
 
-                # Regla de oro: NO enviar más de una vez durante 12 horas la misma oferta
-                if in_cooldown:
+                # Regla de oro: NO enviar más de una vez durante el cooldown la misma oferta,
+                # salvo que rompa el mínimo histórico.
+                if in_cooldown and not is_all_time_low:
                     logger.info(
                         f"Oferta retenida para [{product.tienda}] ID {product.id} por cooldown anti-spam "
                         f"({settings.ALERT_COOLDOWN_HOURS}h). {time_since_alert_str}."

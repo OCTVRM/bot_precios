@@ -245,3 +245,51 @@ async def test_price_error_detection(test_session: AsyncSession):
     assert payload.is_price_error is True
     assert payload.category == "Televisores y Smart TV"
 
+
+@pytest.mark.asyncio
+async def test_catalog_discount_on_new_product(test_session: AsyncSession):
+    """Verifica que un producto nuevo con 50% de descuento de catálogo (precio lista vs oferta) dispare alerta inmediata."""
+    mock_notifier = TelegramNotifier()
+    mock_notifier.send_alert = AsyncMock(return_value=True)
+
+    service = PriceTrackingService(notifier=mock_notifier)
+
+    # Producto recién agregado sin alertas previas
+    product = Product(
+        url_original="https://www.sodimac.cl/sodimac-cl/articulo/154322144/sofa-2-cuerpos-chestrfield/154322149",
+        nombre="Sofa 2 Cuerpos Chesterfield",
+        tienda="Sodimac",
+        precio_actual=250000.0,
+        precio_minimo=250000.0,
+        umbral_descuento_porcentaje=20.0,
+        activo=True,
+        ultima_alerta_en=None,
+    )
+    test_session.add(product)
+    await test_session.flush()
+
+    # Scraper detecta que el precio oferta es 250.000 y el precio lista normal es 500.000 (50% OFF)
+    mock_item = ScrapedItem(
+        title="Sofa 2 Cuerpos Chesterfield",
+        price=250000.0,
+        normal_price=500000.0,
+        discount_percent=50.0,
+        affiliate_url="https://www.sodimac.cl/sodimac-cl/articulo/154322144/sofa-2-cuerpos-chestrfield/154322149?aff_source=tag",
+    )
+
+    with patch("src.services.price_service.get_scraper_for_url") as mock_get_scraper:
+        mock_scraper = AsyncMock()
+        mock_scraper.scrape = AsyncMock(return_value=mock_item)
+        mock_get_scraper.return_value = mock_scraper
+
+        alerted, payload = await service.process_product(test_session, product)
+
+    assert alerted is True
+    assert payload is not None
+    assert payload.new_price == 250000.0
+    assert payload.old_price == 500000.0
+    assert payload.discount_percent == 50.0
+    assert payload.is_price_error is True
+    mock_notifier.send_alert.assert_called_once()
+
+

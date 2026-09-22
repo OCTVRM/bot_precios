@@ -75,7 +75,9 @@ class PriceTrackerScheduler:
             from src.scrapers.category_scraper import CategoryCrawlerService
             crawler = CategoryCrawlerService()
             async with get_db_session() as session:
-                results = await crawler.sync_all_categories(session)
+                results = await crawler.sync_all_categories(
+                    session, max_products=settings.CATEGORY_PRODUCTS_LIMIT
+                )
                 total_added = sum(r[0] for r in results.values())
                 total_updated = sum(r[1] for r in results.values())
                 logger.info(
