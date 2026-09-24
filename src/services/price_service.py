@@ -154,6 +154,12 @@ class PriceTrackingService:
         await session.flush()
         return should_alert, alert_payload
 
+    async def get_active_product_ids(self, session: AsyncSession) -> List[int]:
+        """Retorna únicamente la lista de IDs de productos activos, minimizando consumo de memoria."""
+        stmt = select(Product.id).where(Product.activo.is_(True), Product.tienda != "Amazon")
+        result = await session.execute(stmt)
+        return [row[0] for row in result.all()]
+
     async def get_active_products(self, session: AsyncSession):
         """Retorna la lista de productos activos para monitoreo (excluyendo tiendas desactivadas)."""
         stmt = select(Product).where(Product.activo.is_(True), Product.tienda != "Amazon")

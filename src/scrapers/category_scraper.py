@@ -874,6 +874,10 @@ class CategoryCrawlerService:
                     session=session, category_id=cat.id, max_products=max_products
                 )
                 results[cat.id] = (added, updated)
+                # Liberar objetos del identity map de SQLAlchemy y limpiar memoria RAM
+                session.expunge_all()
+                import gc
+                gc.collect()
                 # Pausa cooperativa entre categorías para que el servidor responda healthchecks
                 await asyncio.sleep(1.0)
             except Exception as ex:
@@ -881,6 +885,7 @@ class CategoryCrawlerService:
                     f"Error sincronizando categoría '{cat.name}' ({cat.id}): {ex}"
                 )
                 await session.rollback()
+                session.expunge_all()
                 results[cat.id] = (0, 0)
 
         logger.info("=== Sincronización de todas las categorías completada exitosamente ===")

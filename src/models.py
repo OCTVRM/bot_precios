@@ -48,13 +48,13 @@ class Product(Base):
         DateTime(timezone=True), onupdate=func.now(), nullable=True
     )
 
-    # Relación con el historial de precios (selectin para compatibilidad asíncrona total)
+    # Relación con el historial de precios (noload para evitar cargar 87k+ registros en RAM innecesariamente)
     historial_precios: Mapped[List["PriceHistory"]] = relationship(
         "PriceHistory",
         back_populates="producto",
         cascade="all, delete-orphan",
         order_by="desc(PriceHistory.timestamp)",
-        lazy="selectin",
+        lazy="noload",
     )
 
     def __repr__(self) -> str:

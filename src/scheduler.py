@@ -22,29 +22,44 @@ class PriceTrackerScheduler:
     async def run_check_cycle(self) -> None:
         """
         Ejecuta un ciclo completo de verificación de todos los productos activos.
-        Evita ejecuciones solapadas si un ciclo previo aún continúa activo.
+        Evita ejecuciones solapadas y utiliza un esquema de cola acotada para mantener
+        un uso de memoria mínimo y constante (ideal para contenedores de 512MB como Render).
         """
-        if self._is_running_job:
-            logger.warning("Ciclo de verificación previo aún en ejecución. Omitiendo este turno.")
+        if self._is_running_job or self._is_running_category_sync:
+            logger.warning("Ciclo de monitoreo o sincronización ya en ejecución. Omitiendo turno para proteger RAM.")
             return
 
         self._is_running_job = True
         logger.info("=== Iniciando ciclo de verificación de precios ===")
 
         try:
-            async with get_db_session() as session:
-                products = await self.price_service.get_active_products(session)
-                logger.info(f"Se encontraron {len(products)} productos activos para monitorear.")
-
-            if not products:
-                return
-
+            import gc
             from src.models import Product
 
-            async def process_with_limit(product_id: int):
-                async with self._semaphore:
+            # 1. Consultar únicamente IDs en lugar de cargar miles de modelos ORM completos en RAM
+            async with get_db_session() as session:
+                product_ids = await self.price_service.get_active_product_ids(session)
+                logger.info(f"Se encontraron {len(product_ids)} productos activos para monitorear.")
+
+            if not product_ids:
+                return
+
+            # 2. Cola acotada de trabajo: evita instanciar miles de corrutinas en asyncio.gather
+            queue: asyncio.Queue[int] = asyncio.Queue()
+            for pid in product_ids:
+                queue.put_nowait(pid)
+
+            processed_count = 0
+
+            async def worker():
+                nonlocal processed_count
+                while not queue.empty():
                     try:
-                        # Pausa ligera entre peticiones para emular comportamiento orgánico
+                        product_id = queue.get_nowait()
+                    except asyncio.QueueEmpty:
+                        break
+
+                    try:
                         await asyncio.sleep(0.5)
                         async with get_db_session() as item_session:
                             prod = await item_session.get(Product, product_id)
@@ -53,9 +68,18 @@ class PriceTrackerScheduler:
                                 await item_session.commit()
                     except Exception as ex:
                         logger.error(f"Error procesando producto ID {product_id}: {ex}")
+                    finally:
+                        queue.task_done()
+                        processed_count += 1
+                        # Liberar periódicamente memoria y forzar recolección de basura cada 50 productos
+                        if processed_count % 50 == 0:
+                            gc.collect()
 
-            # Ejecutar verificaciones concurrentes controladas
-            await asyncio.gather(*(process_with_limit(prod.id) for prod in products))
+            # Lanzar workers con concurrencia estrictamente controlada
+            num_workers = min(settings.MAX_CONCURRENT_SCRAPES, len(product_ids))
+            workers = [asyncio.create_task(worker()) for _ in range(num_workers)]
+            await asyncio.gather(*workers)
+            gc.collect()
 
             logger.info("=== Ciclo de verificación finalizado exitosamente ===")
         except Exception as ex:
@@ -64,9 +88,9 @@ class PriceTrackerScheduler:
             self._is_running_job = False
 
     async def run_category_sync_cycle(self) -> None:
-        """Sincroniza periódicamente los Top 10 productos de cada categoría en la base de datos."""
-        if self._is_running_category_sync:
-            logger.warning("Ciclo de sincronización de categorías previo aún en ejecución. Omitiendo.")
+        """Sincroniza periódicamente los Top productos de cada categoría en la base de datos."""
+        if self._is_running_category_sync or self._is_running_job:
+            logger.warning("Otro ciclo se encuentra en ejecución. Postergando sincronización de categorías para evitar sobrecarga de memoria.")
             return
 
         self._is_running_category_sync = True

@@ -62,14 +62,19 @@ async def main() -> None:
             "TELEGRAM_BOT_TOKEN no configurado en .env. El bot operará sin notificaciones directas a Telegram."
         )
 
-    # 6. Lanzar verificación inicial diferida (evita saturar CPU en frío y asegura healthcheck limpio en Render)
+    # 6. Lanzar verificación inicial diferida y secuencial (evita saturar CPU/RAM en frío y asegura healthcheck limpio en Render)
     async def delayed_initial_cycles():
-        await asyncio.sleep(5)
+        import gc
+        await asyncio.sleep(10)
         logger.info("Iniciando ciclo inicial de verificación de precios...")
-        asyncio.create_task(scheduler.run_check_cycle())
-        await asyncio.sleep(15)
+        await scheduler.run_check_cycle()
+        gc.collect()
+
+        logger.info("Pausa de enfriamiento tras ciclo inicial de precios (30s)...")
+        await asyncio.sleep(30)
         logger.info("Iniciando ciclo inicial de sincronización de categorías...")
-        asyncio.create_task(scheduler.run_category_sync_cycle())
+        await scheduler.run_category_sync_cycle()
+        gc.collect()
 
     asyncio.create_task(delayed_initial_cycles())
 
