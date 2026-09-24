@@ -1,6 +1,7 @@
 import logging
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
+import uuid
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -8,6 +9,7 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.pool import NullPool
 from src.config import settings
 
 logger = logging.getLogger(__name__)
@@ -21,20 +23,37 @@ class Base(DeclarativeBase):
 # Construcción del motor asíncrono
 # Compatible tanto con sqlite+aiosqlite como con postgresql+asyncpg (Supabase)
 connect_args = {}
-if settings.DATABASE_URL.startswith("sqlite"):
+engine_kwargs = {
+    "echo": False,
+    "future": True,
+    "pool_pre_ping": True,  # Verifica conexiones vivas (crucial para Supabase / PostgreSQL)
+}
+
+db_url = settings.DATABASE_URL
+if db_url.startswith("postgres://"):
+    db_url = db_url.replace("postgres://", "postgresql+asyncpg://", 1)
+elif db_url.startswith("postgresql://") and not db_url.startswith("postgresql+asyncpg://"):
+    db_url = db_url.replace("postgresql://", "postgresql+asyncpg://", 1)
+
+if db_url.startswith("sqlite"):
     connect_args["check_same_thread"] = False
-elif "asyncpg" in settings.DATABASE_URL:
+elif "asyncpg" in db_url or "postgres" in db_url:
     # Crucial para PgBouncer / Supabase Transaction Pooler (puerto 6543):
-    # Deshabilita el caché de sentencias preparadas para evitar DuplicatePreparedStatementError
+    # 1. Deshabilita el caché de sentencias preparadas en el driver asyncpg para evitar
+    #    conflictos cuando el pooler multiplexa conexiones físicas.
     connect_args["statement_cache_size"] = 0
     connect_args["prepared_statement_cache_size"] = 0
+    # 2. Genera nombres únicos UUID para cualquier sentencia preparada interna,
+    #    evitando colisiones con '__asyncpg_stmt_1__'.
+    connect_args["prepared_statement_name_func"] = lambda: f"__asyncpg_{uuid.uuid4().hex}__"
+    # 3. Usa NullPool con PgBouncer en transaction mode: evita el doble pool (SQLAlchemy + PgBouncer)
+    #    y previene estados huérfanos entre transacciones.
+    engine_kwargs["poolclass"] = NullPool
 
 engine: AsyncEngine = create_async_engine(
-    settings.DATABASE_URL,
-    echo=False,
-    future=True,
+    db_url,
     connect_args=connect_args,
-    pool_pre_ping=True,  # Verifica conexiones vivas (crucial para Supabase / PostgreSQL)
+    **engine_kwargs,
 )
 
 async_session_factory = async_sessionmaker(
@@ -77,7 +96,9 @@ async def init_db() -> None:
                     sync_conn.execute(text("ALTER TABLE products ADD COLUMN categoria VARCHAR(100)"))
                 if "es_top_categoria" not in columns:
                     logger.info("Agregando columna faltante 'es_top_categoria' a la tabla products...")
-                    sync_conn.execute(text("ALTER TABLE products ADD COLUMN es_top_categoria BOOLEAN DEFAULT 0"))
+                    is_sqlite = db_url.startswith("sqlite")
+                    default_bool = "0" if is_sqlite else "FALSE"
+                    sync_conn.execute(text(f"ALTER TABLE products ADD COLUMN es_top_categoria BOOLEAN DEFAULT {default_bool}"))
 
         await conn.run_sync(check_columns)
     logger.info("Base de datos inicializada correctamente.")

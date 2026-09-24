@@ -1,6 +1,6 @@
 import logging
 from typing import List, Optional
-from pydantic import Field
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 DEFAULT_USER_AGENTS: List[str] = [
@@ -21,6 +21,17 @@ class Settings(BaseSettings):
         default="sqlite+aiosqlite:///./bot_precios.db",
         description="URL de conexión SQLAlchemy asíncrona (ej: sqlite+aiosqlite:///... o postgresql+asyncpg://...)",
     )
+
+    @field_validator("DATABASE_URL", mode="before")
+    @classmethod
+    def normalize_database_url(cls, v: str) -> str:
+        """Asegura que URLs de PostgreSQL siempre utilicen el dialecto asyncpg requerido."""
+        if isinstance(v, str):
+            if v.startswith("postgres://"):
+                v = v.replace("postgres://", "postgresql+asyncpg://", 1)
+            elif v.startswith("postgresql://") and not v.startswith("postgresql+asyncpg://"):
+                v = v.replace("postgresql://", "postgresql+asyncpg://", 1)
+        return v
 
     # Telegram
     TELEGRAM_BOT_TOKEN: str = Field(
