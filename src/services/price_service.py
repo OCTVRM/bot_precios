@@ -109,11 +109,11 @@ class PriceTrackingService:
                         time_since_alert_str = f"emitida hace {time_since_alert.total_seconds() / 3600:.1f}h, faltan {hours_left:.1f}h"
 
                 is_all_time_low = (
-                    product.precio_minimo is None or current_price < product.precio_minimo
+                    product.precio_minimo is not None and current_price < product.precio_minimo
                 )
 
                 # Regla de oro: NO enviar más de una vez durante el cooldown la misma oferta,
-                # salvo que rompa el mínimo histórico.
+                # salvo que rompa el mínimo histórico estrictamente.
                 if in_cooldown and not is_all_time_low:
                     logger.info(
                         f"Oferta retenida para [{product.tienda}] ID {product.id} por cooldown anti-spam "

@@ -9,7 +9,7 @@
       "stores": {
         "falabella": "https://www.falabella.com/falabella-cl/category/cat2018/Celulares-y-Telefonia",
         "paris": "https://www.paris.cl/tecnologia/celulares/",
-        "ripley": "https://simple.ripley.cl/tecno/telefonia/celulares",
+        "ripley": "https://simple.ripley.cl/search/celulares",
         "hites": "https://www.hites.com/tecnologia/celulares/smartphones/",
         "entel": "https://www.entel.cl/equipos/",
         "abc": "https://www.abc.cl/telefonia/celulares/smartphones.html",
@@ -25,8 +25,8 @@
       "active": true,
       "stores": {
         "falabella": "https://www.falabella.com/falabella-cl/category/cat1012/Televisores",
-        "paris": "https://www.paris.cl/electro/television/",
-        "ripley": "https://simple.ripley.cl/electro/television",
+        "paris": "https://www.paris.cl/search?q=televisores",
+        "ripley": "https://simple.ripley.cl/search/televisores",
         "hites": "https://www.hites.com/electro-y-tecnologia/televisores/",
         "abc": "https://www.abc.cl/tv-audio/televisores.html",
         "mercadolibre": "https://listado.mercadolibre.cl/electronica-audio-video/televisores/",
@@ -41,8 +41,8 @@
       "active": true,
       "stores": {
         "falabella": "https://www.falabella.com/falabella-cl/category/cat40051/Computadores-All-in-One-y-Desktop",
-        "paris": "https://www.paris.cl/tecnologia/computadores/all-in-one-desktop/",
-        "ripley": "https://simple.ripley.cl/tecno/computacion/computadores-de-escritorio",
+        "paris": "https://www.paris.cl/search?q=computadores",
+        "ripley": "https://simple.ripley.cl/search/computadores",
         "mercadolibre": "https://listado.mercadolibre.cl/computacion/pc-escritorio/"
       }
     },
@@ -53,9 +53,9 @@
       "error_threshold_percent": 50.0,
       "active": true,
       "stores": {
-        "falabella": "https://www.falabella.com/falabella-cl/category/cat5860031/Notebooks",
-        "paris": "https://www.paris.cl/tecnologia/computadores/notebooks/",
-        "ripley": "https://simple.ripley.cl/tecno/computacion/notebooks",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=notebook",
+        "paris": "https://www.paris.cl/search?q=notebook",
+        "ripley": "https://simple.ripley.cl/search/notebook",
         "hites": "https://www.hites.com/tecnologia/computacion/notebooks/",
         "abc": "https://www.abc.cl/computacion/notebooks.html",
         "mercadolibre": "https://listado.mercadolibre.cl/computacion/notebooks/",
@@ -69,9 +69,9 @@
       "error_threshold_percent": 50.0,
       "active": true,
       "stores": {
-        "falabella": "https://www.falabella.com/falabella-cl/category/cat3134/Electrodomesticos-Cocina",
-        "paris": "https://www.paris.cl/electro/electrodomesticos/",
-        "ripley": "https://simple.ripley.cl/electro/electrohogar",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=electrodomesticos",
+        "paris": "https://www.paris.cl/search?q=electrohogar",
+        "ripley": "https://simple.ripley.cl/search/electrodomesticos",
         "hites": "https://www.hites.com/electro-y-tecnologia/electrohogar/",
         "sodimac": "https://www.sodimac.cl/sodimac-cl/category/cat10002/Electrohogar",
         "easy": "https://www.easy.cl/electrohogar",
@@ -106,9 +106,9 @@
       "error_threshold_percent": 50.0,
       "active": true,
       "stores": {
-        "falabella": "https://www.falabella.com/falabella-cl/category/cat20019/Consolas-y-Videojuegos",
-        "paris": "https://www.paris.cl/tecnologia/consolas-videojuegos/",
-        "ripley": "https://simple.ripley.cl/tecno/videojuegos",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=consolas",
+        "paris": "https://www.paris.cl/search?q=consolas",
+        "ripley": "https://simple.ripley.cl/search/consolas",
         "hites": "https://www.hites.com/tecnologia/videojuegos/",
         "mercadolibre": "https://listado.mercadolibre.cl/consolas-videojuegos/"
       }
@@ -121,8 +121,8 @@
       "active": true,
       "stores": {
         "falabella": "https://www.falabella.com/falabella-cl/category/cat2005/Audio-y-Musica",
-        "paris": "https://www.paris.cl/tecnologia/audio/",
-        "ripley": "https://simple.ripley.cl/electro/audio",
+        "paris": "https://www.paris.cl/search?q=audifonos",
+        "ripley": "https://simple.ripley.cl/search/audio",
         "hites": "https://www.hites.com/tecnologia/audio/",
         "mercadolibre": "https://listado.mercadolibre.cl/electronica-audio-video/audio/",
         "huawei": "https://consumer.huawei.com/cl/offer/audio/"
@@ -136,8 +136,8 @@
       "active": true,
       "stores": {
         "falabella": "https://www.falabella.com/falabella-cl/category/cat4290063/Smartwatches-y-Wearables",
-        "paris": "https://www.paris.cl/tecnologia/smartwatches-wearables/",
-        "ripley": "https://simple.ripley.cl/tecno/smartwatches-wearables",
+        "paris": "https://www.paris.cl/search?q=smartwatch",
+        "ripley": "https://simple.ripley.cl/search/smartwatch",
         "entel": "https://www.entel.cl/equipos/smartwatches/",
         "mercadolibre": "https://listado.mercadolibre.cl/smartwatches/",
         "samsung": "https://www.samsung.com/cl/watches/all-watches/",
@@ -151,9 +151,9 @@
       "error_threshold_percent": 50.0,
       "active": true,
       "stores": {
-        "falabella": "https://www.falabella.com/falabella-cl/category/cat40053/Monitores",
-        "paris": "https://www.paris.cl/tecnologia/computadores/monitores/",
-        "ripley": "https://simple.ripley.cl/tecno/computacion/monitores",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=monitores+gamer",
+        "paris": "https://www.paris.cl/search?q=monitores",
+        "ripley": "https://simple.ripley.cl/search/monitores-gamer",
         "mercadolibre": "https://listado.mercadolibre.cl/computacion/monitores-accesorios/monitores/"
       }
     },
@@ -164,9 +164,9 @@
       "error_threshold_percent": 50.0,
       "active": true,
       "stores": {
-        "falabella": "https://www.falabella.com/falabella-cl/category/cat4005/Linea-Blanca",
-        "paris": "https://www.paris.cl/linea-blanca/",
-        "ripley": "https://simple.ripley.cl/electro/linea-blanca",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=refrigeradores",
+        "paris": "https://www.paris.cl/search?q=linea+blanca",
+        "ripley": "https://simple.ripley.cl/search/linea-blanca",
         "sodimac": "https://www.sodimac.cl/sodimac-cl/category/cat10001/Linea-Blanca",
         "easy": "https://www.easy.cl/linea-blanca",
         "abc": "https://www.abc.cl/linea-blanca.html",
@@ -192,9 +192,9 @@
       "error_threshold_percent": 50.0,
       "active": true,
       "stores": {
-        "falabella": "https://www.falabella.com/falabella-cl/category/cat3025/Juguetes",
-        "paris": "https://www.paris.cl/jugueteria/",
-        "ripley": "https://simple.ripley.cl/infantil/jugueteria",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=juguetes",
+        "paris": "https://www.paris.cl/search?q=juguetes",
+        "ripley": "https://simple.ripley.cl/search/juguetes",
         "theway": "https://www.theway.cl/juegos-de-mesa",
         "mercadolibre": "https://listado.mercadolibre.cl/juegos-juguetes/"
       }
@@ -206,9 +206,9 @@
       "error_threshold_percent": 50.0,
       "active": true,
       "stores": {
-        "falabella": "https://www.falabella.com/falabella-cl/category/cat3053/Perfumes",
-        "paris": "https://www.paris.cl/belleza/perfumes/",
-        "ripley": "https://simple.ripley.cl/belleza/perfumeria"
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=perfumes",
+        "paris": "https://www.paris.cl/search?q=perfumes",
+        "ripley": "https://simple.ripley.cl/search/perfumes"
       }
     },
     {
@@ -250,8 +250,9 @@
         "underarmour": "https://www.underarmour.cl/collections/zapatilla",
         "adidas": "https://www.adidas.cl/calzado",
         "mercadolibre": "https://tienda.mercadolibre.cl/adidas",
-        "falabella": "https://www.falabella.com/falabella-cl/category/cat40050/Zapatillas-Hombre",
-        "paris": "https://www.paris.cl/zapatos/zapatillas/"
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=zapatillas",
+        "paris": "https://www.paris.cl/search?q=zapatillas",
+        "ripley": "https://simple.ripley.cl/search/zapatillas"
       }
     },
     {
@@ -280,7 +281,9 @@
       "stores": {
         "jumbo": "https://www.jumbo.cl/despensa",
         "santaisabel": "https://www.santaisabel.cl/despensa",
-        "falabella": "https://www.falabella.com/falabella-cl/category/cat14920002/Despensa",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=despensa",
+        "tottus": "https://www.tottus.cl/tottus-cl/categoria/despensa",
+        "lider": "https://www.lider.cl/supermercado/category/Despensa",
         "mercadolibre": "https://listado.mercadolibre.cl/alimentos-bebidas/despensa/"
       }
     },
@@ -291,10 +294,14 @@
       "error_threshold_percent": 50.0,
       "active": true,
       "stores": {
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=bebe",
+        "paris": "https://www.paris.cl/search?q=bebe",
+        "ripley": "https://simple.ripley.cl/search/bebe",
+        "lider": "https://www.lider.cl/supermercado/category/Bebes-y-Ninos",
+        "tottus": "https://www.tottus.cl/tottus-cl/categoria/bebe-infantil",
+        "infanti": "https://infanti.cl/collections/all",
         "jumbo": "https://www.jumbo.cl/bebe-y-jugueteria/bebe/panales",
         "ahumada": "https://www.farmaciasahumada.cl/mama-y-bebe/panales",
-        "falabella": "https://www.falabella.com/falabella-cl/category/cat16620002/Panales-y-toallitas",
-        "paris": "https://www.paris.cl/bebe-ninos/mundo-bebe/panales-y-toallas/",
         "mercadolibre": "https://listado.mercadolibre.cl/bebes/panales-desechables/"
       }
     },
@@ -306,8 +313,8 @@
       "active": true,
       "stores": {
         "ahumada": "https://www.farmaciasahumada.cl/dermocosmetica",
-        "falabella": "https://www.falabella.com/falabella-cl/category/cat20010/Belleza-y-Cuidado-Personal",
-        "paris": "https://www.paris.cl/belleza/cuidado-facial/",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=dermocosmetica",
+        "paris": "https://www.paris.cl/search?q=dermocosmetica",
         "mercadolibre": "https://listado.mercadolibre.cl/belleza-cuidado-personal/cuidado-de-la-piel/"
       }
     },
@@ -322,7 +329,7 @@
         "booz": "https://booz.cl/catalogo/cervezas",
         "jumbo": "https://www.jumbo.cl/vinos-cervezas-y-licores/cervezas",
         "santaisabel": "https://www.santaisabel.cl/vinos-cervezas-y-licores/cervezas",
-        "falabella": "https://www.falabella.com/falabella-cl/category/cat14920004/Licores-y-Bebidas",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=licores",
         "mercadolibre": "https://listado.mercadolibre.cl/alimentos-bebidas/bebidas/bebidas-alcoholicas/"
       }
     },
@@ -335,7 +342,7 @@
       "stores": {
         "sodimac": "https://sodimac.falabella.com/sodimac-cl/search?Ntt=taladro",
         "easy": "https://www.easy.cl/herramientas",
-        "falabella": "https://www.falabella.com/falabella-cl/category/cat20038/Herramientas-electricas",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=herramientas",
         "mercadolibre": "https://listado.mercadolibre.cl/herramientas-construccion/"
       }
     },
@@ -348,9 +355,9 @@
       "stores": {
         "sodimac": "https://sodimac.falabella.com/sodimac-cl/search?Ntt=aire+acondicionado",
         "easy": "https://www.easy.cl/climatizacion",
-        "falabella": "https://www.falabella.com/falabella-cl/category/cat40018/Climatizacion",
-        "paris": "https://www.paris.cl/electro/climatizacion/",
-        "ripley": "https://simple.ripley.cl/electro/climatizacion"
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=climatizacion",
+        "paris": "https://www.paris.cl/search?q=climatizacion",
+        "ripley": "https://simple.ripley.cl/search/climatizacion"
       }
     },
     {
@@ -361,9 +368,9 @@
       "active": true,
       "stores": {
         "sodimac": "https://www.sodimac.cl/sodimac-cl/lista/cat16610015/Living---Sala-de-Estar",
-        "falabella": "https://www.falabella.com/falabella-cl/category/cat2064/Muebles-de-Living",
-        "paris": "https://www.paris.cl/muebles/living-sala-estar/",
-        "ripley": "https://simple.ripley.cl/muebles/living-y-sala-de-estar/sofas-y-sillones",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=sofas",
+        "paris": "https://www.paris.cl/search?q=sofas",
+        "ripley": "https://simple.ripley.cl/search/sofas",
         "easy": "https://www.easy.cl/muebles",
         "mercadolibre": "https://listado.mercadolibre.cl/hogar-muebles/muebles-hogar/living/sillones-sofas/"
       }
@@ -376,9 +383,9 @@
       "active": true,
       "stores": {
         "sodimac": "https://www.sodimac.cl/sodimac-cl/search?Ntt=colchon",
-        "falabella": "https://www.falabella.com/falabella-cl/category/cat2015/Colchones",
-        "paris": "https://www.paris.cl/dormitorio/colchones/",
-        "ripley": "https://simple.ripley.cl/dormitorio/colchones",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=colchones",
+        "paris": "https://www.paris.cl/search?q=colchones",
+        "ripley": "https://simple.ripley.cl/search/colchones",
         "easy": "https://www.easy.cl/dormitorio",
         "mercadolibre": "https://listado.mercadolibre.cl/hogar-muebles/camas-colchones-accesorios/colchones/"
       }
@@ -392,8 +399,8 @@
       "stores": {
         "sodimac": "https://www.sodimac.cl/sodimac-cl/search?Ntt=silla+gamer",
         "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=sillas+gamer",
-        "paris": "https://www.paris.cl/muebles/oficina/sillas-escritorio/",
-        "ripley": "https://simple.ripley.cl/tecno/computacion/sillas-gamer",
+        "paris": "https://www.paris.cl/search?q=sillas+escritorio",
+        "ripley": "https://simple.ripley.cl/search/sillas-gamer",
         "pcfactory": "https://www.pcfactory.cl/sillas-gamer",
         "mercadolibre": "https://listado.mercadolibre.cl/hogar-muebles/muebles-hogar/oficina/sillas/"
       }
@@ -406,10 +413,10 @@
       "active": true,
       "stores": {
         "sodimac": "https://www.sodimac.cl/sodimac-cl/search?Ntt=juego+terraza",
-        "falabella": "https://www.falabella.com/falabella-cl/category/cat2016/Muebles-de-Terraza",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=terraza",
         "easy": "https://www.easy.cl/muebles",
-        "paris": "https://www.paris.cl/muebles/terraza/",
-        "ripley": "https://simple.ripley.cl/muebles/terraza",
+        "paris": "https://www.paris.cl/search?q=terraza",
+        "ripley": "https://simple.ripley.cl/search/terraza",
         "mercadolibre": "https://listado.mercadolibre.cl/hogar-muebles/jardin-aire-libre/muebles-jardin/"
       }
     },
@@ -421,10 +428,46 @@
       "active": true,
       "stores": {
         "sodimac": "https://www.sodimac.cl/sodimac-cl/search?Ntt=juego+de+comedor",
-        "falabella": "https://www.falabella.com/falabella-cl/category/cat2063/Juegos-de-Comedor",
-        "paris": "https://www.paris.cl/muebles/comedor/",
-        "ripley": "https://simple.ripley.cl/muebles/comedor",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=comedor",
+        "paris": "https://www.paris.cl/search?q=comedor",
+        "ripley": "https://simple.ripley.cl/search/comedor",
         "mercadolibre": "https://listado.mercadolibre.cl/hogar-muebles/muebles-hogar/comedor/"
+      }
+    },
+    {
+      "id": "ropa_hombre",
+      "name": "Ropa y Vestuario Hombre",
+      "default_threshold_percent": 25.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=ropa+hombre",
+        "paris": "https://www.paris.cl/search?q=ropa+hombre",
+        "ripley": "https://simple.ripley.cl/search/ropa-hombre"
+      }
+    },
+    {
+      "id": "ropa_mujer",
+      "name": "Ropa y Vestuario Mujer",
+      "default_threshold_percent": 25.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=ropa+mujer",
+        "paris": "https://www.paris.cl/search?q=ropa+mujer",
+        "ripley": "https://simple.ripley.cl/search/ropa-mujer"
+      }
+    },
+    {
+      "id": "ropa_ninos",
+      "name": "Ropa Infantil y Niños",
+      "default_threshold_percent": 25.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=ropa+ninos",
+        "paris": "https://www.paris.cl/search?q=ropa+ninos",
+        "ripley": "https://simple.ripley.cl/search/ropa-ninos"
       }
     }
   ]

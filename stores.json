@@ -265,9 +265,12 @@
       "selectors": {
         "title": ["h1.product-title", "h1.page-title", "h1"],
         "price": [
-          ".product-price",
-          ".price",
-          "meta[property='product:price:amount']"
+          "[id^='ProductPrice']",
+          ".product-single__price",
+          ".product-info .product-price",
+          "meta[property='product:price:amount']",
+          ".price-item--sale",
+          ".price-item"
         ],
         "image": ["meta[property='og:image']", ".product-image img"]
       },
@@ -308,14 +311,21 @@
       "use_json_ld": true,
       "selectors": {
         "title": ["h1.product-single__title", "h1.product-title", "h1"],
-        "price": [".price-item--sale", ".price-item", ".product-price", ".price"],
+        "price": [
+          "[id^='ProductPrice-']",
+          ".product-single__price .product-price__price",
+          ".product-single__meta .price-product",
+          ".product-single__price",
+          ".price-item--sale",
+          ".price-item"
+        ],
         "image": ["meta[property='og:image']"]
       },
       "category_selectors": {
         "card": [".grid-view-item", ".product-card", ".grid__item", ".card-wrapper"],
         "link": ["a[href*='/products/']", "a.grid-view-item__link", "a"],
         "title": [".product-card__title", ".grid-view-item__title", ".card__heading", "h4", "h3"],
-        "price": [".product-price__price", ".price-item--sale", ".price-item", ".product-price", ".money", ".price"],
+        "price": [".product-price__price", ".price-item--sale", ".price-item", ".money"],
         "image": ["img.grid-view-item__image", "img"]
       },
       "affiliate_param": "ref",
@@ -328,14 +338,19 @@
       "use_json_ld": true,
       "selectors": {
         "title": ["h1.product-title", "h1"],
-        "price": [".price-item--sale", ".price-item", ".product__price", ".price"],
+        "price": [
+          "[id^='ProductPrice']",
+          ".product__price",
+          ".price-item--sale",
+          ".price-item"
+        ],
         "image": ["meta[property='og:image']"]
       },
       "category_selectors": {
         "card": [".product-card", ".grid__item", ".card-wrapper"],
         "link": ["a[href*='/products/']", "a"],
         "title": [".product-card__title", ".card__heading", "h3"],
-        "price": [".price-item", ".price", ".money"],
+        "price": [".price-item--sale", ".price-item", ".money"],
         "image": ["img"]
       },
       "affiliate_param": "ref",
@@ -839,6 +854,86 @@
         "image": ["img"]
       },
       "affiliate_param": "utm_source",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "lider",
+      "name": "Lider",
+      "domains": ["lider.cl", "www.lider.cl", "super.lider.cl"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1[data-testid='product-title']", "h1.product-title", "h1"],
+        "price": [
+          "[data-testid='product-price']",
+          ".product-price",
+          ".pdp-price",
+          "span[class*='Price']",
+          "meta[property='product:price:amount']"
+        ],
+        "image": ["meta[property='og:image']", "img[data-testid='product-image']"]
+      },
+      "category_selectors": {
+        "card": ["article.product-card", "div[data-testid='product-card']", "div.ui-search-result", "article", ".product-item"],
+        "link": ["a[href*='/product/']", "a[href*='/producto/']", "a"],
+        "title": ["p[data-testid='product-title']", "h3", "h2", "a[data-testid='product-title']", ".product-title"],
+        "price": ["span[data-testid='product-price']", ".product-card-price", "span[class*='Price']", ".price"],
+        "image": ["img[data-testid='product-image']", "img"]
+      },
+      "affiliate_param": "utm_source",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "tottus",
+      "name": "Tottus",
+      "domains": ["tottus.cl", "www.tottus.cl"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1.product-title", "h1[data-name]", "h1"],
+        "price": [
+          ".prices-0 .primary",
+          "span.primary-price",
+          "span.copy10",
+          "[data-variant='headline-small']",
+          ".product-price"
+        ],
+        "image": ["img.image-gallery", "meta[property='og:image']"]
+      },
+      "category_selectors": {
+        "card": ["div.pod-item", "div[data-pod='catalogue-pod']", "div.search-results-4-grid > div", ".grid-pod", ".product-card"],
+        "link": ["a.pod-link", "a[href*='/product/']", "a"],
+        "title": [".pod-head", "b[id^='testId-pod-displaySubTitle']", ".pod-subTitle", "h3"],
+        "price": [".prices-0 .primary", "span.primary-price", "span.copy10", "[data-variant='headline-small']", ".price"],
+        "image": ["img.pod-image", "img"]
+      },
+      "affiliate_param": "utm_source",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "infanti",
+      "name": "Infanti",
+      "domains": ["infanti.cl", "www.infanti.cl"],
+      "use_json_ld": true,
+      "selectors": {
+        "title": ["h1.product-single__title", "h1.product-title", "h1"],
+        "price": [
+          "[id^='ProductPrice-']",
+          ".product-single__price .price-item--sale",
+          ".product-single__price .price-item",
+          ".product-single__price",
+          "[itemprop='price']",
+          ".price-item--sale",
+          ".price-item"
+        ],
+        "image": ["meta[property='og:image']", "img.product-single__photo"]
+      },
+      "category_selectors": {
+        "card": [".grid-view-item", ".product-card", ".card-wrapper", ".grid__item"],
+        "link": ["a[href*='/products/']", "a.grid-view-item__link", "a"],
+        "title": [".product-card__title", ".grid-view-item__title", ".card__heading", "h4", "h3"],
+        "price": [".price-item--sale", ".price-item", ".money", ".price"],
+        "image": ["img.grid-view-item__image", "img"]
+      },
+      "affiliate_param": "ref",
       "affiliate_tag": ""
     }
   ]

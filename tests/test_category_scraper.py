@@ -211,3 +211,137 @@ async def test_crawler_sync_category_db():
             assert prod.umbral_descuento_porcentaje == 15.0
 
     await test_engine.dispose()
+
+
+@pytest.mark.asyncio
+async def test_crawler_sync_category_cooldown():
+    """Verifica que el cooldown anti-spam evite alertas repetidas en sync_category."""
+    import datetime
+    test_engine = create_async_engine("sqlite+aiosqlite:///:memory:", echo=False)
+    async_session = async_sessionmaker(test_engine, expire_on_commit=False)
+
+    async with test_engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
+    mock_notifier = AsyncMock()
+    mock_notifier.send_alert = AsyncMock(return_value=True)
+
+    mock_scraper = CategoryScraper()
+    # Mocking extraction of a product with price 59990
+    from src.scrapers.category_scraper import ScrapedCategoryProduct
+    mock_scraper.parse_category_page = lambda *args, **kwargs: [
+        ScrapedCategoryProduct(
+            url="https://tienda.cl/producto-1",
+            title="Producto Test",
+            price=59990.0,
+            position=1,
+        )
+    ]
+    mock_scraper.fetch_html = AsyncMock(return_value="<html></html>")
+    crawler = CategoryCrawlerService(scraper=mock_scraper, notifier=mock_notifier)
+
+    cat_item = CategoryItem(
+        id="test_cat",
+        name="Test Cat",
+        default_threshold_percent=10.0,
+        stores={"tienda": "https://tienda.cl/categoria"},
+    )
+
+    now = datetime.datetime.now(datetime.timezone.utc)
+    # Existing product with price 99990, min price 59990, and alerted 1 hour ago (within cooldown)
+    async with async_session() as session:
+        existing_prod = Product(
+            url_original="https://tienda.cl/producto-1",
+            nombre="Producto Test",
+            tienda="Tienda",
+            precio_actual=99990.0,
+            precio_minimo=59990.0,  # Ya alcanzó este mínimo antes
+            umbral_descuento_porcentaje=10.0,
+            categoria="Test Cat",
+            es_top_categoria=True,
+            activo=True,
+            ultima_alerta_en=now - datetime.timedelta(hours=1),
+        )
+        session.add(existing_prod)
+        await session.commit()
+
+    with patch("src.scrapers.category_scraper.load_categories_catalog") as mock_catalog:
+        mock_catalog.return_value = CategoriesCatalog(categories=[cat_item])
+        with patch("src.scrapers.category_scraper.find_store_rule_by_id", return_value=None):
+            async with async_session() as session:
+                added, updated = await crawler.sync_category(session, "test_cat", max_products=5)
+                await session.commit()
+
+                assert added == 0
+                assert updated == 1
+                # No debe haberse enviado alerta porque está en cooldown y no es all-time low (< 59990)
+                mock_notifier.send_alert.assert_not_called()
+
+    await test_engine.dispose()
+
+
+def test_parse_category_page_paris_stream():
+    """Verifica la extracción de productos desde el streaming de Next.js App Router usado por Paris."""
+    scraper = CategoryScraper()
+    html = """
+    <html>
+      <body>
+        <script>
+          self.__next_f.push([1, "12:{\\\"productData\\\":{\\\"products\\\":[{\\\"name\\\":\\\"Celular Oppo A5 Pro\\\",\\\"slug\\\":\\\"celular-oppo-a5-pro-MKB5VXRBYS\\\",\\\"masterVariant\\\":{\\\"prices\\\":{\\\"regular\\\":{\\\"value\\\":{\\\"centAmount\\\":329990}},\\\"offer\\\":{\\\"value\\\":{\\\"centAmount\\\":249990}},\\\"paymentMethod\\\":{\\\"value\\\":{\\\"centAmount\\\":229990}}},\\\"images\\\":[{\\\"url\\\":\\\"https://img.paris.cl/oppo.png\\\"}]}}]}}"]);
+        </script>
+      </body>
+    </html>
+    """
+    products = scraper.parse_category_page(html, "https://www.paris.cl/tecnologia/celulares/", store_id="paris", max_items=5)
+    assert len(products) == 1
+    assert products[0].title == "Celular Oppo A5 Pro"
+    assert products[0].price == 229990.0
+    assert products[0].normal_price == 329990.0
+    assert products[0].discount_percent == 30.3
+    assert products[0].url == "https://www.paris.cl/celular-oppo-a5-pro-MKB5VXRBYS.html"
+    assert products[0].image_url == "https://img.paris.cl/oppo.png"
+
+
+def test_parse_category_page_ripley_findability():
+    """Verifica la extracción de productos desde findabilityProps de Ripley en __NEXT_DATA__."""
+    scraper = CategoryScraper()
+    next_data = {
+        "props": {
+            "pageProps": {
+                "findabilityProps": {
+                    "data": {
+                        "products": [
+                            {
+                                "name": "CELULAR MOTOROLA EDGE 60",
+                                "parentProductID": "2000405825817",
+                                "ripleyPriceNumber": 329990,
+                                "masterPriceNumber": 599990,
+                                "discount": 45,
+                                "primaryImage": "https://rimage.ripley.cl/moto.jpg"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    }
+    html = f"""
+    <html>
+      <body>
+        <a href="/celular-motorola-edge-60-2000405825817?color=azul">Ver</a>
+        <script id="__NEXT_DATA__" type="application/json">
+          {json.dumps(next_data)}
+        </script>
+      </body>
+    </html>
+    """
+    products = scraper.parse_category_page(html, "https://simple.ripley.cl/tecno/celulares", store_id="ripley", max_items=5)
+    assert len(products) == 1
+    assert products[0].title == "CELULAR MOTOROLA EDGE 60"
+    assert products[0].price == 329990.0
+    assert products[0].normal_price == 599990.0
+    assert products[0].discount_percent == 45.0
+    assert "2000405825817" in products[0].url
+    assert products[0].image_url == "https://rimage.ripley.cl/moto.jpg"
+
+

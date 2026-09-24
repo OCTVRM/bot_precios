@@ -43,8 +43,15 @@ class CategoryScraper:
     def get_headers(self) -> Dict[str, str]:
         return {
             "User-Agent": random.choice(self._user_agents),
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-            "Accept-Language": "es-ES,es;q=0.9,en-US;q=0.8,en;q=0.7",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+            "Accept-Language": "es-CL,es;q=0.9,en-US;q=0.8,en;q=0.7",
+            "Sec-Ch-Ua": '"Chromium";v="124", "Google Chrome";v="124", "Not-A.Brand";v="99"',
+            "Sec-Ch-Ua-Mobile": "?0",
+            "Sec-Ch-Ua-Platform": '"Windows"',
+            "Sec-Fetch-Dest": "document",
+            "Sec-Fetch-Mode": "navigate",
+            "Sec-Fetch-Site": "none",
+            "Sec-Fetch-User": "?1",
             "DNT": "1",
             "Connection": "keep-alive",
             "Upgrade-Insecure-Requests": "1",
@@ -66,35 +73,51 @@ class CategoryScraper:
         self, html: str, page_url: str, store_id: Optional[str] = None, max_items: int = 50
     ) -> List[ScrapedCategoryProduct]:
         """
-        Extrae hasta max_items productos desde el HTML usando estrategia multinivel:
-        1. JSON-LD ItemList
-        2. Next.js __NEXT_DATA__
-        3. Selectores CSS declarados en stores.json
-        4. Fallback genérico de enlaces de productos
+        Extrae hasta max_items productos desde el HTML usando estrategia multinivel optimizada:
+        1. JSON-LD ItemList (si trae precios completos)
+        2. Next.js Pages Router (__NEXT_DATA__) incluyendo soporte para Ripley / Falabella
+        3. Next.js App Router (Streaming self.__next_f.push) para Paris / Cencosud
+        4. Selectores CSS declarados en stores.json (con precios)
+        5. Fallback JSON-LD (si no traía precios pero tiene URLs)
+        6. Fallback genérico de enlaces de productos
         """
         soup = BeautifulSoup(html, "html.parser")
         products: List[ScrapedCategoryProduct] = []
 
         store_rule = find_store_rule_by_id(store_id) if store_id else find_store_rule_for_url(page_url)
 
-        # 1. Estrategia JSON-LD ItemList
-        products = self._extract_from_json_ld(soup, page_url, max_items)
-        if len(products) >= max_items:
-            return products[:max_items]
+        # 1. Estrategia JSON-LD ItemList (si contiene precios válidos)
+        json_ld_prods = self._extract_from_json_ld(soup, page_url, max_items)
+        if len(json_ld_prods) >= max_items and any(p.price is not None for p in json_ld_prods):
+            return json_ld_prods[:max_items]
 
         # 2. Estrategia Next.js (__NEXT_DATA__)
-        if not products:
-            products = self._extract_from_next_data(soup, page_url, max_items)
-            if len(products) >= max_items:
-                return products[:max_items]
+        products = self._extract_from_next_data(soup, page_url, max_items)
+        if len(products) >= max_items and any(p.price is not None for p in products):
+            return products[:max_items]
 
-        # 3. Estrategia Selectores CSS de stores.json
-        if not products and store_rule and store_rule.category_selectors:
-            products = self._extract_from_css(soup, page_url, store_rule, max_items)
-            if len(products) >= max_items:
-                return products[:max_items]
+        # 3. Estrategia Next.js App Router (Streamed self.__next_f.push / productData)
+        if not products or not any(p.price is not None for p in products):
+            stream_prods = self._extract_from_next_stream(html, page_url, max_items)
+            if stream_prods and any(p.price is not None for p in stream_prods):
+                products = stream_prods
+                if len(products) >= max_items:
+                    return products[:max_items]
 
-        # 4. Estrategia de Fallback Genérico
+        # 4. Estrategia Selectores CSS de stores.json
+        if not products or not any(p.price is not None for p in products):
+            if store_rule and store_rule.category_selectors:
+                css_prods = self._extract_from_css(soup, page_url, store_rule, max_items)
+                if css_prods and any(p.price is not None for p in css_prods):
+                    products = css_prods
+                    if len(products) >= max_items:
+                        return products[:max_items]
+
+        # 5. Si JSON-LD encontró productos aunque sin precio, preferirlos antes del fallback genérico
+        if not products and json_ld_prods:
+            products = json_ld_prods
+
+        # 6. Estrategia de Fallback Genérico
         if not products:
             products = self._extract_generic_fallback(soup, page_url, max_items)
 
@@ -147,10 +170,48 @@ class CategoryScraper:
                                     clean_title = re.sub(r'[-_]+', ' ', clean_segment).strip().title()
                                     title = clean_title if clean_title else "Producto"
 
+                                price_val = None
+                                normal_val = None
+                                image_val = None
+                                item_obj = el.get("item") if isinstance(el.get("item"), dict) else el
+
+                                raw_img = item_obj.get("image")
+                                if isinstance(raw_img, list) and raw_img:
+                                    image_val = raw_img[0] if isinstance(raw_img[0], str) else raw_img[0].get("url")
+                                elif isinstance(raw_img, dict):
+                                    image_val = raw_img.get("url")
+                                elif isinstance(raw_img, str):
+                                    image_val = raw_img
+
+                                offers = item_obj.get("offers")
+                                if isinstance(offers, list) and offers:
+                                    offers = offers[0]
+                                if isinstance(offers, dict):
+                                    raw_p = offers.get("price") or offers.get("lowPrice")
+                                    if raw_p:
+                                        try:
+                                            price_val = BaseScraper.clean_price(str(raw_p))
+                                        except Exception:
+                                            pass
+                                    raw_norm = offers.get("highPrice")
+                                    if raw_norm:
+                                        try:
+                                            normal_val = BaseScraper.clean_price(str(raw_norm))
+                                        except Exception:
+                                            pass
+
+                                discount_pct = None
+                                if price_val and normal_val and normal_val > price_val:
+                                    discount_pct = round(((normal_val - price_val) / normal_val) * 100, 1)
+
                                 items.append(
                                     ScrapedCategoryProduct(
                                         url=full_url,
                                         title=title.strip(),
+                                        price=price_val,
+                                        normal_price=normal_val,
+                                        discount_percent=discount_pct,
+                                        image_url=image_val,
                                         position=idx,
                                     )
                                 )
@@ -179,24 +240,36 @@ class CategoryScraper:
                 or page_props.get("results")
                 or page_props.get("searchResult", {}).get("products")
                 or page_props.get("initialData", {}).get("products")
+                or page_props.get("findabilityProps", {}).get("data", {}).get("products")
+                or page_props.get("catalog", {}).get("products")
             )
 
             if isinstance(raw_prods, list):
                 for idx, prod in enumerate(raw_prods, start=1):
                     if not isinstance(prod, dict):
                         continue
-                    url_val = prod.get("url") or prod.get("slug") or prod.get("targetUrl")
-                    if not url_val:
-                        pid = prod.get("productId") or prod.get("id")
-                        if pid and "falabella.com" in page_url:
-                            url_val = f"/falabella-cl/product/{pid}"
-
                     title_val = (
                         prod.get("displayName")
                         or prod.get("name")
                         or prod.get("title")
                         or "Producto"
                     )
+
+                    url_val = prod.get("url") or prod.get("slug") or prod.get("targetUrl")
+                    if not url_val:
+                        pid = prod.get("productId") or prod.get("id") or prod.get("parentProductID") or prod.get("sku")
+                        if pid and "falabella.com" in page_url:
+                            url_val = f"/falabella-cl/product/{pid}"
+                        elif pid and "ripley.cl" in page_url:
+                            pid_str = str(pid)
+                            for a in soup.find_all("a", href=True):
+                                href = a["href"].split("?")[0]
+                                if href.endswith(f"-{pid_str}") or href.endswith(f"-{pid_str}p"):
+                                    url_val = href
+                                    break
+                            if not url_val:
+                                clean_n = re.sub(r'[^a-zA-Z0-9]+', '-', title_val.lower()).strip('-')
+                                url_val = f"/{clean_n}-{pid_str}"
 
                     price_val = None
                     normal_val = None
@@ -235,6 +308,29 @@ class CategoryScraper:
                             except Exception:
                                 pass
 
+                    # Soporte Ripley específico de propiedades de precio
+                    if price_val is None:
+                        rp = prod.get("ripleyPriceNumber") or prod.get("priceNumber")
+                        if rp:
+                            try:
+                                price_val = float(rp)
+                            except Exception:
+                                pass
+                    if normal_val is None:
+                        mp = prod.get("masterPriceNumber")
+                        if mp:
+                            try:
+                                normal_val = float(mp)
+                            except Exception:
+                                pass
+                    if discount_val is None:
+                        d_num = prod.get("discount")
+                        if d_num:
+                            try:
+                                discount_val = float(d_num)
+                            except Exception:
+                                pass
+
                     # Badge de descuento
                     badge = prod.get("discountBadge")
                     if isinstance(badge, dict) and badge.get("label"):
@@ -252,6 +348,8 @@ class CategoryScraper:
                     if isinstance(media_list, list) and media_list:
                         m0 = media_list[0]
                         img_url = m0.get("url") if isinstance(m0, dict) else str(m0)
+                    if not img_url and prod.get("primaryImage"):
+                        img_url = prod.get("primaryImage")
 
                     if url_val:
                         full_url = urljoin(page_url, url_val)
@@ -270,6 +368,83 @@ class CategoryScraper:
                             break
         except Exception as ex:
             logger.debug(f"Error procesando __NEXT_DATA__ de categoría: {ex}")
+
+        return items
+
+    def _extract_from_next_stream(
+        self, html: str, page_url: str, max_items: int
+    ) -> List[ScrapedCategoryProduct]:
+        """Extrae productos transmitidos en Next.js App Router (self.__next_f.push) o payloads serializados."""
+        items: List[ScrapedCategoryProduct] = []
+        if "productData" not in html and "initialState" not in html:
+            return items
+
+        match = re.search(r'(?:\\"|")productData(?:\\"|")\s*:\s*\{(?:.*?)(?:\\"|")products(?:\\"|")\s*:\s*\[', html)
+        if not match:
+            return items
+
+        start_idx = match.end() - 1
+        bracket_count = 0
+        end_idx = start_idx
+        for i in range(start_idx, min(start_idx + 500000, len(html))):
+            if html[i] == '[':
+                bracket_count += 1
+            elif html[i] == ']':
+                bracket_count -= 1
+                if bracket_count == 0:
+                    end_idx = i + 1
+                    break
+
+        if end_idx <= start_idx:
+            return items
+
+        raw_array = html[start_idx:end_idx]
+        clean_json = raw_array.replace(r'\"', '"').replace(r'\\', '\\')
+        try:
+            products = json.loads(clean_json)
+            for idx, p in enumerate(products, start=1):
+                if not isinstance(p, dict):
+                    continue
+                name = p.get("name") or p.get("displayName") or "Producto"
+                slug = p.get("slug") or p.get("url") or p.get("key")
+                if not slug:
+                    continue
+
+                prod_url = urljoin(
+                    page_url,
+                    f"/{slug}.html" if not str(slug).endswith(".html") and not str(slug).startswith("http") else str(slug),
+                )
+
+                mv = p.get("masterVariant", {})
+                prices = mv.get("prices", {}) if isinstance(mv, dict) else {}
+                reg_val = prices.get("regular", {}).get("value", {}).get("centAmount")
+                off_val = prices.get("offer", {}).get("value", {}).get("centAmount")
+                card_val = prices.get("paymentMethod", {}).get("value", {}).get("centAmount")
+
+                price = float(card_val or off_val or reg_val) if (card_val or off_val or reg_val) else None
+                normal_price = float(reg_val) if (reg_val and price and reg_val > price) else None
+                disc = None
+                if normal_price and price:
+                    disc = round(((normal_price - price) / normal_price) * 100, 1)
+
+                images = mv.get("images", []) if isinstance(mv, dict) else []
+                img = images[0].get("url") if images and isinstance(images[0], dict) else None
+
+                items.append(
+                    ScrapedCategoryProduct(
+                        url=prod_url,
+                        title=name.strip(),
+                        price=price,
+                        normal_price=normal_price,
+                        discount_percent=disc,
+                        image_url=img,
+                        position=idx,
+                    )
+                )
+                if len(items) >= max_items:
+                    break
+        except Exception as ex:
+            logger.debug(f"Error parseando streaming Next.js de categoría: {ex}")
 
         return items
 
@@ -571,36 +746,60 @@ class CategoryCrawlerService:
                         modified = True
                     elif prod.price and existing.precio_actual is not None and prod.price < existing.precio_actual:
                         # Bajada de precio en producto ya monitoreado
-                        reduction = existing.precio_actual - prod.price
-                        pct = (reduction / existing.precio_actual) * 100
+                        old_price = existing.precio_actual
+                        reduction = old_price - prod.price
+                        pct = (reduction / old_price) * 100
+                        is_all_time_low = (
+                            existing.precio_minimo is not None and prod.price < existing.precio_minimo
+                        )
+
                         existing.precio_actual = prod.price
                         if existing.precio_minimo is None or prod.price < existing.precio_minimo:
                             existing.precio_minimo = prod.price
                         modified = True
 
                         if pct >= cat_item.default_threshold_percent and self.notifier:
-                            aff_url = prod.url
-                            if store_rule:
-                                from src.scrapers.configurable import ConfigurableScraper
-                                aff_url = ConfigurableScraper(store_rule).build_affiliate_url(prod.url)
-                            from src.services.notifier import AlertPayload
-                            payload = AlertPayload(
-                                title=existing.nombre or prod.title,
-                                store=store_name,
-                                old_price=existing.precio_actual + reduction,
-                                new_price=prod.price,
-                                discount_percent=pct,
-                                affiliate_url=aff_url,
-                                is_all_time_low=True,
-                                image_url=prod.image_url,
-                                category=cat_item.name,
-                                is_price_error=(pct >= settings.ERROR_DISCOUNT_THRESHOLD_PERCENT),
-                            )
-                            try:
-                                await self.notifier.send_alert(payload)
-                                existing.ultima_alerta_en = now_utc
-                            except Exception as ex:
-                                logger.warning(f"Error despachando alerta de actualización: {ex}")
+                            # Comprobación estricta de cooldown anti-spam (settings.ALERT_COOLDOWN_HOURS)
+                            in_cooldown = False
+                            if existing.ultima_alerta_en is not None:
+                                last_alert = existing.ultima_alerta_en
+                                if last_alert.tzinfo is None:
+                                    last_alert = last_alert.replace(tzinfo=datetime.timezone.utc)
+                                time_since = now_utc - last_alert
+                                cooldown_delta = datetime.timedelta(hours=settings.ALERT_COOLDOWN_HOURS)
+                                if time_since < cooldown_delta:
+                                    in_cooldown = True
+
+                            # Regla anti-spam estricta: NO alertar repetidamente durante el cooldown
+                            # salvo que rompa un mínimo histórico absoluto previo
+                            if in_cooldown and not is_all_time_low:
+                                logger.info(
+                                    f"Alerta en categoría omitida para [{store_name}] '{existing.nombre or prod.title}' "
+                                    f"por cooldown anti-spam ({settings.ALERT_COOLDOWN_HOURS}h)."
+                                )
+                            else:
+                                aff_url = prod.url
+                                if store_rule:
+                                    from src.scrapers.configurable import ConfigurableScraper
+                                    aff_url = ConfigurableScraper(store_rule).build_affiliate_url(prod.url)
+                                from src.services.notifier import AlertPayload
+                                payload = AlertPayload(
+                                    title=existing.nombre or prod.title,
+                                    store=store_name,
+                                    old_price=old_price,
+                                    new_price=prod.price,
+                                    discount_percent=pct,
+                                    affiliate_url=aff_url,
+                                    is_all_time_low=is_all_time_low,
+                                    image_url=prod.image_url,
+                                    category=cat_item.name,
+                                    is_price_error=(pct >= settings.ERROR_DISCOUNT_THRESHOLD_PERCENT),
+                                )
+                                try:
+                                    await self.notifier.send_alert(payload)
+                                    existing.ultima_alerta_en = now_utc
+                                except Exception as ex:
+                                    logger.warning(f"Error despachando alerta de actualización: {ex}")
 
                     if modified:
                         total_updated += 1

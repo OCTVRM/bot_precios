@@ -189,7 +189,29 @@ class ConfigurableScraper(BaseScraper):
             except Exception as ex:
                 logger.debug(f"[{self.rule.name}] Error leyendo __NEXT_DATA__: {ex}")
 
-        # Estrategia 3: Selectores CSS configurados en stores.json
+        # Estrategia 3: Metadatos canónicos del producto (OpenGraph, itemprop, microdata)
+        if price is None:
+            # 3a. Meta tags canónicos y microdatos (exclusivos del producto principal, inmunes a carruseles)
+            for meta_name in ["product:price:amount", "og:price:amount", "price"]:
+                meta = soup.find("meta", property=meta_name) or soup.find("meta", attrs={"name": meta_name})
+                if meta and meta.get("content"):
+                    try:
+                        price = self.clean_price(meta["content"])
+                        break
+                    except ValueError:
+                        continue
+
+            if price is None:
+                itemprop_elem = soup.find(attrs={"itemprop": "price"})
+                if itemprop_elem:
+                    raw_p = itemprop_elem.get("content") or itemprop_elem.get_text(strip=True)
+                    if raw_p:
+                        try:
+                            price = self.clean_price(raw_p)
+                        except ValueError:
+                            pass
+
+        # Estrategia 4: Selectores CSS configurados en stores.json (con ámbito preferente en contenedor principal)
         if not title:
             for sel in self.rule.selectors.title:
                 elem = soup.select_one(sel)
@@ -198,8 +220,16 @@ class ConfigurableScraper(BaseScraper):
                     break
 
         if price is None:
+            # Buscar primero dentro del contenedor principal del producto para evitar carruseles de recomendados
+            main_container = soup.select_one(
+                "main, [role='main'], .product-single, .product-main, .product-detail, "
+                ".product-information, .product__info-wrapper, form[action*='/cart/add'], "
+                "[data-component-type='product'], .product-info, #ProductSection"
+            )
             for sel in self.rule.selectors.price:
-                elem = soup.select_one(sel)
+                elem = main_container.select_one(sel) if main_container else None
+                if not elem:
+                    elem = soup.select_one(sel)
                 if elem and elem.get_text(strip=True):
                     try:
                         price = self.clean_price(elem.get_text(strip=True))
@@ -207,17 +237,10 @@ class ConfigurableScraper(BaseScraper):
                     except ValueError:
                         continue
 
-        # Estrategia 4: Metadatos OpenGraph / Meta tags como respaldo final
+        # Estrategia 5: Título y respaldo final OpenGraph
         if not title:
             og_title = soup.find("meta", property="og:title")
             title = og_title["content"].strip() if og_title and og_title.get("content") else (soup.title.string if soup.title else None)
-
-        if price is None:
-            for meta_name in ["product:price:amount", "price", "og:price:amount"]:
-                meta = soup.find("meta", property=meta_name) or soup.find("meta", attrs={"name": meta_name})
-                if meta and meta.get("content"):
-                    price = self.clean_price(meta["content"])
-                    break
 
         if not image_url:
             for sel in self.rule.selectors.image:
