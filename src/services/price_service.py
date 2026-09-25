@@ -1,6 +1,6 @@
 import datetime
 import logging
-from typing import Optional, Tuple
+from typing import List, Optional, Tuple
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.config import settings
