@@ -14,7 +14,10 @@
         "entel": "https://www.entel.cl/equipos/",
         "abc": "https://www.abc.cl/telefonia/celulares/smartphones.html",
         "mercadolibre": "https://listado.mercadolibre.cl/celulares-telefonos/celulares-smartphones/",
-        "samsung": "https://www.samsung.com/cl/smartphones/all-smartphones/"
+        "samsung": "https://www.samsung.com/cl/smartphones/all-smartphones/",
+        "maconline": "https://maconline.com/iphone",
+        "aufbau": "https://aufbau.cl/collections/iphone",
+        "mistore": "https://mistorechile.cl/collections/smartphones"
       }
     },
     {
@@ -59,7 +62,9 @@
         "hites": "https://www.hites.com/tecnologia/computacion/notebooks/",
         "abc": "https://www.abc.cl/computacion/notebooks.html",
         "mercadolibre": "https://listado.mercadolibre.cl/computacion/notebooks/",
-        "huawei": "https://consumer.huawei.com/cl/offer/computadores/"
+        "huawei": "https://consumer.huawei.com/cl/offer/computadores/",
+        "lenovo": "https://www.lenovo.com/cl/es/c/laptops/",
+        "maconline": "https://maconline.com/mac"
       }
     },
     {
@@ -110,7 +115,8 @@
         "paris": "https://www.paris.cl/search?q=consolas",
         "ripley": "https://simple.ripley.cl/search/consolas",
         "hites": "https://www.hites.com/tecnologia/videojuegos/",
-        "mercadolibre": "https://listado.mercadolibre.cl/consolas-videojuegos/"
+        "mercadolibre": "https://listado.mercadolibre.cl/consolas-videojuegos/",
+        "weplay": "https://www.weplay.cl/consolas.html"
       }
     },
     {
@@ -196,7 +202,8 @@
         "paris": "https://www.paris.cl/search?q=juguetes",
         "ripley": "https://simple.ripley.cl/search/juguetes",
         "theway": "https://www.theway.cl/juegos-de-mesa",
-        "mercadolibre": "https://listado.mercadolibre.cl/juegos-juguetes/"
+        "mercadolibre": "https://listado.mercadolibre.cl/juegos-juguetes/",
+        "weplay": "https://www.weplay.cl/coleccionables.html"
       }
     },
     {
@@ -252,7 +259,10 @@
         "mercadolibre": "https://tienda.mercadolibre.cl/adidas",
         "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=zapatillas",
         "paris": "https://www.paris.cl/search?q=zapatillas",
-        "ripley": "https://simple.ripley.cl/search/zapatillas"
+        "ripley": "https://simple.ripley.cl/search/zapatillas",
+        "nike": "https://www.nike.cl/calzado",
+        "decathlon": "https://www.decathlon.cl/calzado-deportivo",
+        "lippi": "https://www.lippioutdoor.com/calzado"
       }
     },
     {
@@ -284,7 +294,8 @@
         "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=despensa",
         "tottus": "https://www.tottus.cl/tottus-cl/categoria/despensa",
         "lider": "https://www.lider.cl/supermercado/category/Despensa",
-        "mercadolibre": "https://listado.mercadolibre.cl/alimentos-bebidas/despensa/"
+        "mercadolibre": "https://listado.mercadolibre.cl/alimentos-bebidas/despensa/",
+        "unimarc": "https://www.unimarc.cl/despensa"
       }
     },
     {
@@ -302,7 +313,9 @@
         "infanti": "https://infanti.cl/collections/all",
         "jumbo": "https://www.jumbo.cl/bebe-y-jugueteria/bebe/panales",
         "ahumada": "https://www.farmaciasahumada.cl/mama-y-bebe/panales",
-        "mercadolibre": "https://listado.mercadolibre.cl/bebes/panales-desechables/"
+        "mercadolibre": "https://listado.mercadolibre.cl/bebes/panales-desechables/",
+        "cruzverde": "https://www.cruzverde.cl/bebe-y-maternidad/panales-y-toallitas/",
+        "salcobrand": "https://salcobrand.cl/t/bebe/panales-y-toallitas-humedas"
       }
     },
     {
@@ -315,7 +328,10 @@
         "ahumada": "https://www.farmaciasahumada.cl/dermocosmetica",
         "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=dermocosmetica",
         "paris": "https://www.paris.cl/search?q=dermocosmetica",
-        "mercadolibre": "https://listado.mercadolibre.cl/belleza-cuidado-personal/cuidado-de-la-piel/"
+        "mercadolibre": "https://listado.mercadolibre.cl/belleza-cuidado-personal/cuidado-de-la-piel/",
+        "cruzverde": "https://www.cruzverde.cl/dermocosmetica/",
+        "salcobrand": "https://salcobrand.cl/t/dermocosmetica",
+        "drsimi": "https://farmaciasdrsimi.cl/cuidado-personal"
       }
     },
     {
@@ -330,7 +346,9 @@
         "jumbo": "https://www.jumbo.cl/vinos-cervezas-y-licores/cervezas",
         "santaisabel": "https://www.santaisabel.cl/vinos-cervezas-y-licores/cervezas",
         "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=licores",
-        "mercadolibre": "https://listado.mercadolibre.cl/alimentos-bebidas/bebidas/bebidas-alcoholicas/"
+        "mercadolibre": "https://listado.mercadolibre.cl/alimentos-bebidas/bebidas/bebidas-alcoholicas/",
+        "descorcha": "https://descorcha.com/vinos",
+        "casadelacerveza": "https://www.casadelacerveza.cl/cervezas"
       }
     },
     {
@@ -372,7 +390,9 @@
         "paris": "https://www.paris.cl/search?q=sofas",
         "ripley": "https://simple.ripley.cl/search/sofas",
         "easy": "https://www.easy.cl/muebles",
-        "mercadolibre": "https://listado.mercadolibre.cl/hogar-muebles/muebles-hogar/living/sillones-sofas/"
+        "mercadolibre": "https://listado.mercadolibre.cl/hogar-muebles/muebles-hogar/living/sillones-sofas/",
+        "ikea": "https://www.ikea.cl/sala/sofas-y-sillones",
+        "casaideas": "https://www.casaideas.cl/living-y-sala-de-estar"
       }
     },
     {
@@ -387,7 +407,8 @@
         "paris": "https://www.paris.cl/search?q=colchones",
         "ripley": "https://simple.ripley.cl/search/colchones",
         "easy": "https://www.easy.cl/dormitorio",
-        "mercadolibre": "https://listado.mercadolibre.cl/hogar-muebles/camas-colchones-accesorios/colchones/"
+        "mercadolibre": "https://listado.mercadolibre.cl/hogar-muebles/camas-colchones-accesorios/colchones/",
+        "ikea": "https://www.ikea.cl/dormitorio/camas-y-colchones"
       }
     },
     {
@@ -402,7 +423,8 @@
         "paris": "https://www.paris.cl/search?q=sillas+escritorio",
         "ripley": "https://simple.ripley.cl/search/sillas-gamer",
         "pcfactory": "https://www.pcfactory.cl/sillas-gamer",
-        "mercadolibre": "https://listado.mercadolibre.cl/hogar-muebles/muebles-hogar/oficina/sillas/"
+        "mercadolibre": "https://listado.mercadolibre.cl/hogar-muebles/muebles-hogar/oficina/sillas/",
+        "ikea": "https://www.ikea.cl/espacios-de-trabajo/sillas-de-escritorio"
       }
     },
     {
@@ -417,7 +439,9 @@
         "easy": "https://www.easy.cl/muebles",
         "paris": "https://www.paris.cl/search?q=terraza",
         "ripley": "https://simple.ripley.cl/search/terraza",
-        "mercadolibre": "https://listado.mercadolibre.cl/hogar-muebles/jardin-aire-libre/muebles-jardin/"
+        "mercadolibre": "https://listado.mercadolibre.cl/hogar-muebles/jardin-aire-libre/muebles-jardin/",
+        "ikea": "https://www.ikea.cl/terraza-y-jardin",
+        "casaideas": "https://www.casaideas.cl/terraza-y-jardin"
       }
     },
     {
@@ -431,7 +455,9 @@
         "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=comedor",
         "paris": "https://www.paris.cl/search?q=comedor",
         "ripley": "https://simple.ripley.cl/search/comedor",
-        "mercadolibre": "https://listado.mercadolibre.cl/hogar-muebles/muebles-hogar/comedor/"
+        "mercadolibre": "https://listado.mercadolibre.cl/hogar-muebles/muebles-hogar/comedor/",
+        "ikea": "https://www.ikea.cl/comedor/mesas-de-comedor",
+        "casaideas": "https://www.casaideas.cl/cocina-y-comedor"
       }
     },
     {
@@ -468,6 +494,129 @@
         "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=ropa+ninos",
         "paris": "https://www.paris.cl/search?q=ropa+ninos",
         "ripley": "https://simple.ripley.cl/search/ropa-ninos"
+      }
+    },
+    {
+      "id": "aspiradoras_robot_limpieza",
+      "name": "Aspiradoras Robot y Limpieza Inteligente",
+      "default_threshold_percent": 20.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=aspiradora+robot",
+        "paris": "https://www.paris.cl/search?q=aspiradora+robot",
+        "ripley": "https://simple.ripley.cl/search/aspiradora-robot",
+        "mercadolibre": "https://listado.mercadolibre.cl/electrodomesticos/pequenos-electrodomesticos/aspiradoras-limpieza/aspiradoras-robot/",
+        "sodimac": "https://www.sodimac.cl/sodimac-cl/search?Ntt=aspiradora+robot",
+        "mistore": "https://mistorechile.cl/collections/aspiradoras"
+      }
+    },
+    {
+      "id": "cafe_cafeteras",
+      "name": "Cafeteras Express, Automáticas y Café",
+      "default_threshold_percent": 20.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=cafetera+electrica",
+        "paris": "https://www.paris.cl/search?q=cafetera",
+        "ripley": "https://simple.ripley.cl/search/cafeteras",
+        "mercadolibre": "https://listado.mercadolibre.cl/electrodomesticos/pequenos-electrodomesticos/para-cocina/preparacion-bebidas/cafeteras/",
+        "sodimac": "https://www.sodimac.cl/sodimac-cl/search?Ntt=cafetera",
+        "jumbo": "https://www.jumbo.cl/despensa/cafe-te-y-hierbas/cafe-en-grano-y-molido"
+      }
+    },
+    {
+      "id": "drones_fotografia",
+      "name": "Drones, Cámaras y Fotografía",
+      "default_threshold_percent": 15.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "killstore": "https://www.killstore.cl/collections/drones",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=drones",
+        "paris": "https://www.paris.cl/search?q=drones",
+        "ripley": "https://simple.ripley.cl/search/drones",
+        "pcfactory": "https://www.pcfactory.cl/drones",
+        "mercadolibre": "https://listado.mercadolibre.cl/camaras-accesorios/drones-accesorios/"
+      }
+    },
+    {
+      "id": "movilidad_urbana_scooters",
+      "name": "Scooters Eléctricos y Movilidad Urbana",
+      "default_threshold_percent": 15.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "decathlon": "https://www.decathlon.cl/scooters-electricos",
+        "mistore": "https://mistorechile.cl/collections/movilidad-electrica",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=scooter+electrico",
+        "paris": "https://www.paris.cl/search?q=scooter+electrico",
+        "ripley": "https://simple.ripley.cl/search/scooter-electrico",
+        "mercadolibre": "https://listado.mercadolibre.cl/deportes-fitness/patin-scooters/scooters-electricos/"
+      }
+    },
+    {
+      "id": "outdoor_camping_trekking",
+      "name": "Outdoor, Camping y Trekking",
+      "default_threshold_percent": 20.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "lippi": "https://www.lippioutdoor.com/equipamiento",
+        "decathlon": "https://www.decathlon.cl/camping-y-travesias",
+        "sodimac": "https://www.sodimac.cl/sodimac-cl/category/cat10006/Camping",
+        "easy": "https://www.easy.cl/aire-libre/camping-y-playa",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=camping",
+        "paris": "https://www.paris.cl/search?q=camping",
+        "mercadolibre": "https://listado.mercadolibre.cl/deportes-fitness/camping-caza-pesca/"
+      }
+    },
+    {
+      "id": "fitness_gimnasio_suplementos",
+      "name": "Fitness, Máquinas de Ejercicio y Suplementos",
+      "default_threshold_percent": 20.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "decathlon": "https://www.decathlon.cl/fitness-musculacion-y-cross-training",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=trotadora",
+        "paris": "https://www.paris.cl/search?q=maquinas+ejercicio",
+        "ripley": "https://simple.ripley.cl/search/fitness",
+        "cruzverde": "https://www.cruzverde.cl/nutricion-y-deporte/suplementos-deportivos/",
+        "mercadolibre": "https://listado.mercadolibre.cl/deportes-fitness/fitness-musculacion/"
+      }
+    },
+    {
+      "id": "juegos_de_mesa",
+      "name": "Juegos de Mesa y Rol",
+      "default_threshold_percent": 15.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "weplay": "https://www.weplay.cl/juegos-de-mesa.html",
+        "theway": "https://www.theway.cl/juegos-de-mesa",
+        "piedrabruja": "https://piedrabruja.cl/collections/juegos-de-mesa",
+        "collectorcenter": "https://collectorcenter.cl/collections/juegos-de-mesa",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=juegos+de+mesa",
+        "paris": "https://www.paris.cl/search?q=juegos+de+mesa",
+        "mercadolibre": "https://listado.mercadolibre.cl/juegos-juguetes/juegos-mesa-cartas/juegos-mesa/"
+      }
+    },
+    {
+      "id": "cuidado_capilar_profesional",
+      "name": "Cuidado Capilar y Belleza Profesional",
+      "default_threshold_percent": 20.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "salcobrand": "https://salcobrand.cl/t/cuidado-personal/cuidado-capilar",
+        "cruzverde": "https://www.cruzverde.cl/cuidado-personal/cuidado-capilar/",
+        "ahumada": "https://www.farmaciasahumada.cl/cuidado-personal/cuidado-capilar",
+        "paris": "https://www.paris.cl/search?q=cuidado+capilar",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=cuidado+capilar",
+        "ripley": "https://simple.ripley.cl/search/cuidado-capilar",
+        "mercadolibre": "https://listado.mercadolibre.cl/belleza-cuidado-personal/cuidado-del-cabello/"
       }
     }
   ]
