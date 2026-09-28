@@ -101,6 +101,55 @@ async def init_db() -> None:
                     sync_conn.execute(text(f"ALTER TABLE products ADD COLUMN es_top_categoria BOOLEAN DEFAULT {default_bool}"))
 
         await conn.run_sync(check_columns)
+
+        # Configuración de permisos GRANT y privilegios por defecto para Supabase Data API
+        def configure_supabase_permissions(sync_conn):
+            if sync_conn.dialect.name == "postgresql":
+                from sqlalchemy import text
+                logger.info("Configurando permisos explícitos GRANT y privilegios para Supabase Data API...")
+                try:
+                    sync_conn.execute(text("""
+                        DO $$
+                        BEGIN
+                            -- Verificar si los roles estándar de Supabase están disponibles
+                            IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'anon') AND
+                               EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'authenticated') AND
+                               EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'service_role') THEN
+
+                                -- 1. Uso de esquema public
+                                GRANT USAGE ON SCHEMA public TO anon, authenticated, service_role;
+
+                                -- 2. Permisos a tablas públicas para Data API (PostgREST / Supabase JS)
+                                IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'products') THEN
+                                    GRANT SELECT ON TABLE public.products TO anon, authenticated;
+                                    GRANT ALL ON TABLE public.products TO service_role;
+                                END IF;
+
+                                IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'price_history') THEN
+                                    GRANT SELECT ON TABLE public.price_history TO anon, authenticated;
+                                    GRANT ALL ON TABLE public.price_history TO service_role;
+                                END IF;
+
+                                IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'subscriptions') THEN
+                                    GRANT ALL ON TABLE public.subscriptions TO service_role;
+                                END IF;
+
+                                -- 3. Permisos en secuencias
+                                GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO anon, authenticated;
+                                GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO service_role;
+
+                                -- 4. Privilegios por defecto para futuras tablas y secuencias creadas en public
+                                ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO anon, authenticated;
+                                ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO service_role;
+                                ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE, SELECT ON SEQUENCES TO anon, authenticated;
+                                ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO service_role;
+                            END IF;
+                        END $$;
+                    """))
+                except Exception as e:
+                    logger.warning(f"No se pudieron configurar permisos automáticos de Supabase (omitido): {e}")
+
+        await conn.run_sync(configure_supabase_permissions)
     logger.info("Base de datos inicializada correctamente.")
 
 

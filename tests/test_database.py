@@ -42,3 +42,14 @@ def test_pgbouncer_nullpool_configuration():
 
     # Restaurar reload con la configuración original
     importlib.reload(src.database)
+
+
+@pytest.mark.asyncio
+async def test_init_db_runs_successfully():
+    """Verifica que init_db se ejecute sin errores en SQLite e inicialice las tablas."""
+    from src.database import init_db, close_db
+    try:
+        await init_db()
+    finally:
+        await close_db()
+
