@@ -600,20 +600,29 @@
           ".col-product"
         ],
         "link": [
+          ".product-block-name a",
+          "a.product-image",
           "a.product-link",
           "a[href*='/']"
         ],
         "title": [
+          ".product-block-name a",
+          "h4.product-block-name",
           ".product-title",
           ".title a",
+          "h4",
           "h3"
         ],
         "price": [
+          ".sale-color",
+          ".list-price span",
+          ".list-price",
           ".product-price",
           ".price",
           ".money"
         ],
         "image": [
+          "img.image-hover-initial",
           "img.product-img",
           "img"
         ]
@@ -758,22 +767,28 @@
       },
       "category_selectors": {
         "card": [
-          ".product-card",
-          ".grid__item",
-          ".card-wrapper"
+          "div.product-card",
+          ".card.product-card",
+          ".card-wrapper",
+          ".grid__item"
         ],
         "link": [
+          "a.product-card__title",
           "a[href*='/products/']",
           "a"
         ],
         "title": [
+          "a.product-card__title",
           ".product-card__title",
           ".card__heading",
           "h3"
         ],
         "price": [
+          ".price__regular",
           ".price-item--sale",
           ".price-item",
+          ".price span",
+          ".price",
           ".money"
         ],
         "image": [
@@ -3207,6 +3222,981 @@
         ]
       },
       "affiliate_param": "utm_source",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "sparta",
+      "name": "Sparta Deportes",
+      "domains": [
+        "sparta.cl",
+        "www.sparta.cl"
+      ],
+      "use_json_ld": true,
+      "selectors": {
+        "title": [
+          "h1.product-title",
+          "h1.page-title",
+          "h1"
+        ],
+        "price": [
+          ".price-final",
+          ".special-price .price",
+          ".price"
+        ],
+        "image": [
+          "meta[property='og:image']",
+          "img.gallery-image"
+        ]
+      },
+      "category_selectors": {
+        "card": [
+          ".product-item",
+          ".product-card",
+          ".item-product"
+        ],
+        "link": [
+          "a.product-item-link",
+          "a[href*='.html']",
+          "a"
+        ],
+        "title": [
+          ".product-item-name",
+          "h2",
+          "h3"
+        ],
+        "price": [
+          ".price-final",
+          ".special-price .price",
+          ".price"
+        ],
+        "image": [
+          "img.product-image-photo",
+          "img"
+        ]
+      },
+      "affiliate_param": "utm_source",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "bold",
+      "name": "Bold Streetwear",
+      "domains": [
+        "bold.cl",
+        "www.bold.cl"
+      ],
+      "use_json_ld": true,
+      "selectors": {
+        "title": [
+          "h1.product-name",
+          "h1.title",
+          "h1"
+        ],
+        "price": [
+          ".price-offer",
+          ".special-price",
+          ".price"
+        ],
+        "image": [
+          "meta[property='og:image']"
+        ]
+      },
+      "category_selectors": {
+        "card": [
+          ".product-card",
+          ".vtex-search-result-3-x-galleryItem",
+          ".product-item"
+        ],
+        "link": [
+          "a.product-card__link",
+          "a[href*='/p']",
+          "a"
+        ],
+        "title": [
+          ".product-card__title",
+          "h2",
+          "h3"
+        ],
+        "price": [
+          ".product-card__price",
+          ".price",
+          ".best-price"
+        ],
+        "image": [
+          "img.product-card__image",
+          "img"
+        ]
+      },
+      "affiliate_param": "utm_source",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "construmart",
+      "name": "Construmart",
+      "domains": [
+        "construmart.cl",
+        "www.construmart.cl"
+      ],
+      "use_json_ld": true,
+      "selectors": {
+        "title": [
+          "h1.vtex-store-components-3-x-productNameContainer",
+          "h1"
+        ],
+        "price": [
+          ".vtex-product-price-1-x-sellingPrice",
+          ".price",
+          "span[class*='sellingPrice']"
+        ],
+        "image": [
+          "meta[property='og:image']"
+        ]
+      },
+      "category_selectors": {
+        "card": [
+          ".vtex-search-result-3-x-galleryItem",
+          ".product-card"
+        ],
+        "link": [
+          "a.vtex-product-summary-2-x-clearLink",
+          "a[href*='/p']",
+          "a"
+        ],
+        "title": [
+          ".vtex-product-summary-2-x-productBrand",
+          "h2",
+          "h3"
+        ],
+        "price": [
+          ".vtex-product-price-1-x-sellingPrice",
+          "span[class*='sellingPrice']",
+          ".price"
+        ],
+        "image": [
+          "img.vtex-product-summary-2-x-imageNormal",
+          "img"
+        ]
+      },
+      "affiliate_param": "utm_source",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "gsmpro",
+      "name": "GSMPRO Chile",
+      "domains": [
+        "gsmpro.cl",
+        "www.gsmpro.cl"
+      ],
+      "use_json_ld": true,
+      "selectors": {
+        "title": [
+          "h1.product__title",
+          "h1"
+        ],
+        "price": [
+          ".price--on-sale .price-item--sale",
+          ".price-item--regular",
+          ".price"
+        ],
+        "image": [
+          "meta[property='og:image']"
+        ]
+      },
+      "category_selectors": {
+        "card": [
+          ".grid__item .card",
+          ".product-card",
+          ".card-wrapper"
+        ],
+        "link": [
+          "a.full-unstyled-link",
+          "a[href*='/products/']",
+          "a"
+        ],
+        "title": [
+          ".card__heading",
+          "h2",
+          "h3"
+        ],
+        "price": [
+          ".price-item--sale",
+          ".price-item--regular",
+          ".price"
+        ],
+        "image": [
+          "img.motion-reduce",
+          "img"
+        ]
+      },
+      "affiliate_param": "utm_source",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "preunic",
+      "name": "Preunic",
+      "domains": [
+        "preunic.cl",
+        "www.preunic.cl"
+      ],
+      "use_json_ld": true,
+      "selectors": {
+        "title": [
+          "h1.vtex-store-components-3-x-productNameContainer",
+          "h1"
+        ],
+        "price": [
+          ".vtex-product-price-1-x-sellingPrice",
+          ".price",
+          "span[class*='sellingPrice']"
+        ],
+        "image": [
+          "meta[property='og:image']"
+        ]
+      },
+      "category_selectors": {
+        "card": [
+          ".vtex-search-result-3-x-galleryItem",
+          ".product-card"
+        ],
+        "link": [
+          "a.vtex-product-summary-2-x-clearLink",
+          "a[href*='/p']",
+          "a"
+        ],
+        "title": [
+          ".vtex-product-summary-2-x-productBrand",
+          "h2",
+          "h3"
+        ],
+        "price": [
+          ".vtex-product-price-1-x-sellingPrice",
+          "span[class*='sellingPrice']",
+          ".price"
+        ],
+        "image": [
+          "img.vtex-product-summary-2-x-imageNormal",
+          "img"
+        ]
+      },
+      "affiliate_param": "utm_source",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "dbs",
+      "name": "DBS Beauty Store",
+      "domains": [
+        "dbs.cl",
+        "www.dbs.cl"
+      ],
+      "use_json_ld": true,
+      "selectors": {
+        "title": [
+          "h1.product-title",
+          "h1"
+        ],
+        "price": [
+          ".price-box .price",
+          ".special-price .price",
+          ".price"
+        ],
+        "image": [
+          "meta[property='og:image']"
+        ]
+      },
+      "category_selectors": {
+        "card": [
+          ".product-item",
+          ".product-card"
+        ],
+        "link": [
+          "a.product-item-link",
+          "a[href*='.html']",
+          "a"
+        ],
+        "title": [
+          ".product-item-name",
+          "h2",
+          "h3"
+        ],
+        "price": [
+          ".special-price .price",
+          ".price-final",
+          ".price"
+        ],
+        "image": [
+          "img.product-image-photo",
+          "img"
+        ]
+      },
+      "affiliate_param": "utm_source",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "doite",
+      "name": "Doite Outdoor",
+      "domains": [
+        "doite.cl",
+        "www.doite.cl"
+      ],
+      "use_json_ld": true,
+      "selectors": {
+        "title": [
+          "h1.product-single__title",
+          "h1"
+        ],
+        "price": [
+          ".product__price",
+          ".price-item--sale",
+          ".price"
+        ],
+        "image": [
+          "meta[property='og:image']"
+        ]
+      },
+      "category_selectors": {
+        "card": [
+          ".grid-product",
+          ".product-card",
+          ".card-wrapper"
+        ],
+        "link": [
+          "a.grid-product__link",
+          "a[href*='/products/']",
+          "a"
+        ],
+        "title": [
+          ".grid-product__title",
+          "h2",
+          "h3"
+        ],
+        "price": [
+          ".grid-product__price",
+          ".price"
+        ],
+        "image": [
+          "img.grid-product__image",
+          "img"
+        ]
+      },
+      "affiliate_param": "utm_source",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "allgamers",
+      "name": "All Gamers Chile",
+      "domains": [
+        "allgamers.cl",
+        "www.allgamers.cl"
+      ],
+      "use_json_ld": true,
+      "selectors": {
+        "title": [
+          "h1.product_title",
+          "h1"
+        ],
+        "price": [
+          ".price ins .amount",
+          ".price .amount",
+          ".woocommerce-Price-amount"
+        ],
+        "image": [
+          "meta[property='og:image']"
+        ]
+      },
+      "category_selectors": {
+        "card": [
+          ".product-grid-item",
+          "li.product",
+          ".product-card"
+        ],
+        "link": [
+          "a.woocommerce-LoopProduct-link",
+          "a[href*='/producto/']",
+          "a"
+        ],
+        "title": [
+          ".woocommerce-loop-product__title",
+          "h2",
+          "h3"
+        ],
+        "price": [
+          ".price ins .amount",
+          ".price .amount",
+          ".woocommerce-Price-amount"
+        ],
+        "image": [
+          "img.attachment-woocommerce_thumbnail",
+          "img"
+        ]
+      },
+      "affiliate_param": "utm_source",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "mybox",
+      "name": "MyBox PC Gamer",
+      "domains": [
+        "mybox.cl",
+        "www.mybox.cl"
+      ],
+      "use_json_ld": true,
+      "selectors": {
+        "title": [
+          "h1.page-title",
+          "h1"
+        ],
+        "price": [
+          ".price-final",
+          ".special-price .price",
+          ".price"
+        ],
+        "image": [
+          "meta[property='og:image']"
+        ]
+      },
+      "category_selectors": {
+        "card": [
+          ".product-item",
+          ".product-card"
+        ],
+        "link": [
+          "a.product-item-link",
+          "a"
+        ],
+        "title": [
+          ".product-item-name",
+          "h2",
+          "h3"
+        ],
+        "price": [
+          ".special-price .price",
+          ".price-final",
+          ".price"
+        ],
+        "image": [
+          "img.product-image-photo",
+          "img"
+        ]
+      },
+      "affiliate_param": "utm_source",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "bip",
+      "name": "BIP Computers",
+      "domains": [
+        "bip.cl",
+        "www.bip.cl"
+      ],
+      "use_json_ld": true,
+      "selectors": {
+        "title": [
+          "h1.product-title",
+          "h1"
+        ],
+        "price": [
+          ".precio_oferta",
+          ".precio-web",
+          ".price"
+        ],
+        "image": [
+          "meta[property='og:image']"
+        ]
+      },
+      "category_selectors": {
+        "card": [
+          ".item-producto",
+          ".card-producto",
+          ".product-box"
+        ],
+        "link": [
+          "a.enlace-producto",
+          "a[href*='/producto/']",
+          "a"
+        ],
+        "title": [
+          ".nombre-producto",
+          "h2",
+          "h3"
+        ],
+        "price": [
+          ".precio_oferta",
+          ".precio-web",
+          ".price"
+        ],
+        "image": [
+          "img.imagen-producto",
+          "img"
+        ]
+      },
+      "affiliate_param": "utm_source",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "audiomusica",
+      "name": "Audiomúsica",
+      "domains": [
+        "audiomusica.cl",
+        "www.audiomusica.cl"
+      ],
+      "use_json_ld": true,
+      "selectors": {
+        "title": [
+          "h1.vtex-store-components-3-x-productNameContainer",
+          "h1"
+        ],
+        "price": [
+          ".vtex-product-price-1-x-sellingPrice",
+          "span[class*='sellingPrice']",
+          ".price"
+        ],
+        "image": [
+          "meta[property='og:image']"
+        ]
+      },
+      "category_selectors": {
+        "card": [
+          ".vtex-search-result-3-x-galleryItem",
+          ".product-card"
+        ],
+        "link": [
+          "a.vtex-product-summary-2-x-clearLink",
+          "a[href*='/p']",
+          "a"
+        ],
+        "title": [
+          ".vtex-product-summary-2-x-productBrand",
+          "h2",
+          "h3"
+        ],
+        "price": [
+          ".vtex-product-price-1-x-sellingPrice",
+          "span[class*='sellingPrice']",
+          ".price"
+        ],
+        "image": [
+          "img.vtex-product-summary-2-x-imageNormal",
+          "img"
+        ]
+      },
+      "affiliate_param": "utm_source",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "lacav",
+      "name": "La Cav Vinos & Licores",
+      "domains": [
+        "lacav.cl",
+        "www.lacav.cl"
+      ],
+      "use_json_ld": true,
+      "selectors": {
+        "title": [
+          "h1.product-title",
+          "h1"
+        ],
+        "price": [
+          ".price-box .price",
+          ".special-price .price",
+          ".price"
+        ],
+        "image": [
+          "meta[property='og:image']"
+        ]
+      },
+      "category_selectors": {
+        "card": [
+          ".product-item",
+          ".product-card"
+        ],
+        "link": [
+          "a.product-item-link",
+          "a[href*='.html']",
+          "a"
+        ],
+        "title": [
+          ".product-item-name",
+          "h2",
+          "h3"
+        ],
+        "price": [
+          ".special-price .price",
+          ".price-final",
+          ".price"
+        ],
+        "image": [
+          "img.product-image-photo",
+          "img"
+        ]
+      },
+      "affiliate_param": "utm_source",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "anker",
+      "name": "Anker Store Chile",
+      "domains": [
+        "ankerstore.cl",
+        "www.ankerstore.cl"
+      ],
+      "use_json_ld": true,
+      "selectors": {
+        "title": [
+          "h1.product-single__title",
+          "h1"
+        ],
+        "price": [
+          ".price__current",
+          ".price-item--sale",
+          ".price"
+        ],
+        "image": [
+          "meta[property='og:image']"
+        ]
+      },
+      "category_selectors": {
+        "card": [
+          ".product-card",
+          ".grid-item",
+          ".card-wrapper"
+        ],
+        "link": [
+          "a.product-card__title",
+          "a[href*='/products/']",
+          "a"
+        ],
+        "title": [
+          ".product-card__name",
+          "h2",
+          "h3"
+        ],
+        "price": [
+          ".price__current",
+          ".price-item--sale",
+          ".price"
+        ],
+        "image": [
+          "img.product-card__image",
+          "img"
+        ]
+      },
+      "affiliate_param": "utm_source",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "crealitychile",
+      "name": "Creality Chile 3D",
+      "domains": [
+        "crealitychile.cl",
+        "www.crealitychile.cl"
+      ],
+      "use_json_ld": true,
+      "selectors": {
+        "title": [
+          "h1.product-title",
+          "h1"
+        ],
+        "price": [
+          ".price-box .price",
+          ".price"
+        ],
+        "image": [
+          "meta[property='og:image']"
+        ]
+      },
+      "category_selectors": {
+        "card": [
+          ".product-item",
+          ".product-card"
+        ],
+        "link": [
+          "a.product-card__link",
+          "a[href*='/collections/']",
+          "a"
+        ],
+        "title": [
+          ".product-title",
+          "h2",
+          "h3"
+        ],
+        "price": [
+          ".price",
+          ".product-price"
+        ],
+        "image": [
+          "img.product-card__image",
+          "img"
+        ]
+      },
+      "affiliate_param": "utm_source",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "coliseo",
+      "name": "Coliseo Zapatillas",
+      "domains": [
+        "coliseostore.cl",
+        "www.coliseostore.cl"
+      ],
+      "use_json_ld": true,
+      "selectors": {
+        "title": [
+          "h1.product-title",
+          "h1"
+        ],
+        "price": [
+          ".price-sale",
+          ".price"
+        ],
+        "image": [
+          "meta[property='og:image']"
+        ]
+      },
+      "category_selectors": {
+        "card": [
+          ".product-card",
+          ".item-card"
+        ],
+        "link": [
+          "a.product-link",
+          "a"
+        ],
+        "title": [
+          ".product-name",
+          "h2",
+          "h3"
+        ],
+        "price": [
+          ".price-sale",
+          ".price"
+        ],
+        "image": [
+          "img.product-img",
+          "img"
+        ]
+      },
+      "affiliate_param": "utm_source",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "babytuto",
+      "name": "Babytuto",
+      "domains": [
+        "babytuto.com",
+        "www.babytuto.com"
+      ],
+      "use_json_ld": true,
+      "selectors": {
+        "title": [
+          "h1.product-name",
+          "h1"
+        ],
+        "price": [
+          ".product-price .price",
+          ".price"
+        ],
+        "image": [
+          "meta[property='og:image']"
+        ]
+      },
+      "category_selectors": {
+        "card": [
+          ".product-card",
+          ".item-product"
+        ],
+        "link": [
+          "a.product-link",
+          "a"
+        ],
+        "title": [
+          ".product-name",
+          "h2",
+          "h3"
+        ],
+        "price": [
+          ".product-price",
+          ".price"
+        ],
+        "image": [
+          "img.product-img",
+          "img"
+        ]
+      },
+      "affiliate_param": "utm_source",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "magicsur",
+      "name": "Magicsur Chile",
+      "domains": [
+        "magicsur.cl",
+        "www.magicsur.cl"
+      ],
+      "use_json_ld": true,
+      "selectors": {
+        "title": [
+          "h1.h1",
+          "h1.product-title",
+          "h1"
+        ],
+        "price": [
+          ".current-price span[itemprop='price']",
+          ".current-price",
+          "span.product-price",
+          ".price"
+        ],
+        "image": [
+          "meta[property='og:image']",
+          ".js-qv-product-cover",
+          "img.product-thumbnail-first"
+        ]
+      },
+      "category_selectors": {
+        "card": [
+          "article.product-miniature",
+          ".js-product-miniature",
+          ".product-miniature"
+        ],
+        "link": [
+          "h2.product-title a",
+          "a.product-thumbnail",
+          "a"
+        ],
+        "title": [
+          "h2.product-title a",
+          ".product-title",
+          "h2",
+          "h3"
+        ],
+        "price": [
+          "span.product-price",
+          ".product-price-and-shipping span",
+          ".product-price",
+          ".price"
+        ],
+        "image": [
+          "img.product-thumbnail-first",
+          "img"
+        ]
+      },
+      "affiliate_param": "ref",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "sniper",
+      "name": "Sniper Chile",
+      "domains": [
+        "sniper.cl",
+        "www.sniper.cl"
+      ],
+      "use_json_ld": true,
+      "selectors": {
+        "title": [
+          "h1.tt-title",
+          "h1"
+        ],
+        "price": [
+          ".tt-price .new-price",
+          ".tt-price",
+          ".price"
+        ],
+        "image": [
+          "meta[property='og:image']",
+          "img.zoom-product"
+        ]
+      },
+      "category_selectors": {
+        "card": [
+          "div.tt-product",
+          ".tt-product",
+          ".product-parent"
+        ],
+        "link": [
+          "h2.tt-title a",
+          "a.tt-img-parent",
+          "a"
+        ],
+        "title": [
+          "h2.tt-title a",
+          ".tt-title",
+          "h2",
+          "h3"
+        ],
+        "price": [
+          "span.new-price",
+          ".tt-price span",
+          ".tt-price",
+          ".price"
+        ],
+        "image": [
+          "img.lazyload",
+          "img"
+        ]
+      },
+      "affiliate_param": "ref",
+      "affiliate_tag": ""
+    },
+    {
+      "id": "cic",
+      "name": "CIC",
+      "domains": [
+        "cic.cl",
+        "www.cic.cl"
+      ],
+      "use_json_ld": true,
+      "selectors": {
+        "title": [
+          "h1.product-name",
+          "h1",
+          ".product-detail h1"
+        ],
+        "price": [
+          ".prices-add-to-cart-actions .sales .value",
+          ".prices .sales .value",
+          ".sales .value",
+          ".product-price .price",
+          ".price .value",
+          "[data-price]"
+        ],
+        "image": [
+          "meta[property='og:image']",
+          ".product-image img",
+          "img.primary-image"
+        ]
+      },
+      "category_selectors": {
+        "card": [
+          "div[data-pid]",
+          ".product-tile",
+          ".product-grid .product",
+          ".product"
+        ],
+        "link": [
+          ".pdp-link a",
+          "a.tile-link",
+          "a[href*='.html']",
+          "a"
+        ],
+        "title": [
+          ".pdp-link a",
+          ".pdp-link",
+          ".tile-name",
+          "h2",
+          "h3"
+        ],
+        "price": [
+          ".sales .value",
+          ".sales span.value",
+          ".price .value",
+          ".price",
+          "span.value"
+        ],
+        "image": [
+          "img.tile-image",
+          ".tile-image img",
+          "img"
+        ]
+      },
+      "affiliate_param": "ref",
       "affiliate_tag": ""
     }
   ]

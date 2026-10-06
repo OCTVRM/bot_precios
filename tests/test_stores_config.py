@@ -40,6 +40,9 @@ def test_stores_catalog_loading():
         "sodimac",
         "amazon",
         "mercadolibre",
+        "magicsur",
+        "sniper",
+        "cic",
     }
     assert expected_stores.issubset(store_ids)
 
@@ -55,6 +58,9 @@ def test_domain_matching_for_all_requested_stores():
         ("https://www.entel.cl/equipos/apple/iphone-15/", "Entel"),
         ("https://www.easy.cl/taladro-percutor-1102928/p", "Easy"),
         ("https://www.sodimac.cl/sodimac-cl/product/110292837", "Sodimac"),
+        ("https://www.magicsur.cl/pokemon-tcg/7261.html", "Magicsur Chile"),
+        ("https://sniper.cl/products/pokemon-legends-z-a", "Sniper Chile"),
+        ("https://www.cic.cl/colchon-1-plaza-ortopedic-90x190/780642759781-8.html", "CIC"),
     ]
 
     for url, expected_name in test_urls:
@@ -222,3 +228,54 @@ async def test_sync_monitored_urls(test_session: AsyncSession, tmp_path):
     assert p1.nombre == "Consola Falabella Renombrada"
     assert p1.precio_objetivo == 420000.0
     assert p1.umbral_descuento_porcentaje == 15.0
+
+
+@pytest.mark.asyncio
+async def test_configurable_scraper_ripley_parentpricestock():
+    """Verifica que ConfigurableScraper extraiga correctamente precios desde detailProps y parentpricestock de Ripley."""
+    rule = find_store_rule_for_url("https://simple.ripley.cl/pokemon-box-12345p")
+    scraper = ConfigurableScraper(rule)
+
+    html_content = """
+    <html>
+      <head>
+        <script id="__NEXT_DATA__" type="application/json">
+        {
+          "props": {
+            "pageProps": {
+              "detailProps": {
+                "data": {
+                  "product": {
+                    "name": "Pokemon TCG Booster Box",
+                    "fullImage": "//rimage.ripley.cl/image.jpg",
+                    "parentpricestock": {
+                      "stock": true,
+                      "price": {
+                        "master": {"valueNumber": 245990},
+                        "sale": {"valueNumber": 239990},
+                        "ripley": {"valueNumber": 220990},
+                        "discount": {"percentage": "10.00"}
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        </script>
+      </head>
+      <body></body>
+    </html>
+    """
+
+    with patch.object(scraper, "fetch_html", return_value=html_content):
+        item = await scraper.scrape("https://simple.ripley.cl/pokemon-box-12345p")
+
+    assert item.title == "Pokemon TCG Booster Box"
+    assert item.price == 220990.0
+    assert item.normal_price == 245990.0
+    assert item.discount_percent == 10.0
+    assert item.in_stock is True
+    assert item.image_url == "https://rimage.ripley.cl/image.jpg"
+

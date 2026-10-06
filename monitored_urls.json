@@ -57,9 +57,44 @@
   },
   {
     "url": "https://www.theway.cl/preventa-16092026-pokemon-tcg-30th-celebration-elite-trainer-box-ingles",
-    "name": "ETB 30 Aniversario",
-    "target_price": 110000,
+    "name": "ETB 30 Aniversario Pokémon TCG - The Way",
+    "target_price": 91000,
     "threshold_percent": 8.0,
     "active": true
+  },
+  {
+    "url": "https://www.falabella.com/falabella-cl/product/80807181/tcg-battle-academy-2-pokemon",
+    "name": "Pokémon TCG Battle Academy - Falabella",
+    "target_price": 30000,
+    "threshold_percent": 10.0,
+    "active": true
+  },
+  {
+    "url": "https://www.paris.cl/pokemon-tcg-30th-celebration-bundle-booster-ingles-MKPWYNJ0I5.html",
+    "name": "Pokémon TCG: 30th Celebration Bundle Booster - Paris",
+    "target_price": 91000,
+    "threshold_percent": 8.0,
+    "active": true
+  },
+  {
+    "url": "https://www.paris.cl/pokemon-tcg-30th-celebration-poster-collection-ingles-MK0VUUSJQM.html",
+    "name": "Pokémon TCG 30th Celebration Colección - Paris",
+    "target_price": 50000,
+    "threshold_percent": 8.0,
+    "active": true
+  },
+  {
+    "url": "https://simple.ripley.cl/pokemon-tcg-mega-evolution-pitch-black-booster-box-espanol-mpm10003469911",
+    "name": "Pokémon TCG Mega Evolution Box - Ripley",
+    "target_price": 91000,
+    "threshold_percent": 8.0,
+    "active": true
+  },
+  {
+    "url": "https://www.lider.cl/search?q=pokemon+tcg",
+    "name": "Pokémon TCG ETB 30 Aniversario - Lider",
+    "target_price": 91000,
+    "threshold_percent": 8.0,
+    "active": false
   }
 ]

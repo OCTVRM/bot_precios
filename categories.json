@@ -87,7 +87,7 @@
     {
       "id": "pokemon_tcg",
       "name": "Pokémon TCG y Cartas Coleccionables",
-      "default_threshold_percent": 15.0,
+      "default_threshold_percent": 10.0,
       "error_threshold_percent": 50.0,
       "active": true,
       "stores": {
@@ -96,12 +96,59 @@
         "tiendalacomarca": "https://www.tiendalacomarca.cl/collections/pokemon-sellado",
         "piedrabruja": "https://piedrabruja.cl/collections/pokemon",
         "drawn": "https://drawn.cl/collections/sellado-pokemon",
-        "charizstore": "https://www.charizstore.cl/product-category/preventa/",
+        "charizstore": "https://www.charizstore.cl/?s=pokemon&post_type=product",
         "playtcg": "https://www.playtcg.cl/productos-sellados/productos-pokemon-tcg",
         "thirdimpact": "https://www.thirdimpact.cl/collection/pokemon-trading-card-game",
         "huntercardtcg": "https://www.huntercardtcg.com/categoria-producto/pokemon-tcg/",
         "pokestop": "https://pokestop.cl/productos",
-        "mercadolibre": "https://listado.mercadolibre.cl/juegos-juguetes/juegos-mesa-cartas/pokemon-tcg"
+        "magicsur": "https://www.magicsur.cl/buscar?controller=search&s=pokemon",
+        "sniper": "https://sniper.cl/search?q=pokemon",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=pokemon+tcg",
+        "mercadolibre": "https://listado.mercadolibre.cl/juegos-juguetes/juegos-mesa-cartas/pokemon-tcg",
+        "paris": "https://www.paris.cl/search?q=pokemon+tcg",
+        "ripley": "https://simple.ripley.cl/search/pokemon-tcg",
+        "lider": "https://www.lider.cl/search?q=pokemon+tcg"
+      }
+    },
+    {
+      "id": "pokemon_30_aniversario",
+      "name": "Pokémon TCG 30 Aniversario y ETB",
+      "default_threshold_percent": 10.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=pokemon+30+aniversario",
+        "paris": "https://www.paris.cl/search?q=pokemon+30+aniversario",
+        "ripley": "https://simple.ripley.cl/search/pokemon-30-aniversario",
+        "lider": "https://www.lider.cl/search?q=pokemon+30+aniversario",
+        "theway": "https://www.theway.cl/preventa-16092026-pokemon-tcg-30th-celebration-elite-trainer-box-ingles",
+        "mercadolibre": "https://listado.mercadolibre.cl/pokemon-30-aniversario"
+      }
+    },
+    {
+      "id": "riftbound_tcg",
+      "name": "Riftbound TCG (League of Legends)",
+      "default_threshold_percent": 15.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "theway": "https://www.theway.cl/riftbound",
+        "collectorcenter": "https://collectorcenter.cl/search?q=riftbound",
+        "tiendalacomarca": "https://www.tiendalacomarca.cl/search?q=riftbound",
+        "piedrabruja": "https://piedrabruja.cl/search?q=riftbound",
+        "drawn": "https://drawn.cl/collections/riftbound",
+        "charizstore": "https://www.charizstore.cl/?s=riftbound&post_type=product",
+        "playtcg": "https://www.playtcg.cl/?s=riftbound&post_type=product",
+        "thirdimpact": "https://www.thirdimpact.cl/collection/riftbound-trading-card-game",
+        "huntercardtcg": "https://www.huntercardtcg.com/categoria-producto/riftbound/",
+        "pokestop": "https://pokestop.cl/search?q=riftbound",
+        "magicsur": "https://www.magicsur.cl/buscar?controller=search&s=riftbound",
+        "sniper": "https://sniper.cl/search?q=riftbound",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=riftbound",
+        "mercadolibre": "https://listado.mercadolibre.cl/riftbound",
+        "paris": "https://www.paris.cl/search?q=riftbound",
+        "ripley": "https://simple.ripley.cl/search/riftbound",
+        "lider": "https://www.lider.cl/catalogo/search?query=riftbound"
       }
     },
     {
@@ -392,7 +439,8 @@
         "easy": "https://www.easy.cl/muebles",
         "mercadolibre": "https://listado.mercadolibre.cl/hogar-muebles/muebles-hogar/living/sillones-sofas/",
         "ikea": "https://www.ikea.cl/sala/sofas-y-sillones",
-        "casaideas": "https://www.casaideas.cl/living-y-sala-de-estar"
+        "casaideas": "https://www.casaideas.cl/living-y-sala-de-estar",
+        "cic": "https://www.cic.cl/living-y-sala-de-estar/sofas/"
       }
     },
     {
@@ -408,7 +456,8 @@
         "ripley": "https://simple.ripley.cl/search/colchones",
         "easy": "https://www.easy.cl/dormitorio",
         "mercadolibre": "https://listado.mercadolibre.cl/hogar-muebles/camas-colchones-accesorios/colchones/",
-        "ikea": "https://www.ikea.cl/dormitorio/camas-y-colchones"
+        "ikea": "https://www.ikea.cl/dormitorio/camas-y-colchones",
+        "cic": "https://www.cic.cl/colchones/"
       }
     },
     {
@@ -617,6 +666,290 @@
         "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=cuidado+capilar",
         "ripley": "https://simple.ripley.cl/search/cuidado-capilar",
         "mercadolibre": "https://listado.mercadolibre.cl/belleza-cuidado-personal/cuidado-del-cabello/"
+      }
+    },
+    {
+      "id": "consolas_portatiles",
+      "name": "Consolas Portátiles y Handhelds",
+      "default_threshold_percent": 15.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "gsmpro": "https://www.gsmpro.cl/collections/consolas-portatiles",
+        "weplay": "https://www.weplay.cl/consolas.html",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=steam+deck+rog+ally",
+        "paris": "https://www.paris.cl/search?q=steam+deck+rog+ally",
+        "ripley": "https://simple.ripley.cl/search/steam-deck",
+        "mercadolibre": "https://listado.mercadolibre.cl/consolas-videojuegos/consolas/consolas-portatiles/"
+      }
+    },
+    {
+      "id": "domotica_seguridad",
+      "name": "Domótica, Cámaras WiFi y Seguridad Hogar",
+      "default_threshold_percent": 20.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "sodimac": "https://sodimac.falabella.com/sodimac-cl/search?Ntt=camara+seguridad+wifi",
+        "easy": "https://www.easy.cl/seguridad-y-vigilancia/camaras-de-seguridad",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=camaras+seguridad+domotica",
+        "paris": "https://www.paris.cl/search?q=camara+wifi+seguridad",
+        "mercadolibre": "https://listado.mercadolibre.cl/seguridad-para-el-hogar/camaras-seguridad/"
+      }
+    },
+    {
+      "id": "impresion_3d",
+      "name": "Impresoras 3D y Filamentos",
+      "default_threshold_percent": 15.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "crealitychile": "https://crealitychile.cl/collections/impresoras-3d",
+        "pcfactory": "https://www.pcfactory.cl/buscar?valor=impresora+3d",
+        "spdigital": "https://www.spdigital.cl/categories/impresoras-3d",
+        "mercadolibre": "https://listado.mercadolibre.cl/computacion/impresion/impresoras-3d/",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=impresora+3d"
+      }
+    },
+    {
+      "id": "herramientas_inalambricas",
+      "name": "Herramientas Inalámbricas y Combos a Batería",
+      "default_threshold_percent": 20.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "sodimac": "https://sodimac.falabella.com/sodimac-cl/search?Ntt=herramientas+inalambricas+combo",
+        "easy": "https://www.easy.cl/herramientas-y-maquinarias/herramientas-electricas/taladros-inalambricos",
+        "construmart": "https://www.construmart.cl/herramientas-y-maquinarias/herramientas-inalambricas",
+        "mercadolibre": "https://listado.mercadolibre.cl/herramientas/herramientas-electricas/taladros-destornilladores-inalambricos/",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=taladro+inalambrico+18v"
+      }
+    },
+    {
+      "id": "parlantes_fiesta_outdoor",
+      "name": "Parlantes Bluetooth, PartyBox y Outdoor",
+      "default_threshold_percent": 20.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "anker": "https://www.ankerstore.cl/collections/audio",
+        "audiomusica": "https://www.audiomusica.cl/audio/parlantes-bluetooth",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=jbl+partybox+parlante+bluetooth",
+        "paris": "https://www.paris.cl/search?q=parlante+bluetooth+jbl",
+        "ripley": "https://simple.ripley.cl/search/parlante-bluetooth",
+        "mercadolibre": "https://listado.mercadolibre.cl/electronica-audio-video/audio/parlantes-subwoofers/parlantes-portatiles/"
+      }
+    },
+    {
+      "id": "sillas_auto_bebe",
+      "name": "Sillas de Auto para Bebé y Coches de Paseo",
+      "default_threshold_percent": 20.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "infanti": "https://www.infanti.cl/sillas-de-auto",
+        "babytuto": "https://www.babytuto.com/sillas-de-auto",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=sillas+de+auto+bebe",
+        "paris": "https://www.paris.cl/search?q=silla+auto+bebe",
+        "ripley": "https://simple.ripley.cl/search/silla-auto-bebe",
+        "mercadolibre": "https://listado.mercadolibre.cl/bebes/paseo-del-bebe/sillas-para-auto/"
+      }
+    },
+    {
+      "id": "monitores_oficina_estudio",
+      "name": "Monitores de Oficina, Productividad y 4K",
+      "default_threshold_percent": 15.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "pcfactory": "https://www.pcfactory.cl/monitores",
+        "spdigital": "https://www.spdigital.cl/categories/monitores",
+        "winpy": "https://www.winpy.cl/monitores/",
+        "bip": "https://www.bip.cl/monitores",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=monitor+4k+productividad",
+        "paris": "https://www.paris.cl/search?q=monitor+4k"
+      }
+    },
+    {
+      "id": "redes_wifi_mesh",
+      "name": "Routers, Redes Mesh y Conectividad WiFi 6",
+      "default_threshold_percent": 15.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "pcfactory": "https://www.pcfactory.cl/redes-y-conectividad",
+        "spdigital": "https://www.spdigital.cl/categories/redes",
+        "winpy": "https://www.winpy.cl/redes/",
+        "mercadolibre": "https://listado.mercadolibre.cl/computacion/conectividad-redes/routers/",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=router+wifi+mesh"
+      }
+    },
+    {
+      "id": "relojes_pulsera",
+      "name": "Relojes de Pulsera y Cronógrafos",
+      "default_threshold_percent": 25.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=relojes+hombre+mujer",
+        "paris": "https://www.paris.cl/search?q=relojes",
+        "ripley": "https://simple.ripley.cl/search/relojes",
+        "mercadolibre": "https://listado.mercadolibre.cl/joyas-relojes/relojes/relojes-pulsera/"
+      }
+    },
+    {
+      "id": "instrumentos_musicales",
+      "name": "Guitarras, Teclados e Instrumentos Musicales",
+      "default_threshold_percent": 15.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "audiomusica": "https://www.audiomusica.cl/instrumentos-musicales",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=guitarra+teclado+musical",
+        "paris": "https://www.paris.cl/search?q=instrumentos+musicales",
+        "mercadolibre": "https://listado.mercadolibre.cl/instrumentos-musicales/"
+      }
+    },
+    {
+      "id": "accesorios_gaming",
+      "name": "Teclados Mecánicos, Mouse Gamer y Mandos",
+      "default_threshold_percent": 20.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "allgamers": "https://allgamers.cl/categoria-producto/perifericos/",
+        "mybox": "https://www.mybox.cl/perifericos.html",
+        "pcfactory": "https://www.pcfactory.cl/perifericos-gamer",
+        "spdigital": "https://www.spdigital.cl/categories/perifericos-gamer",
+        "weplay": "https://www.weplay.cl/accesorios.html",
+        "mercadolibre": "https://listado.mercadolibre.cl/computacion/perifericos-pc/mouses-teclados/"
+      }
+    },
+    {
+      "id": "smart_lighting",
+      "name": "Iluminación Inteligente, Tiras LED y Focos RGB",
+      "default_threshold_percent": 20.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "sodimac": "https://sodimac.falabella.com/sodimac-cl/search?Ntt=iluminacion+inteligente+led",
+        "easy": "https://www.easy.cl/iluminacion/ampolletas-y-tubos/ampolletas-inteligentes",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=philips+hue+tiras+led",
+        "paris": "https://www.paris.cl/search?q=ampolleta+inteligente",
+        "mercadolibre": "https://listado.mercadolibre.cl/hogar-muebles-jardin/iluminacion-para-el-hogar/ampolletas-smart/"
+      }
+    },
+    {
+      "id": "bicicletas_ciclismo",
+      "name": "Bicicletas de Montaña, Ruta y Ciclismo",
+      "default_threshold_percent": 20.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "sparta": "https://sparta.cl/ciclismo/bicicletas.html",
+        "decathlon": "https://www.decathlon.cl/ciclismo/bicicletas",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=bicicleta+mountainbike",
+        "paris": "https://www.paris.cl/search?q=bicicleta",
+        "mercadolibre": "https://listado.mercadolibre.cl/deportes-fitness/ciclismo/bicicletas/"
+      }
+    },
+    {
+      "id": "pesas_mancuernas",
+      "name": "Mancuernas, Barras, Discos y Pesas Rusas",
+      "default_threshold_percent": 20.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "sparta": "https://sparta.cl/fitness/fuerza-y-peso.html",
+        "decathlon": "https://www.decathlon.cl/musculacion-y-cross-training/mancuernas-pesas",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=mancuernas+set+pesas",
+        "mercadolibre": "https://listado.mercadolibre.cl/deportes-fitness/fitness-musculacion/pesas-discos-barras/",
+        "sodimac": "https://sodimac.falabella.com/sodimac-cl/search?Ntt=mancuernas+pesas"
+      }
+    },
+    {
+      "id": "equipaje_maletas",
+      "name": "Maletas de Viaje, Bolsos y Mochilas Urbanas",
+      "default_threshold_percent": 25.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=maletas+de+viaje+set",
+        "paris": "https://www.paris.cl/search?q=maletas+viaje",
+        "ripley": "https://simple.ripley.cl/search/maletas",
+        "mercadolibre": "https://listado.mercadolibre.cl/equipaje-bolsos/maletas/"
+      }
+    },
+    {
+      "id": "ropa_deportiva",
+      "name": "Ropa Deportiva, Calzas y Poleras Dry-Fit",
+      "default_threshold_percent": 25.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "sparta": "https://sparta.cl/ropa-deportiva.html",
+        "adidas": "https://www.adidas.cl/ropa",
+        "nike": "https://www.nike.cl/ropa",
+        "reebok": "https://www.reebok.cl/ropa",
+        "underarmour": "https://www.underarmour.cl/ropa",
+        "decathlon": "https://www.decathlon.cl/deportes"
+      }
+    },
+    {
+      "id": "skincare_facial",
+      "name": "Skincare Facial, Serums y Cremas Antiedad",
+      "default_threshold_percent": 20.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "preunic": "https://www.preunic.cl/cuidado-facial",
+        "dbs": "https://www.dbs.cl/cuidado-facial.html",
+        "ahumada": "https://www.farmaciasahumada.cl/dermocosmetica/rostro",
+        "cruzverde": "https://www.cruzverde.cl/dermocosmetica/cuidado-facial/",
+        "salcobrand": "https://salcobrand.cl/t/dermoco/rostro",
+        "paris": "https://www.paris.cl/search?q=serum+facial+la+roche",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=skincare+serum+facial"
+      }
+    },
+    {
+      "id": "purificadores_aire",
+      "name": "Purificadores de Aire y Deshumidificadores",
+      "default_threshold_percent": 20.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "mistore": "https://mistorechile.cl/collections/purificadores-de-aire",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=purificador+de+aire",
+        "paris": "https://www.paris.cl/search?q=purificador+de+aire",
+        "sodimac": "https://sodimac.falabella.com/sodimac-cl/search?Ntt=deshumidificador+purificador",
+        "mercadolibre": "https://listado.mercadolibre.cl/electrodomesticos/climatizacion/purificadores-aire/"
+      }
+    },
+    {
+      "id": "seguridad_industrial",
+      "name": "Calzado de Seguridad, EPP y Trabajo",
+      "default_threshold_percent": 20.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "construmart": "https://www.construmart.cl/seguridad-y-epp/calzado-de-seguridad",
+        "sodimac": "https://sodimac.falabella.com/sodimac-cl/search?Ntt=zapatos+de+seguridad+epp",
+        "easy": "https://www.easy.cl/seguridad-y-proteccion-personal/calzado-de-seguridad",
+        "mercadolibre": "https://listado.mercadolibre.cl/industrias-oficinas/seguridad-laboral/calzado-seguridad/"
+      }
+    },
+    {
+      "id": "piscinas_accesorios",
+      "name": "Piscinas Estructurales, Bombas y Filtros",
+      "default_threshold_percent": 25.0,
+      "error_threshold_percent": 50.0,
+      "active": true,
+      "stores": {
+        "sodimac": "https://sodimac.falabella.com/sodimac-cl/search?Ntt=piscinas+estructurales",
+        "easy": "https://www.easy.cl/aire-libre-y-jardin/piscinas-y-accesorios/piscinas-estructurales",
+        "construmart": "https://www.construmart.cl/aire-libre-y-jardin/piscinas",
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=piscina+estructural+intex",
+        "mercadolibre": "https://listado.mercadolibre.cl/hogar-muebles-jardin/jardin-aire-libre/piscinas-accesorios/piscinas/"
       }
     }
   ]

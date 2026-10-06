@@ -6,6 +6,7 @@ from aiogram import Bot
 from aiogram.enums import ParseMode
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from src.config import settings
+from src.scrapers.base import is_pokemon_etb_30, is_pokemon_sealed_target
 
 logger = logging.getLogger(__name__)
 
@@ -53,11 +54,25 @@ class TelegramNotifier:
         safe_store = html.escape(alert.store.upper())
         savings = alert.old_price - alert.new_price
 
-        # Encabezado visual: Distinción entre Error de Precio (Bug) y Oferta Estándar
+        is_etb_30 = is_pokemon_etb_30(alert.title)
+        is_etb_sealed = is_pokemon_sealed_target(alert.title)
+        is_target_hit = bool(alert.target_price and alert.new_price <= alert.target_price)
+
+        # Encabezado visual: Distinción entre Error de Precio (Bug), ETB Pokémon y Oferta Estándar
         if alert.is_price_error or alert.discount_percent >= settings.ERROR_DISCOUNT_THRESHOLD_PERCENT:
             header = (
                 f"🚨🚨 <b>¡POSIBLE ERROR DE PRECIO / BUG EN {safe_store}!</b> 🚨🚨\n"
                 f"⚡ <i>¡Descuento anómalo del {alert.discount_percent:.1f}%! Revisa y compra de inmediato antes de corrección.</i>\n"
+            )
+        elif is_etb_30 and is_target_hit:
+            header = (
+                f"⚡🎯 <b>¡ALERTA ESPECIAL POKÉMON: ETB 30 ANIVERSARIO EN {safe_store}!</b> 🎯⚡\n"
+                f"✨ <i>¡Disponible por menos de {format_clp(alert.target_price)}!</i>\n"
+            )
+        elif is_etb_sealed and is_target_hit:
+            header = (
+                f"⚡🎯 <b>¡ALERTA ESPECIAL POKÉMON: ETB SELLADO EN {safe_store}!</b> 🎯⚡\n"
+                f"✨ <i>¡Disponible por {format_clp(alert.new_price)} (menos de {format_clp(alert.target_price)})!</i>\n"
             )
         else:
             header = f"🔥 <b>¡OFERTA DETECTADA EN {safe_store}!</b> 🔥\n"
@@ -79,8 +94,13 @@ class TelegramNotifier:
         if alert.is_all_time_low:
             lines.append("🏆 <b>¡MÍNIMO HISTÓRICO REGISTRADO!</b> 🏆")
 
-        if alert.target_price and alert.new_price <= alert.target_price:
-            lines.append(f"🎯 <i>¡Alcanzó tu precio objetivo de {format_clp(alert.target_price)}!</i>")
+        if is_target_hit:
+            if is_etb_30:
+                lines.append(f"🎯 <b>¡ETB 30 ANIVERSARIO alcanzado por {format_clp(alert.new_price)} (menos de {format_clp(alert.target_price)})!</b>")
+            elif is_etb_sealed:
+                lines.append(f"🎯 <b>¡POKÉMON ETB alcanzado por {format_clp(alert.new_price)} (menos de {format_clp(alert.target_price)})!</b>")
+            else:
+                lines.append(f"🎯 <i>¡Alcanzó tu precio objetivo de {format_clp(alert.target_price)}!</i>")
 
         lines.append("\n⚡ <i>Aprovecha antes de que se agote o cambie el precio.</i>")
 

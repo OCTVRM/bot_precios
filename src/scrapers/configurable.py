@@ -131,6 +131,7 @@ class ConfigurableScraper(BaseScraper):
                     page_props.get("product")
                     or page_props.get("productData")
                     or page_props.get("initialData", {}).get("product")
+                    or page_props.get("detailProps", {}).get("data", {}).get("product")
                 )
                 if isinstance(prod_data, dict):
                     if not title:
@@ -138,6 +139,43 @@ class ConfigurableScraper(BaseScraper):
 
                     if prod_data.get("isOutOfStock") is True or prod_data.get("isPurchaseable") is False:
                         in_stock = False
+
+                    # Estructura Ripley con parentpricestock
+                    pps = prod_data.get("parentpricestock")
+                    if isinstance(pps, dict):
+                        if pps.get("stock") is False:
+                            in_stock = False
+                        p_obj = pps.get("price")
+                        if isinstance(p_obj, dict):
+                            for p_key in ["ripley", "sale", "master"]:
+                                p_entry = p_obj.get(p_key)
+                                if isinstance(p_entry, dict):
+                                    v_num = p_entry.get("valueNumber")
+                                    v_str = p_entry.get("value")
+                                    if v_num is not None:
+                                        p_clean = float(v_num)
+                                    elif v_str:
+                                        p_clean = self.clean_price(str(v_str))
+                                    else:
+                                        continue
+
+                                    if p_key == "master":
+                                        if normal_price is None or p_clean > normal_price:
+                                            normal_price = p_clean
+                                    elif price is None or p_clean < price:
+                                        price = p_clean
+
+                            if normal_price is None and isinstance(p_obj.get("master"), dict):
+                                m_val = p_obj["master"].get("valueNumber") or p_obj["master"].get("value")
+                                if m_val:
+                                    normal_price = float(m_val) if isinstance(m_val, (int, float)) else self.clean_price(str(m_val))
+
+                            disc_info = p_obj.get("discount")
+                            if isinstance(disc_info, dict) and disc_info.get("percentage"):
+                                try:
+                                    discount_percent = float(disc_info["percentage"])
+                                except Exception:
+                                    pass
 
                     # Estructura Falabella / Sodimac con variants
                     variants = prod_data.get("variants") or []
@@ -186,6 +224,13 @@ class ConfigurableScraper(BaseScraper):
                                 price = self.clean_price(str(price_val))
                         elif "price" in prod_data:
                             price = self.clean_price(str(prod_data["price"]))
+
+                    if not image_url:
+                        raw_img = prod_data.get("fullImage") or prod_data.get("thumbnail")
+                        if raw_img:
+                            image_url = f"https:{raw_img}" if str(raw_img).startswith("//") else str(raw_img)
+                        elif prod_data.get("images") and isinstance(prod_data["images"], list) and prod_data["images"]:
+                            image_url = prod_data["images"][0]
             except Exception as ex:
                 logger.debug(f"[{self.rule.name}] Error leyendo __NEXT_DATA__: {ex}")
 

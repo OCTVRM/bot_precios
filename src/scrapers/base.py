@@ -30,23 +30,37 @@ class BaseScraper(abc.ABC):
         self.store_name = store_name
 
     def get_headers(self) -> Dict[str, str]:
-        """Genera cabeceras HTTP realistas rotando User-Agent y Sec-Ch-Ua."""
+        """Genera cabeceras HTTP realistas y coherentes según el User-Agent."""
         ua = random.choice(settings.USER_AGENTS)
+        is_windows = "Windows" in ua
+        platform = '"Windows"' if is_windows else ('"macOS"' if "Macintosh" in ua else '"Linux"')
+
         headers = {
             "User-Agent": ua,
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
-            "Accept-Language": "es-CL,es;q=0.9,en-US;q=0.8,en;q=0.7",
-            "Sec-Ch-Ua": '"Chromium";v="124", "Google Chrome";v="124", "Not-A.Brand";v="99"',
-            "Sec-Ch-Ua-Mobile": "?0",
-            "Sec-Ch-Ua-Platform": '"Windows"',
+            "Accept-Language": "es-CL,es;q=0.9,en;q=0.8",
             "Sec-Fetch-Dest": "document",
             "Sec-Fetch-Mode": "navigate",
             "Sec-Fetch-Site": "none",
             "Sec-Fetch-User": "?1",
-            "DNT": "1",
             "Connection": "keep-alive",
             "Upgrade-Insecure-Requests": "1",
         }
+
+        # Sec-Ch-Ua solo debe enviarse para navegadores Chromium (Chrome, Edge)
+        if "Chrome/" in ua and "Edg/" not in ua:
+            match = re.search(r"Chrome/(\d+)", ua)
+            v = match.group(1) if match else "128"
+            headers["Sec-Ch-Ua"] = f'"Chromium";v="{v}", "Not;A=Brand";v="24", "Google Chrome";v="{v}"'
+            headers["Sec-Ch-Ua-Mobile"] = "?0"
+            headers["Sec-Ch-Ua-Platform"] = platform
+        elif "Edg/" in ua:
+            match = re.search(r"Edg/(\d+)", ua)
+            v = match.group(1) if match else "128"
+            headers["Sec-Ch-Ua"] = f'"Chromium";v="{v}", "Microsoft Edge";v="{v}", "Not;A=Brand";v="24"'
+            headers["Sec-Ch-Ua-Mobile"] = "?0"
+            headers["Sec-Ch-Ua-Platform"] = platform
+
         return headers
 
     async def fetch_html(self, url: str, use_dynamic: bool = False) -> str:
@@ -153,6 +167,56 @@ class BaseScraper(abc.ABC):
             # 1 o 2 dígitos (o 4+ decimales): es decimal
             return float(f"{integer_part}.{fraction_part}")
 
+    @staticmethod
+    def clean_url(url: str) -> str:
+        """
+        Normaliza y sanitiza una URL de producto eliminando parámetros de tracking,
+        publicidad y tokens dinámicos como resolvedBidId en Paris, utm_*, gclid, fbclid, etc.
+        """
+        if not url:
+            return ""
+        from urllib.parse import urlparse, urlunparse, parse_qsl, urlencode
+
+        # Descartar anclas (#)
+        clean = url.split("#")[0].strip()
+        parsed = urlparse(clean)
+
+        if not parsed.query:
+            return clean
+
+        # Parámetros que NUNCA deben formar parte de la clave única del producto
+        tracking_prefixes = (
+            "utm_", "fbclid", "gclid", "dclid", "msclkid",
+            "resolvedbidid", "bidid", "ref", "spm", "is_retargeting",
+            "_gl", "_ga", "tracking", "aff_trace_key"
+        )
+        filtered = [
+            (k, v) for k, v in parse_qsl(parsed.query, keep_blank_values=False)
+            if not any(k.lower().startswith(p) for p in tracking_prefixes)
+        ]
+        new_query = urlencode(filtered)
+        return urlunparse((parsed.scheme, parsed.netloc, parsed.path, parsed.params, new_query, ""))
+
+    @staticmethod
+    def clean_product_title(title: str) -> str:
+        """
+        Limpia títulos de productos con prefijos parásitos (ej. 'Vista Previa'),
+        sufijos de botones ('Agregar al carro', 'Promocionado') y fragmentos de precio/calificación pegados.
+        """
+        if not title:
+            return "Producto"
+        cleaned = title
+        for prefix in ["Vista Previa", "Vista previa", "Promocionado", "Destacado"]:
+            if cleaned.startswith(prefix):
+                cleaned = cleaned[len(prefix):].strip()
+        for noise in ["Agregar al carro", "Agregar a la bolsa", "Promocionado", "Destacado", "Despacho gratis"]:
+            cleaned = cleaned.replace(noise, "")
+        # Eliminar calificaciones pegadas y precios residuales pegados al final (ej: 0(0)36%36%$309.990...)
+        cleaned = re.sub(r"\s*\d?\(\d+\).*", "", cleaned)
+        cleaned = re.sub(r"\s*[\d%]*\$[\d\.]+.*", "", cleaned)
+        cleaned = re.sub(r"\s+", " ", cleaned).strip()
+        return cleaned or "Producto"
+
     @abc.abstractmethod
     def build_affiliate_url(self, url: str) -> str:
         """Enriquece la URL original con los parámetros de afiliado configurados."""
@@ -162,3 +226,153 @@ class BaseScraper(abc.ABC):
     async def scrape(self, url: str) -> ScrapedItem:
         """Ejecuta la extracción y normalización de datos del producto."""
         pass
+
+
+POKEMON_ETB_MAX_PRICE: float = 91000.0
+POKEMON_ETB_30_MAX_PRICE: float = 91000.0
+
+
+def is_pokemon_etb(title: Optional[str]) -> bool:
+    """
+    Determina si un producto corresponde a una Elite Trainer Box (ETB) o Caja de Entrenador
+    Élite de Pokémon TCG de cualquier expansión o edición especial.
+    """
+    if not title:
+        return False
+    t = title.lower()
+    has_etb = any(
+        k in t
+        for k in [
+            "etb",
+            "elite trainer box",
+            "caja de entrenador",
+            "caja entrenador",
+            "entrenador elite",
+            "entrenador élite",
+            "trainer box",
+        ]
+    )
+    if not has_etb:
+        return False
+
+    # Excluir bultos mayoristas (Cases o packs múltiples)
+    if any(k in t for k in ["case sellado", "master case", "10x ", "6x ", "12x ", "4x ", "case ("]):
+        return False
+
+    is_poke = any(
+        k in t
+        for k in [
+            "pokemon",
+            "pokémon",
+            "tcg",
+            "30",
+            "30th",
+            "scarlet",
+            "violet",
+            "151",
+            "paldea",
+            "prismatic",
+            "sparks",
+            "stellar",
+            "twilight",
+            "temporal",
+            "paradox",
+            "obsidian",
+            "flames",
+            "zenith",
+            "lost origin",
+            "silver tempest",
+            "astral",
+            "brilliant",
+            "fusion",
+            "evolving",
+            "chilling",
+            "battle styles",
+            "shining fates",
+            "vivid",
+            "darkness",
+            "rebel",
+            "sword",
+            "shield",
+            "hidden fates",
+            "unbroken",
+            "team up",
+            "dragon",
+            "celestial",
+            "ultra prism",
+            "crimson",
+            "burning",
+            "guardians",
+            "sun",
+            "moon",
+            "evolutions",
+            "steam",
+            "fates",
+            "break",
+            "roaring",
+            "ancient",
+            "phantom",
+            "furious",
+            "flashfire",
+            "heroes",
+            "ascended",
+            "destinos",
+            "llamas",
+            "evoluciones",
+            "fuerzas",
+            "brecha",
+            "mascarada",
+            "corona",
+            "chispas",
+            "triunfo",
+            "juntos",
+            "journey together",
+        ]
+    ) or ("box" in t or "caja" in t or "sobre" in t or "carta" in t or "tcg" in t or "pack" in t)
+    return is_poke
+
+
+def is_pokemon_etb_30(title: Optional[str]) -> bool:
+    """
+    Determina si un producto corresponde a una Elite Trainer Box (ETB) o Caja de Entrenador
+    Élite del 30 Aniversario de Pokémon TCG.
+    """
+    if not title:
+        return False
+    t = title.lower()
+    has_etb = any(
+        k in t
+        for k in [
+            "etb",
+            "elite trainer box",
+            "caja de entrenador",
+            "caja entrenador",
+            "entrenador elite",
+            "entrenador élite",
+        ]
+    )
+    has_30 = any(
+        k in t
+        for k in [
+            "30",
+            "30th",
+            "30 aniversario",
+            "30º aniversario",
+            "30° aniversario",
+            "30mo aniversario",
+            "30th celebration",
+            "celebraciones 30",
+            "celebrations 30",
+        ]
+    )
+    return has_etb and has_30
+
+
+def is_pokemon_sealed_target(title: Optional[str]) -> bool:
+    """
+    Determina si un producto de Pokémon TCG califica para el precio objetivo de 91.000 CLP
+    (cualquier ETB o edición 30 Aniversario).
+    """
+    return is_pokemon_etb(title) or is_pokemon_etb_30(title)
+
+

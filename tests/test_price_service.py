@@ -293,3 +293,47 @@ async def test_catalog_discount_on_new_product(test_session: AsyncSession):
     mock_notifier.send_alert.assert_called_once()
 
 
+@pytest.mark.asyncio
+async def test_etb_30_auto_target_price_and_alert_below_91k(test_session: AsyncSession):
+    """Verifica que un ETB 30 Aniversario asigne automáticamente target 91.000 y alerte cuando baje de 91k."""
+    mock_notifier = TelegramNotifier()
+    mock_notifier.send_alert = AsyncMock(return_value=True)
+
+    service = PriceTrackingService(notifier=mock_notifier)
+
+    product = Product(
+        url_original="https://www.falabella.com/falabella-cl/product/12345/etb-30",
+        nombre="Pokemon TCG 30th Celebration Elite Trainer Box",
+        tienda="Falabella",
+        precio_actual=110000.0,
+        precio_minimo=110000.0,
+        precio_objetivo=None,  # No estaba asignado manualmente
+        umbral_descuento_porcentaje=15.0,
+        activo=True,
+    )
+    test_session.add(product)
+    await test_session.flush()
+
+    # Se encuentra a 89.990 CLP (< 91.000 CLP)
+    mock_item = ScrapedItem(
+        title="Pokemon TCG 30th Celebration Elite Trainer Box",
+        price=89990.0,
+        affiliate_url="https://www.falabella.com/falabella-cl/product/12345/etb-30?aff_source=tag",
+    )
+
+    with patch("src.services.price_service.get_scraper_for_url") as mock_get_scraper:
+        mock_scraper = AsyncMock()
+        mock_scraper.scrape = AsyncMock(return_value=mock_item)
+        mock_get_scraper.return_value = mock_scraper
+
+        alerted, payload = await service.process_product(test_session, product)
+
+    assert alerted is True
+    assert product.precio_objetivo == 91000.0
+    assert payload is not None
+    assert payload.new_price == 89990.0
+    assert payload.target_price == 91000.0
+    mock_notifier.send_alert.assert_called_once()
+
+
+

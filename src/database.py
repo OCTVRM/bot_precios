@@ -119,18 +119,22 @@ async def init_db() -> None:
                                 -- 1. Uso de esquema public
                                 GRANT USAGE ON SCHEMA public TO anon, authenticated, service_role;
 
-                                -- 2. Permisos a tablas públicas para Data API (PostgREST / Supabase JS)
+                                -- 2. Permisos y RLS a tablas públicas para Data API (PostgREST / Supabase JS)
                                 IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'products') THEN
+                                    ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
                                     GRANT SELECT ON TABLE public.products TO anon, authenticated;
                                     GRANT ALL ON TABLE public.products TO service_role;
                                 END IF;
 
                                 IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'price_history') THEN
+                                    ALTER TABLE public.price_history ENABLE ROW LEVEL SECURITY;
                                     GRANT SELECT ON TABLE public.price_history TO anon, authenticated;
                                     GRANT ALL ON TABLE public.price_history TO service_role;
                                 END IF;
 
                                 IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'subscriptions') THEN
+                                    ALTER TABLE public.subscriptions ENABLE ROW LEVEL SECURITY;
+                                    REVOKE ALL ON TABLE public.subscriptions FROM anon, authenticated;
                                     GRANT ALL ON TABLE public.subscriptions TO service_role;
                                 END IF;
 
@@ -143,6 +147,38 @@ async def init_db() -> None:
                                 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO service_role;
                                 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE, SELECT ON SEQUENCES TO anon, authenticated;
                                 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO service_role;
+
+                                -- 5. Políticas RLS
+                                IF NOT EXISTS (
+                                    SELECT 1 FROM pg_policies WHERE schemaname = 'public' AND tablename = 'products' AND policyname = 'Allow public read access on products'
+                                ) THEN
+                                    CREATE POLICY "Allow public read access on products"
+                                    ON public.products
+                                    FOR SELECT
+                                    TO anon, authenticated
+                                    USING (true);
+                                END IF;
+
+                                IF NOT EXISTS (
+                                    SELECT 1 FROM pg_policies WHERE schemaname = 'public' AND tablename = 'price_history' AND policyname = 'Allow public read access on price_history'
+                                ) THEN
+                                    CREATE POLICY "Allow public read access on price_history"
+                                    ON public.price_history
+                                    FOR SELECT
+                                    TO anon, authenticated
+                                    USING (true);
+                                END IF;
+
+                                IF NOT EXISTS (
+                                    SELECT 1 FROM pg_policies WHERE schemaname = 'public' AND tablename = 'subscriptions' AND policyname = 'Deny public access to subscriptions'
+                                ) THEN
+                                    CREATE POLICY "Deny public access to subscriptions"
+                                    ON public.subscriptions
+                                    FOR ALL
+                                    TO anon, authenticated
+                                    USING (false)
+                                    WITH CHECK (false);
+                                END IF;
                             END IF;
                         END $$;
                     """))

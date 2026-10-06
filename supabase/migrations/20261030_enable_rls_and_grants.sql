@@ -10,6 +10,7 @@ GRANT SELECT ON TABLE public.price_history TO anon, authenticated;
 GRANT ALL ON TABLE public.price_history TO service_role;
 
 -- 3. Grants para suscripciones (solo service_role y postgres, sin acceso a anon/authenticated por privacidad)
+REVOKE ALL ON TABLE public.subscriptions FROM anon, authenticated;
 GRANT ALL ON TABLE public.subscriptions TO service_role;
 
 -- 4. Permisos sobre secuencias
@@ -27,7 +28,7 @@ ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.price_history ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.subscriptions ENABLE ROW LEVEL SECURITY;
 
--- 7. Políticas de lectura pública para products y price_history
+-- 7. Políticas de lectura pública para products y price_history, y bloqueo total para subscriptions
 DO $$
 BEGIN
     IF NOT EXISTS (
@@ -48,5 +49,16 @@ BEGIN
         FOR SELECT
         TO anon, authenticated
         USING (true);
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies WHERE schemaname = 'public' AND tablename = 'subscriptions' AND policyname = 'Deny public access to subscriptions'
+    ) THEN
+        CREATE POLICY "Deny public access to subscriptions"
+        ON public.subscriptions
+        FOR ALL
+        TO anon, authenticated
+        USING (false)
+        WITH CHECK (false);
     END IF;
 END $$;

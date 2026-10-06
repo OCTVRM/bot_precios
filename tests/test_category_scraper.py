@@ -24,7 +24,39 @@ def test_load_categories_catalog():
     assert "notebook" in ids
     assert "electrodomesticos" in ids
     assert "pokemon_tcg" in ids
+    assert "riftbound_tcg" in ids
     assert "consolas_videojuegos" in ids
+
+
+def test_tcg_categories_configuration():
+    """Verifica que pokemon_tcg y riftbound_tcg tengan todas las tiendas de cartas y grandes tiendas configuradas."""
+    catalog = load_categories_catalog(force_reload=True)
+    poke = find_category_by_id("pokemon_tcg", catalog)
+    rift = find_category_by_id("riftbound_tcg", catalog)
+
+    assert poke is not None
+    assert rift is not None
+
+    required_retail = {"falabella", "mercadolibre", "paris", "ripley", "lider"}
+    required_card_stores = {
+        "theway",
+        "collectorcenter",
+        "tiendalacomarca",
+        "piedrabruja",
+        "drawn",
+        "charizstore",
+        "playtcg",
+        "thirdimpact",
+        "huntercardtcg",
+        "pokestop",
+        "magicsur",
+        "sniper",
+    }
+    all_required = required_retail | required_card_stores
+
+    assert all_required.issubset(set(poke.stores.keys()))
+    assert all_required.issubset(set(rift.stores.keys()))
+
 
 
 def test_find_category_by_id():
@@ -343,5 +375,50 @@ def test_parse_category_page_ripley_findability():
     assert products[0].discount_percent == 45.0
     assert "2000405825817" in products[0].url
     assert products[0].image_url == "https://rimage.ripley.cl/moto.jpg"
+
+
+def test_pokemon_30_aniversario_category_configuration():
+    """Verifica que la categoría pokemon_30_aniversario incluya todas las grandes tiendas solicitadas."""
+    catalog = load_categories_catalog(force_reload=True)
+    cat = find_category_by_id("pokemon_30_aniversario", catalog)
+    assert cat is not None
+    assert cat.active is True
+    required_stores = {"falabella", "lider", "paris", "ripley", "theway", "mercadolibre"}
+    assert required_stores.issubset(set(cat.stores.keys()))
+
+
+def test_is_pokemon_etb_30_detection():
+    """Verifica que is_pokemon_etb_30 reconozca las distintas variantes de Elite Trainer Box 30 Aniversario."""
+    from src.scrapers.base import is_pokemon_etb_30
+    assert is_pokemon_etb_30("Pokemon TCG: 30th Celebration Elite Trainer Box Inglés")
+    assert is_pokemon_etb_30("ETB 30 Aniversario Pokémon TCG - The Way")
+    assert is_pokemon_etb_30("Pokemon TCG Caja de Entrenador Élite 30 Aniversario")
+    assert is_pokemon_etb_30("POKEMON TCG ETB 30TH CELEBRATION")
+    assert is_pokemon_etb_30("Pokemon TCG Celebraciones 30 Caja Entrenador Elite")
+
+    # Casos negativos: otros productos que no son ETB 30
+    assert not is_pokemon_etb_30("Pokemon TCG 30th Celebration Bundle Booster")
+    assert not is_pokemon_etb_30("Pokemon TCG 30 Sobres")
+    assert not is_pokemon_etb_30("Pokemon TCG Elite Trainer Box Scarlet & Violet")
+    assert not is_pokemon_etb_30("Pokemon TCG Mega Venusaur EX")
+
+
+def test_is_pokemon_etb_general_detection():
+    """Verifica que is_pokemon_etb y is_pokemon_sealed_target reconozcan ETBs de cualquier edición."""
+    from src.scrapers.base import is_pokemon_etb, is_pokemon_sealed_target
+    assert is_pokemon_etb("Tcg - Elite Trainer Box - Ascended Heroes - Español")
+    assert is_pokemon_etb("Pokemon TCG Elite Trainer Box Scarlet & Violet")
+    assert is_pokemon_etb("Pokemon Mega Evolution: Ascended Heroes - Elite Trainer Box")
+    assert is_pokemon_etb("Pokemon TCG Prismatic Evolutions ETB")
+    assert is_pokemon_etb("Caja de Entrenador Élite Pokémon TCG 151")
+
+    assert is_pokemon_sealed_target("Tcg - Elite Trainer Box - Ascended Heroes - Español")
+    assert is_pokemon_sealed_target("ETB 30 Aniversario Pokémon TCG - The Way")
+
+    # Casos que no son ETBs
+    assert not is_pokemon_etb("Pokemon TCG Sleeved Booster Pack")
+    assert not is_pokemon_etb("Carpeta Cartas Tcg 900 Bolsillos")
+
+
 
 

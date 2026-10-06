@@ -15,7 +15,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.config import settings
 from src.models import Product
-from src.scrapers.base import BaseScraper
+from src.scrapers.base import (
+    BaseScraper,
+    is_pokemon_etb,
+    is_pokemon_etb_30,
+    is_pokemon_sealed_target,
+    POKEMON_ETB_MAX_PRICE,
+    POKEMON_ETB_30_MAX_PRICE,
+)
 from src.scrapers.category_config import CategoryItem, load_categories_catalog
 from src.scrapers.store_config import find_store_rule_by_id, find_store_rule_for_url
 
@@ -59,6 +66,8 @@ class CategoryScraper:
 
     async def fetch_html(self, url: str) -> str:
         headers = self.get_headers()
+        parsed = urlparse(url)
+        headers["Referer"] = f"{parsed.scheme}://{parsed.netloc}/"
         async with httpx.AsyncClient(
             headers=headers,
             timeout=settings.REQUEST_TIMEOUT,
@@ -206,8 +215,8 @@ class CategoryScraper:
 
                                 items.append(
                                     ScrapedCategoryProduct(
-                                        url=full_url,
-                                        title=title.strip(),
+                                        url=BaseScraper.clean_url(full_url),
+                                        title=BaseScraper.clean_product_title(title.strip()),
                                         price=price_val,
                                         normal_price=normal_val,
                                         discount_percent=discount_pct,
@@ -260,16 +269,17 @@ class CategoryScraper:
                         pid = prod.get("productId") or prod.get("id") or prod.get("parentProductID") or prod.get("sku")
                         if pid and "falabella.com" in page_url:
                             url_val = f"/falabella-cl/product/{pid}"
-                        elif pid and "ripley.cl" in page_url:
-                            pid_str = str(pid)
+                        elif pid and "ripley.cl" in str(page_url):
+                            pid_str = str(pid).lower()
                             for a in soup.find_all("a", href=True):
                                 href = a["href"].split("?")[0]
-                                if href.endswith(f"-{pid_str}") or href.endswith(f"-{pid_str}p"):
+                                href_l = href.lower()
+                                if href_l.endswith(f"-{pid_str}") or href_l.endswith(f"-{pid_str}p") or f"-{pid_str}" in href_l:
                                     url_val = href
                                     break
                             if not url_val:
                                 clean_n = re.sub(r'[^a-zA-Z0-9]+', '-', title_val.lower()).strip('-')
-                                url_val = f"/{clean_n}-{pid_str}"
+                                url_val = f"/{clean_n}-{pid_str}p"
 
                     price_val = None
                     normal_val = None
@@ -308,21 +318,25 @@ class CategoryScraper:
                             except Exception:
                                 pass
 
-                    # Soporte Ripley específico de propiedades de precio
+                    # Soporte Ripley y grandes tiendas de propiedades de precio
                     if price_val is None:
-                        rp = prod.get("ripleyPriceNumber") or prod.get("priceNumber")
-                        if rp:
-                            try:
-                                price_val = float(rp)
-                            except Exception:
-                                pass
+                        for p_field in ["ripleyPriceNumber", "priceNumber", "offerPrice", "price", "salePrice"]:
+                            raw_p_cand = prod.get(p_field)
+                            if raw_p_cand:
+                                try:
+                                    price_val = BaseScraper.clean_price(str(raw_p_cand))
+                                    break
+                                except Exception:
+                                    pass
                     if normal_val is None:
-                        mp = prod.get("masterPriceNumber")
-                        if mp:
-                            try:
-                                normal_val = float(mp)
-                            except Exception:
-                                pass
+                        for n_field in ["masterPriceNumber", "oldPrice", "listPrice", "normalPrice"]:
+                            raw_n_cand = prod.get(n_field)
+                            if raw_n_cand:
+                                try:
+                                    normal_val = BaseScraper.clean_price(str(raw_n_cand))
+                                    break
+                                except Exception:
+                                    pass
                     if discount_val is None:
                         d_num = prod.get("discount")
                         if d_num:
@@ -355,8 +369,8 @@ class CategoryScraper:
                         full_url = urljoin(page_url, url_val)
                         items.append(
                             ScrapedCategoryProduct(
-                                url=full_url,
-                                title=title_val.strip(),
+                                url=BaseScraper.clean_url(full_url),
+                                title=BaseScraper.clean_product_title(title_val.strip()),
                                 price=price_val,
                                 normal_price=normal_val,
                                 discount_percent=discount_val,
@@ -432,8 +446,8 @@ class CategoryScraper:
 
                 items.append(
                     ScrapedCategoryProduct(
-                        url=prod_url,
-                        title=name.strip(),
+                        url=BaseScraper.clean_url(prod_url),
+                        title=BaseScraper.clean_product_title(name.strip()),
                         price=price,
                         normal_price=normal_price,
                         discount_percent=disc,
@@ -526,8 +540,8 @@ class CategoryScraper:
 
             items.append(
                 ScrapedCategoryProduct(
-                    url=full_url,
-                    title=title,
+                    url=BaseScraper.clean_url(full_url),
+                    title=BaseScraper.clean_product_title(title),
                     price=price,
                     position=len(items) + 1,
                 )
@@ -622,7 +636,7 @@ class CategoryCrawlerService:
             return []
 
         # Determinar límite efectivo: si es macro-tienda con catálogo amplio, ampliar si está configurado
-        major_stores = {"falabella", "sodimac", "ripley", "paris", "mercadolibre", "easy"}
+        major_stores = {"falabella", "sodimac", "ripley", "paris", "mercadolibre", "easy", "lider"}
         major_limit = getattr(settings, "MAJOR_STORES_PRODUCTS_LIMIT", 80)
         effective_limit = max(max_products, major_limit) if store_id.lower() in major_stores else max_products
 
@@ -687,7 +701,8 @@ class CategoryCrawlerService:
         """
         Sincroniza los productos de una categoría específica en todas sus tiendas configuradas.
         Inserta nuevos productos o actualiza los existentes con la categoría.
-        Alerta inmediatamente si un producto nuevo o actualizado presenta un descuento relevante de catálogo.
+        Alerta inmediatamente si un producto nuevo o actualizado presenta un descuento relevante de catálogo
+        o alcanza el precio objetivo (ej. ETB 30 Aniversario por <= 91.000 CLP).
         Retorna (agregados, actualizados).
         """
         catalog = load_categories_catalog()
@@ -719,34 +734,62 @@ class CategoryCrawlerService:
             await asyncio.sleep(0.5)
 
             for prod in products:
-                if not prod.url or prod.url in seen_batch_urls:
+                prod_url_clean = BaseScraper.clean_url(prod.url) if prod.url else ""
+                if not prod_url_clean or prod_url_clean in seen_batch_urls:
                     continue
-                seen_batch_urls.add(prod.url)
+                seen_batch_urls.add(prod_url_clean)
 
-                stmt = select(Product).where(Product.url_original == prod.url)
-                existing = (await session.execute(stmt)).scalar_one_or_none()
+                stmt = select(Product).where(
+                    (Product.url_original == prod_url_clean) | (Product.url_original.startswith(prod_url_clean + "?"))
+                )
+                existing = (await session.execute(stmt)).scalars().first()
+
+                # Normalizar URL en base de datos si venía con parámetros dinámicos antiguos
+                if existing and existing.url_original != prod_url_clean:
+                    existing.url_original = prod_url_clean
 
                 # Calcular descuento de catálogo si está disponible
                 catalog_discount = prod.discount_percent
                 if catalog_discount is None and prod.normal_price and prod.price and prod.normal_price > prod.price:
                     catalog_discount = round(((prod.normal_price - prod.price) / prod.normal_price) * 100, 1)
 
+                is_etb_target = is_pokemon_sealed_target(prod.title) or (existing and is_pokemon_sealed_target(existing.nombre))
+
                 if existing:
                     # Actualizar metadatos si era necesario
                     modified = False
+                    clean_title = BaseScraper.clean_product_title(prod.title)
+                    if not existing.nombre or "vista previa" in existing.nombre.lower():
+                        existing.nombre = clean_title
+                        modified = True
                     if not existing.categoria:
                         existing.categoria = cat_item.name
                         modified = True
                     if not existing.es_top_categoria:
                         existing.es_top_categoria = True
                         modified = True
+
+                    # Detección ETB / Cajas Pokémon TCG
+                    if is_etb_target:
+                        if existing.precio_objetivo is None or existing.precio_objetivo > POKEMON_ETB_MAX_PRICE:
+                            existing.precio_objetivo = POKEMON_ETB_MAX_PRICE
+                            modified = True
+
+                    old_price = existing.precio_actual
+                    price_dropped = bool(prod.price and old_price is not None and prod.price < old_price)
+                    target_hit = bool(
+                        existing.precio_objetivo is not None
+                        and prod.price
+                        and prod.price <= existing.precio_objetivo
+                        and (existing.ultima_alerta_en is None or price_dropped)
+                    )
+
                     if prod.price and existing.precio_actual is None:
                         existing.precio_actual = prod.price
                         existing.precio_minimo = prod.price
                         modified = True
-                    elif prod.price and existing.precio_actual is not None and prod.price < existing.precio_actual:
+                    elif price_dropped:
                         # Bajada de precio en producto ya monitoreado
-                        old_price = existing.precio_actual
                         reduction = old_price - prod.price
                         pct = (reduction / old_price) * 100
                         is_all_time_low = (
@@ -758,7 +801,9 @@ class CategoryCrawlerService:
                             existing.precio_minimo = prod.price
                         modified = True
 
-                        if pct >= cat_item.default_threshold_percent and self.notifier:
+                        threshold_hit = (pct >= cat_item.default_threshold_percent)
+
+                        if (threshold_hit or target_hit) and self.notifier:
                             # Comprobación estricta de cooldown anti-spam (settings.ALERT_COOLDOWN_HOURS)
                             in_cooldown = False
                             if existing.ultima_alerta_en is not None:
@@ -771,8 +816,8 @@ class CategoryCrawlerService:
                                     in_cooldown = True
 
                             # Regla anti-spam estricta: NO alertar repetidamente durante el cooldown
-                            # salvo que rompa un mínimo histórico absoluto previo
-                            if in_cooldown and not is_all_time_low:
+                            # salvo que rompa un mínimo histórico absoluto previo o alcance target por primera vez
+                            if in_cooldown and not is_all_time_low and not (target_hit and existing.ultima_alerta_en is None):
                                 logger.info(
                                     f"Alerta en categoría omitida para [{store_name}] '{existing.nombre or prod.title}' "
                                     f"por cooldown anti-spam ({settings.ALERT_COOLDOWN_HOURS}h)."
@@ -791,6 +836,7 @@ class CategoryCrawlerService:
                                     discount_percent=pct,
                                     affiliate_url=aff_url,
                                     is_all_time_low=is_all_time_low,
+                                    target_price=existing.precio_objetivo,
                                     image_url=prod.image_url,
                                     category=cat_item.name,
                                     is_price_error=(pct >= settings.ERROR_DISCOUNT_THRESHOLD_PERCENT),
@@ -801,15 +847,50 @@ class CategoryCrawlerService:
                                 except Exception as ex:
                                     logger.warning(f"Error despachando alerta de actualización: {ex}")
 
+                    elif target_hit and self.notifier and existing.ultima_alerta_en is None:
+                        # Cumple target price en escaneo inicial del catálogo
+                        existing.precio_actual = prod.price
+                        if existing.precio_minimo is None or prod.price < existing.precio_minimo:
+                            existing.precio_minimo = prod.price
+                        modified = True
+
+                        aff_url = prod.url
+                        if store_rule:
+                            from src.scrapers.configurable import ConfigurableScraper
+                            aff_url = ConfigurableScraper(store_rule).build_affiliate_url(prod.url)
+                        ref_p = prod.normal_price or existing.precio_objetivo or prod.price
+                        disc_p = round(((ref_p - prod.price) / ref_p) * 100, 1) if ref_p > prod.price else 0.0
+                        from src.services.notifier import AlertPayload
+                        payload = AlertPayload(
+                            title=existing.nombre or prod.title,
+                            store=store_name,
+                            old_price=ref_p,
+                            new_price=prod.price,
+                            discount_percent=disc_p,
+                            affiliate_url=aff_url,
+                            is_all_time_low=True,
+                            target_price=existing.precio_objetivo,
+                            image_url=prod.image_url,
+                            category=cat_item.name,
+                        )
+                        try:
+                            await self.notifier.send_alert(payload)
+                            existing.ultima_alerta_en = now_utc
+                        except Exception as ex:
+                            logger.warning(f"Error despachando alerta de target price: {ex}")
+
                     if modified:
                         total_updated += 1
                 else:
+                    clean_title = BaseScraper.clean_product_title(prod.title)
+                    target_price = POKEMON_ETB_MAX_PRICE if is_etb_target else None
                     new_prod = Product(
-                        url_original=prod.url,
-                        nombre=prod.title,
+                        url_original=prod_url_clean,
+                        nombre=clean_title,
                         tienda=store_name,
                         precio_actual=prod.price,
                         precio_minimo=prod.price,
+                        precio_objetivo=target_price,
                         umbral_descuento_porcentaje=cat_item.default_threshold_percent,
                         categoria=cat_item.name,
                         es_top_categoria=True,
@@ -818,37 +899,50 @@ class CategoryCrawlerService:
                     session.add(new_prod)
                     total_added += 1
 
-                    # ¡Alerta instantánea para ofertas de catálogo en productos nuevos!
-                    if catalog_discount and prod.price and catalog_discount >= cat_item.default_threshold_percent:
-                        ref_price = prod.normal_price or (prod.price / (1 - (catalog_discount / 100)))
-                        is_price_error = (catalog_discount >= settings.ERROR_DISCOUNT_THRESHOLD_PERCENT)
+                    # Alerta instantánea para ETB de Pokémon TCG por debajo del precio objetivo o descuentos de catálogo
+                    etb_target_hit = bool(is_etb_target and prod.price and prod.price <= POKEMON_ETB_MAX_PRICE)
+                    catalog_discount_hit = bool(catalog_discount and prod.price and catalog_discount >= cat_item.default_threshold_percent)
+
+                    if (etb_target_hit or catalog_discount_hit) and self.notifier:
+                        ref_price = (
+                            prod.normal_price
+                            or (prod.price / (1 - (catalog_discount / 100)))
+                            if catalog_discount
+                            else (POKEMON_ETB_MAX_PRICE if etb_target_hit else prod.price)
+                        )
+                        disc_calc = (
+                            catalog_discount
+                            if catalog_discount is not None
+                            else (round(((ref_price - prod.price) / ref_price) * 100, 1) if ref_price > prod.price else 0.0)
+                        )
+                        is_price_error = (disc_calc >= settings.ERROR_DISCOUNT_THRESHOLD_PERCENT)
                         new_prod.ultima_alerta_en = now_utc
 
-                        if self.notifier:
-                            aff_url = prod.url
-                            if store_rule:
-                                from src.scrapers.configurable import ConfigurableScraper
-                                aff_url = ConfigurableScraper(store_rule).build_affiliate_url(prod.url)
-                            from src.services.notifier import AlertPayload
-                            payload = AlertPayload(
-                                title=prod.title,
-                                store=store_name,
-                                old_price=ref_price,
-                                new_price=prod.price,
-                                discount_percent=catalog_discount,
-                                affiliate_url=aff_url,
-                                is_all_time_low=True,
-                                image_url=prod.image_url,
-                                category=cat_item.name,
-                                is_price_error=is_price_error,
+                        aff_url = prod.url
+                        if store_rule:
+                            from src.scrapers.configurable import ConfigurableScraper
+                            aff_url = ConfigurableScraper(store_rule).build_affiliate_url(prod.url)
+                        from src.services.notifier import AlertPayload
+                        payload = AlertPayload(
+                            title=prod.title,
+                            store=store_name,
+                            old_price=ref_price,
+                            new_price=prod.price,
+                            discount_percent=disc_calc,
+                            affiliate_url=aff_url,
+                            is_all_time_low=True,
+                            target_price=target_price,
+                            image_url=prod.image_url,
+                            category=cat_item.name,
+                            is_price_error=is_price_error,
+                        )
+                        try:
+                            await self.notifier.send_alert(payload)
+                            logger.info(
+                                f"¡Alerta despachada! [{store_name}] {prod.title} (Precio: {prod.price})"
                             )
-                            try:
-                                await self.notifier.send_alert(payload)
-                                logger.info(
-                                    f"¡Alerta de oferta de catálogo despachada! [{store_name}] {prod.title} (-{catalog_discount:.1f}%)"
-                                )
-                            except Exception as alert_err:
-                                logger.warning(f"Error despachando alerta de catálogo para {prod.title}: {alert_err}")
+                        except Exception as alert_err:
+                            logger.warning(f"Error despachando alerta para {prod.title}: {alert_err}")
 
         await session.commit()
         logger.info(

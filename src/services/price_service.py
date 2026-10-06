@@ -5,7 +5,15 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.config import settings
 from src.models import PriceHistory, Product
-from src.scrapers.base import ScrapedItem
+from src.scrapers.base import (
+    BaseScraper,
+    ScrapedItem,
+    is_pokemon_etb,
+    is_pokemon_etb_30,
+    is_pokemon_sealed_target,
+    POKEMON_ETB_MAX_PRICE,
+    POKEMON_ETB_30_MAX_PRICE,
+)
 from src.scrapers.registry import get_scraper_for_url
 from src.services.notifier import AlertPayload, TelegramNotifier
 
@@ -29,6 +37,10 @@ class PriceTrackingService:
         4. Control de spam / cooldown.
         5. Envío de notificación a Telegram si corresponde.
         """
+        cleaned_url = BaseScraper.clean_url(product.url_original)
+        if product.url_original != cleaned_url:
+            product.url_original = cleaned_url
+
         scraper = get_scraper_for_url(product.url_original)
         logger.info(f"Iniciando verificación para [{product.tienda}] ID {product.id}: {product.url_original}")
 
@@ -52,6 +64,13 @@ class PriceTrackingService:
         if item.title and (not product.nombre or product.nombre == "Pendiente"):
             product.nombre = item.title
 
+        # Detección y asignación automática de precio objetivo para ETBs de Pokémon TCG (<= 91.000 CLP)
+        if is_pokemon_sealed_target(product.nombre or item.title):
+            if product.precio_objetivo is None or product.precio_objetivo > POKEMON_ETB_MAX_PRICE:
+                product.precio_objetivo = POKEMON_ETB_MAX_PRICE
+            if not product.categoria:
+                product.categoria = "Pokémon TCG y Cartas Coleccionables"
+
         # Registrar historial de precio
         history_entry = PriceHistory(
             product_id=product.id,
@@ -63,6 +82,12 @@ class PriceTrackingService:
         alert_payload: Optional[AlertPayload] = None
         should_alert = False
 
+        reduction = 0.0
+        discount_percent = 0.0
+        threshold_met = False
+        target_met = False
+
+        # Caso A: Producto ya contaba con un precio previo
         if old_price is not None and old_price > 0:
             reduction = old_price - current_price
             discount_percent = (reduction / old_price) * 100
@@ -73,12 +98,12 @@ class PriceTrackingService:
                 and discount_percent >= product.umbral_descuento_porcentaje
             )
 
-            # Condición 2: Alcanzó el precio objetivo y es menor al anterior
-            target_met = (
-                product.precio_objetivo is not None
-                and current_price <= product.precio_objetivo
-                and current_price < old_price
-            )
+            # Condición 2: Alcanzó el precio objetivo
+            if product.precio_objetivo is not None and current_price <= product.precio_objetivo:
+                if product.ultima_alerta_en is None or current_price < old_price:
+                    target_met = True
+                elif product.precio_minimo is not None and current_price < product.precio_minimo:
+                    target_met = True
 
             # Condición 3: Oferta de catálogo recién descubierta o no alertada (Precio lista vs Precio oferta)
             if not threshold_met and not target_met and product.ultima_alerta_en is None:
@@ -91,51 +116,69 @@ class PriceTrackingService:
                     discount_percent = cat_disc
                     old_price = ref_p or (current_price / (1 - cat_disc / 100))
 
-            if threshold_met or target_met:
-                # Comprobación estricta de anti-spam y cooldown (12 horas)
-                in_cooldown = False
-                time_since_alert_str = ""
-                if product.ultima_alerta_en is not None:
-                    # Asegurar comparación timezone-aware
-                    last_alert = product.ultima_alerta_en
-                    if last_alert.tzinfo is None:
-                        last_alert = last_alert.replace(tzinfo=datetime.timezone.utc)
+        # Caso B: Primer escaneo del producto (old_price es None) pero cumple precio objetivo o catálogo
+        elif old_price is None:
+            if product.precio_objetivo is not None and current_price <= product.precio_objetivo:
+                target_met = True
+                ref_p = item.normal_price or product.precio_objetivo
+                old_price = ref_p if ref_p > current_price else current_price
+                reduction = old_price - current_price
+                discount_percent = (reduction / old_price * 100) if old_price > 0 else 0.0
 
-                    time_since_alert = now - last_alert
-                    cooldown_delta = datetime.timedelta(hours=settings.ALERT_COOLDOWN_HOURS)
-                    if time_since_alert < cooldown_delta:
-                        in_cooldown = True
-                        hours_left = (cooldown_delta - time_since_alert).total_seconds() / 3600
-                        time_since_alert_str = f"emitida hace {time_since_alert.total_seconds() / 3600:.1f}h, faltan {hours_left:.1f}h"
+            cat_disc = item.discount_percent
+            ref_p = item.normal_price
+            if cat_disc is None and ref_p and ref_p > current_price:
+                cat_disc = ((ref_p - current_price) / ref_p) * 100
+            if cat_disc and cat_disc >= product.umbral_descuento_porcentaje:
+                threshold_met = True
+                discount_percent = cat_disc
+                old_price = ref_p or (current_price / (1 - cat_disc / 100))
 
-                is_all_time_low = (
-                    product.precio_minimo is not None and current_price < product.precio_minimo
+        if threshold_met or target_met:
+            # Comprobación estricta de anti-spam y cooldown (settings.ALERT_COOLDOWN_HOURS)
+            in_cooldown = False
+            time_since_alert_str = ""
+            if product.ultima_alerta_en is not None:
+                # Asegurar comparación timezone-aware
+                last_alert = product.ultima_alerta_en
+                if last_alert.tzinfo is None:
+                    last_alert = last_alert.replace(tzinfo=datetime.timezone.utc)
+
+                time_since_alert = now - last_alert
+                cooldown_delta = datetime.timedelta(hours=settings.ALERT_COOLDOWN_HOURS)
+                if time_since_alert < cooldown_delta:
+                    in_cooldown = True
+                    hours_left = (cooldown_delta - time_since_alert).total_seconds() / 3600
+                    time_since_alert_str = f"emitida hace {time_since_alert.total_seconds() / 3600:.1f}h, faltan {hours_left:.1f}h"
+
+            is_all_time_low = (
+                product.precio_minimo is not None and current_price < product.precio_minimo
+            )
+
+            # Regla de oro: NO enviar más de una vez durante el cooldown la misma oferta,
+            # salvo que rompa el mínimo histórico estrictamente.
+            if in_cooldown and not is_all_time_low:
+                logger.info(
+                    f"Oferta retenida para [{product.tienda}] ID {product.id} por cooldown anti-spam "
+                    f"({settings.ALERT_COOLDOWN_HOURS}h). {time_since_alert_str}."
                 )
-
-                # Regla de oro: NO enviar más de una vez durante el cooldown la misma oferta,
-                # salvo que rompa el mínimo histórico estrictamente.
-                if in_cooldown and not is_all_time_low:
-                    logger.info(
-                        f"Oferta retenida para [{product.tienda}] ID {product.id} por cooldown anti-spam "
-                        f"({settings.ALERT_COOLDOWN_HOURS}h). {time_since_alert_str}."
-                    )
-                    should_alert = False
-                else:
-                    should_alert = True
-                    affiliate_url = item.affiliate_url or scraper.build_affiliate_url(product.url_original)
-                    alert_payload = AlertPayload(
-                        title=product.nombre or item.title,
-                        store=product.tienda,
-                        old_price=old_price,
-                        new_price=current_price,
-                        discount_percent=discount_percent,
-                        affiliate_url=affiliate_url,
-                        is_all_time_low=is_all_time_low,
-                        target_price=product.precio_objetivo,
-                        image_url=item.image_url,
-                        category=product.categoria,
-                        is_price_error=(discount_percent >= settings.ERROR_DISCOUNT_THRESHOLD_PERCENT),
-                    )
+                should_alert = False
+            else:
+                should_alert = True
+                affiliate_url = item.affiliate_url or scraper.build_affiliate_url(product.url_original)
+                alert_payload = AlertPayload(
+                    title=product.nombre or item.title,
+                    store=product.tienda,
+                    old_price=old_price or current_price,
+                    new_price=current_price,
+                    discount_percent=discount_percent,
+                    affiliate_url=affiliate_url,
+                    is_all_time_low=is_all_time_low,
+                    target_price=product.precio_objetivo,
+                    image_url=item.image_url,
+                    category=product.categoria,
+                    is_price_error=(discount_percent >= settings.ERROR_DISCOUNT_THRESHOLD_PERCENT),
+                )
 
         # Actualizar estado del producto
         product.precio_actual = current_price
@@ -201,11 +244,15 @@ class PriceTrackingService:
             if not url:
                 continue
 
-            url = url.strip()
+            url = BaseScraper.clean_url(url.strip())
             name = item.get("name")
             target_price = item.get("target_price")
             threshold = item.get("threshold_percent", settings.DEFAULT_DISCOUNT_THRESHOLD_PERCENT)
             active = item.get("active", True)
+
+            if is_pokemon_sealed_target(name):
+                if target_price is None or target_price > POKEMON_ETB_MAX_PRICE:
+                    target_price = POKEMON_ETB_MAX_PRICE
 
             stmt = select(Product).where(Product.url_original == url)
             product = (await session.execute(stmt)).scalar_one_or_none()
@@ -216,7 +263,14 @@ class PriceTrackingService:
                 if name and product.nombre != name:
                     product.nombre = name
                     modified = True
-                if target_price is not None and product.precio_objetivo != target_price:
+                if is_pokemon_sealed_target(name or product.nombre):
+                    if product.precio_objetivo is None or product.precio_objetivo > POKEMON_ETB_MAX_PRICE:
+                        product.precio_objetivo = POKEMON_ETB_MAX_PRICE
+                        modified = True
+                    if not product.categoria:
+                        product.categoria = "Pokémon TCG y Cartas Coleccionables"
+                        modified = True
+                elif target_price is not None and product.precio_objetivo != target_price:
                     product.precio_objetivo = target_price
                     modified = True
                 if threshold is not None and product.umbral_descuento_porcentaje != threshold:
@@ -231,6 +285,7 @@ class PriceTrackingService:
                 # Nuevo producto
                 scraper = get_scraper_for_url(url)
                 store = scraper.store_name
+                prod_cat = "Pokémon TCG y Cartas Coleccionables" if (is_pokemon_sealed_target(name) or "pokemon" in (name or "").lower()) else None
                 new_prod = Product(
                     url_original=url,
                     nombre=name or f"Producto {store}",
@@ -239,6 +294,7 @@ class PriceTrackingService:
                     precio_minimo=None,
                     precio_objetivo=target_price,
                     umbral_descuento_porcentaje=threshold,
+                    categoria=prod_cat,
                     activo=active,
                 )
                 session.add(new_prod)
