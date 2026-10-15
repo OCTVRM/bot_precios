@@ -1,6 +1,28 @@
 {
   "categories": [
     {
+      "id": "iphones",
+      "name": "iPhones (Modelos 14 en adelante)",
+      "default_threshold_percent": 10.0,
+      "error_threshold_percent": 40.0,
+      "active": true,
+      "stores": {
+        "falabella": "https://www.falabella.com/falabella-cl/search?Ntt=iphone",
+        "paris": "https://www.paris.cl/search?q=iphone",
+        "ripley": "https://simple.ripley.cl/search/iphone",
+        "hites": "https://www.hites.com/search?q=iphone",
+        "entel": "https://www.entel.cl/equipos/apple/",
+        "abc": "https://www.abc.cl/search?q=iphone",
+        "mercadolibre": "https://listado.mercadolibre.cl/iphone",
+        "maconline": "https://maconline.com/iphone",
+        "aufbau": "https://aufbau.cl/collections/iphone",
+        "pcfactory": "https://www.pcfactory.cl/buscar?valor=iphone",
+        "lider": "https://www.lider.cl/search?q=iphone",
+        "gsmpro": "https://gsmpro.cl/search?q=iphone",
+        "winpy": "https://www.winpy.cl/busqueda?q=iphone"
+      }
+    },
+    {
       "id": "celulares",
       "name": "Celulares y Smartphones",
       "default_threshold_percent": 15.0,
@@ -17,7 +39,11 @@
         "samsung": "https://www.samsung.com/cl/smartphones/all-smartphones/",
         "maconline": "https://maconline.com/iphone",
         "aufbau": "https://aufbau.cl/collections/iphone",
-        "mistore": "https://mistorechile.cl/collections/smartphones"
+        "mistore": "https://mistorechile.cl/collections/smartphones",
+        "pcfactory": "https://www.pcfactory.cl/smartphones",
+        "lider": "https://www.lider.cl/catalogo/category/Telefonia/Celulares-y-Smartphones",
+        "gsmpro": "https://gsmpro.cl/collections/smartphones",
+        "winpy": "https://www.winpy.cl/categoria/telefonia-y-gps/smartphones/"
       }
     },
     {

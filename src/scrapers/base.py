@@ -376,3 +376,119 @@ def is_pokemon_sealed_target(title: Optional[str]) -> bool:
     return is_pokemon_etb(title) or is_pokemon_etb_30(title)
 
 
+# ============================================================================
+# Detección y Monitoreo Especializado de Apple iPhone (Modelo 14 en adelante)
+# ============================================================================
+
+IPHONE_MIN_GENERATION: int = 14
+
+IPHONE_ACCESSORY_PATTERN = re.compile(
+    r"\b("
+    r"carcasa|carcasas|funda|fundas|case|cases|cover|covers|protector|protectora|protectores|"
+    r"mica|micas|vidrio\s*templado|cristal\s*templado|l[aá]mina|l[aá]minas|hidrogel|"
+    r"cable|cables|cargador|cargadores|adaptador|adaptadores|correa|correas|"
+    r"soporte|soportes|holder|stand|popsocket|anillo|ring|"
+    r"bater[ií]a\s*externa|power\s*bank|powerbank|magsafe\s*battery|billetera|wallet|tarjetero|"
+    r"repuesto|repuestos|pantalla\s*repuesto|display|flex|"
+    r"skin|skins|sticker|stickers|estuche|estuches|bolso|bolsos|"
+    r"airpods|aud[ií]fonos?|earbuds|earpods"
+    r")\b",
+    re.IGNORECASE,
+)
+
+
+def parse_iphone_generation(title: Optional[str]) -> Optional[int]:
+    """
+    Extrae la generación numérica de un iPhone (ej: 'iPhone 15 Pro' -> 15, 'iPhone 14 Plus' -> 14).
+    Retorna el número entero o None si no corresponde a un modelo numérico.
+    """
+    if not title:
+        return None
+    m = re.search(r"\biphone\s*(\d{1,2})\b", title, re.IGNORECASE)
+    if m:
+        try:
+            return int(m.group(1))
+        except ValueError:
+            return None
+    return None
+
+
+def is_iphone_accessory(title: Optional[str]) -> bool:
+    """
+    Determina si un producto corresponde a un accesorio para iPhone (funda, carcasa, mica, cable, etc.)
+    en lugar del teléfono celular en sí.
+    """
+    if not title:
+        return False
+    return bool(IPHONE_ACCESSORY_PATTERN.search(title))
+
+
+def is_iphone_target(title: Optional[str], min_generation: int = IPHONE_MIN_GENERATION) -> bool:
+    """
+    Determina si un producto es un teléfono celular Apple iPhone original de generación >= min_generation
+    (por defecto modelo 14 en adelante: 14, 15, 16, etc.).
+    Filtra estrictamente accesorios (carcasas, micas, cables) y modelos anteriores al 14 (13, 12, 11, X, SE, etc.).
+    """
+    if not title:
+        return False
+    t = title.lower()
+    if "iphone" not in t:
+        return False
+    if is_iphone_accessory(title):
+        return False
+
+    gen = parse_iphone_generation(title)
+    return gen is not None and gen >= min_generation
+
+
+def get_iphone_target_price(title: Optional[str]) -> Optional[float]:
+    """
+    Retorna el precio objetivo en CLP de referencia para alertas de oferta agresiva en iPhones
+    según su generación y variante (Base, Plus, Pro, Pro Max).
+    """
+    if not title:
+        return None
+    t = title.lower()
+    gen = parse_iphone_generation(title)
+    if gen is None or gen < IPHONE_MIN_GENERATION:
+        return None
+
+    is_pro_max = "pro max" in t or "promax" in t
+    is_pro = "pro" in t and not is_pro_max
+    is_plus = "plus" in t
+
+    if gen == 14:
+        if is_pro_max:
+            return 899990.0
+        if is_pro:
+            return 799990.0
+        if is_plus:
+            return 669990.0
+        return 599990.0
+    elif gen == 15:
+        if is_pro_max:
+            return 1049990.0
+        if is_pro:
+            return 899990.0
+        if is_plus:
+            return 779990.0
+        return 699990.0
+    elif gen == 16:
+        if is_pro_max:
+            return 1299990.0
+        if is_pro:
+            return 1099990.0
+        if is_plus:
+            return 949990.0
+        return 849990.0
+    else:  # gen >= 17
+        if is_pro_max:
+            return 1399990.0
+        if is_pro:
+            return 1199990.0
+        if is_plus:
+            return 999990.0
+        return 899990.0
+
+
+

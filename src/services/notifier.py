@@ -6,7 +6,12 @@ from aiogram import Bot
 from aiogram.enums import ParseMode
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from src.config import settings
-from src.scrapers.base import is_pokemon_etb_30, is_pokemon_sealed_target
+from src.scrapers.base import (
+    is_pokemon_etb_30,
+    is_pokemon_sealed_target,
+    is_iphone_target,
+    parse_iphone_generation,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -56,9 +61,10 @@ class TelegramNotifier:
 
         is_etb_30 = is_pokemon_etb_30(alert.title)
         is_etb_sealed = is_pokemon_sealed_target(alert.title)
+        is_iphone = is_iphone_target(alert.title)
         is_target_hit = bool(alert.target_price and alert.new_price <= alert.target_price)
 
-        # Encabezado visual: Distinción entre Error de Precio (Bug), ETB Pokémon y Oferta Estándar
+        # Encabezado visual: Distinción entre Error de Precio (Bug), ETB Pokémon, iPhone 14+ y Oferta Estándar
         if alert.is_price_error or alert.discount_percent >= settings.ERROR_DISCOUNT_THRESHOLD_PERCENT:
             header = (
                 f"🚨🚨 <b>¡POSIBLE ERROR DE PRECIO / BUG EN {safe_store}!</b> 🚨🚨\n"
@@ -74,6 +80,16 @@ class TelegramNotifier:
                 f"⚡🎯 <b>¡ALERTA ESPECIAL POKÉMON: ETB SELLADO EN {safe_store}!</b> 🎯⚡\n"
                 f"✨ <i>¡Disponible por {format_clp(alert.new_price)} (menos de {format_clp(alert.target_price)})!</i>\n"
             )
+        elif is_iphone and is_target_hit:
+            header = (
+                f"🍎📱 <b>¡ALERTA IPHONE: PRECIO OBJETIVO ALCANZADO EN {safe_store}!</b> 📱🍎\n"
+                f"✨ <i>¡Disponible por {format_clp(alert.new_price)} (objetivo: {format_clp(alert.target_price)})!</i>\n"
+            )
+        elif is_iphone:
+            header = (
+                f"🍎📱 <b>¡OFERTA DESTACADA IPHONE EN {safe_store}!</b> 📱🍎\n"
+                f"🔥 <i>¡Caída de precio detectada (-{alert.discount_percent:.1f}%)!</i>\n"
+            )
         else:
             header = f"🔥 <b>¡OFERTA DETECTADA EN {safe_store}!</b> 🔥\n"
 
@@ -82,7 +98,10 @@ class TelegramNotifier:
             f"📦 <b>{safe_title}</b>",
         ]
 
-        if alert.category:
+        if is_iphone:
+            gen = parse_iphone_generation(alert.title)
+            lines.append(f"🏷️ <b>Categoría Especial:</b> Apple iPhone {gen or ''} (Serie 14+)")
+        elif alert.category:
             lines.append(f"🏷️ <b>Categoría:</b> {html.escape(alert.category)}")
 
         lines.extend([
@@ -99,6 +118,8 @@ class TelegramNotifier:
                 lines.append(f"🎯 <b>¡ETB 30 ANIVERSARIO alcanzado por {format_clp(alert.new_price)} (menos de {format_clp(alert.target_price)})!</b>")
             elif is_etb_sealed:
                 lines.append(f"🎯 <b>¡POKÉMON ETB alcanzado por {format_clp(alert.new_price)} (menos de {format_clp(alert.target_price)})!</b>")
+            elif is_iphone:
+                lines.append(f"🎯 <b>¡IPHONE alcanzó precio objetivo por {format_clp(alert.new_price)} (meta: {format_clp(alert.target_price)})!</b>")
             else:
                 lines.append(f"🎯 <i>¡Alcanzó tu precio objetivo de {format_clp(alert.target_price)}!</i>")
 
@@ -108,7 +129,10 @@ class TelegramNotifier:
 
     def build_keyboard(self, alert: AlertPayload) -> InlineKeyboardMarkup:
         """Crea el botón interactivo con el enlace de afiliado."""
-        button_text = f"🛒 Ver Oferta en {alert.store}"
+        if is_iphone_target(alert.title):
+            button_text = f"🍎 Comprar iPhone en {alert.store}"
+        else:
+            button_text = f"🛒 Ver Oferta en {alert.store}"
         keyboard = InlineKeyboardMarkup(
             inline_keyboard=[
                 [InlineKeyboardButton(text=button_text, url=alert.affiliate_url)]

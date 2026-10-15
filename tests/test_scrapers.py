@@ -97,3 +97,87 @@ def test_clean_product_title():
     simple_dirty = "Vista previa Smart TV LG 55 OLED Agregar al carro"
     assert BaseScraper.clean_product_title(simple_dirty) == "Smart TV LG 55 OLED"
 
+
+def test_iphone_detection_and_accessories():
+    """Verifica la detección especializada de Apple iPhones modelo 14+ y el filtrado de accesorios."""
+    from src.scrapers.base import (
+        is_iphone_target,
+        is_iphone_accessory,
+        parse_iphone_generation,
+        get_iphone_target_price,
+    )
+
+    # Verificación de parsing de generación
+    assert parse_iphone_generation("Apple iPhone 14 128GB") == 14
+    assert parse_iphone_generation("iPhone 15 Pro Max 256GB") == 15
+    assert parse_iphone_generation("iPhone 16 Plus 128GB") == 16
+    assert parse_iphone_generation("iPhone 13 128GB") == 13
+    assert parse_iphone_generation("iPhone SE 64GB") is None
+    assert parse_iphone_generation("Samsung Galaxy S24") is None
+
+    # Verificación de accesorios (deben dar True en accessory y False en target)
+    accessories = [
+        "Carcasa Silicone Case con MagSafe para iPhone 15 Pro Max",
+        "Funda Transparente Antigolpes para iPhone 14",
+        "Mica Vidrio Templado 9D para iPhone 16 Pro",
+        "Protector de Pantalla Cerámica para iPhone 15",
+        "Cable USB-C a Lightning para iPhone 14",
+        "Cargador Rápido 20W USB-C para iPhone 15",
+        "Adaptador de Corriente para iPhone 16",
+        "Lámina Hidrogel para iPhone 14 Plus",
+        "Correa Lanyard para iPhone 15",
+        "Batería Externa MagSafe para iPhone 14",
+        "Billetera Wallet MagSafe para iPhone 15",
+        "Audífonos EarPods con Conector Lightning para iPhone 14",
+    ]
+    for acc in accessories:
+        assert is_iphone_accessory(acc) is True, f"Fallo al detectar accesorio: {acc}"
+        assert is_iphone_target(acc) is False, f"Accesorio detectado erróneamente como target: {acc}"
+
+    # Verificación de modelos objetivo (generación >= 14)
+    valid_iphones = [
+        "Apple iPhone 14 128GB Medianoche",
+        "iPhone 14 Plus 256GB Azul",
+        "Apple iPhone 14 Pro 128GB Morado",
+        "iPhone 14 Pro Max 256GB Oro",
+        "iPhone 15 128GB Negro",
+        "Apple iPhone 15 Plus 256GB Verde",
+        "iPhone 15 Pro 128GB Titanio Natural",
+        "iPhone 15 Pro Max 256GB Titanio Negro",
+        "Apple iPhone 16 128GB Blanco",
+        "iPhone 16 Plus 256GB Ultramarino",
+        "iPhone 16 Pro 128GB Titanio Desierto",
+        "iPhone 16 Pro Max 256GB Titanio Negro",
+        "iPhone 17 Pro Max",
+    ]
+    for iph in valid_iphones:
+        assert is_iphone_target(iph) is True, f"Fallo al detectar iPhone objetivo: {iph}"
+
+    # Modelos obsoletos (< 14) deben ser excluidos
+    obsolete = [
+        "iPhone 13 128GB Midnight",
+        "iPhone 13 Pro 256GB Sierra Blue",
+        "iPhone 12 64GB Negro",
+        "iPhone 11 64GB Blanco",
+        "iPhone XR 64GB Coral",
+        "iPhone X 64GB Gris Espacial",
+        "iPhone 8 Plus 64GB",
+    ]
+    for obs in obsolete:
+        assert is_iphone_target(obs) is False, f"Modelo menor a 14 detectado erróneamente: {obs}"
+
+    # Verificación de precios objetivos
+    assert get_iphone_target_price("iPhone 14 128GB") == 599990.0
+    assert get_iphone_target_price("iPhone 14 Plus 128GB") == 669990.0
+    assert get_iphone_target_price("iPhone 14 Pro 128GB") == 799990.0
+    assert get_iphone_target_price("iPhone 14 Pro Max 256GB") == 899990.0
+    assert get_iphone_target_price("iPhone 15 128GB") == 699990.0
+    assert get_iphone_target_price("iPhone 15 Plus 128GB") == 779990.0
+    assert get_iphone_target_price("iPhone 15 Pro 128GB") == 899990.0
+    assert get_iphone_target_price("iPhone 15 Pro Max 256GB") == 1049990.0
+    assert get_iphone_target_price("iPhone 16 128GB") == 849990.0
+    assert get_iphone_target_price("iPhone 16 Plus 128GB") == 949990.0
+    assert get_iphone_target_price("iPhone 16 Pro 128GB") == 1099990.0
+    assert get_iphone_target_price("iPhone 16 Pro Max 256GB") == 1299990.0
+
+

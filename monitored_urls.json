@@ -42,18 +42,221 @@
     "active": false
   },
   {
+    "url": "https://www.falabella.com/falabella-cl/product/16886361/Apple-iPhone-15-128GB/16886362",
+    "name": "Apple iPhone 15 128GB - Falabella",
+    "target_price": 699990,
+    "threshold_percent": 8.0,
+    "active": true
+  },
+  {
+    "url": "https://www.falabella.com/falabella-cl/product/16543940/Apple-iPhone-14-128GB/16543941",
+    "name": "Apple iPhone 14 128GB - Falabella",
+    "target_price": 599990,
+    "threshold_percent": 8.0,
+    "active": true
+  },
+  {
+    "url": "https://www.falabella.com/falabella-cl/product/17094200/Apple-iPhone-16-128GB/17094201",
+    "name": "Apple iPhone 16 128GB - Falabella",
+    "target_price": 849990,
+    "threshold_percent": 8.0,
+    "active": true
+  },
+  {
+    "url": "https://www.paris.cl/apple-iphone-15-128gb-negro-254556999.html",
+    "name": "Apple iPhone 15 128GB - Paris",
+    "target_price": 699990,
+    "threshold_percent": 8.0,
+    "active": true
+  },
+  {
+    "url": "https://www.paris.cl/apple-iphone-14-128gb-medianoche-789312999.html",
+    "name": "Apple iPhone 14 128GB - Paris",
+    "target_price": 599990,
+    "threshold_percent": 8.0,
+    "active": true
+  },
+  {
+    "url": "https://www.paris.cl/apple-iphone-16-128gb-negro-289456999.html",
+    "name": "Apple iPhone 16 128GB - Paris",
+    "target_price": 849990,
+    "threshold_percent": 8.0,
+    "active": true
+  },
+  {
+    "url": "https://simple.ripley.cl/apple-iphone-15-128gb-negro-2000395726006p",
+    "name": "Apple iPhone 15 128GB - Ripley",
+    "target_price": 699990,
+    "threshold_percent": 8.0,
+    "active": true
+  },
+  {
+    "url": "https://simple.ripley.cl/apple-iphone-14-128gb-medianoche-2000390886004p",
+    "name": "Apple iPhone 14 128GB - Ripley",
+    "target_price": 599990,
+    "threshold_percent": 8.0,
+    "active": true
+  },
+  {
+    "url": "https://simple.ripley.cl/apple-iphone-16-128gb-negro-2000399812001p",
+    "name": "Apple iPhone 16 128GB - Ripley",
+    "target_price": 849990,
+    "threshold_percent": 8.0,
+    "active": true
+  },
+  {
+    "url": "https://www.hites.com/celular-apple-iphone-15-128gb-negro-919512001.html",
+    "name": "Apple iPhone 15 128GB - Hites",
+    "target_price": 699990,
+    "threshold_percent": 8.0,
+    "active": true
+  },
+  {
+    "url": "https://www.hites.com/celular-apple-iphone-14-128gb-medianoche-905142001.html",
+    "name": "Apple iPhone 14 128GB - Hites",
+    "target_price": 599990,
+    "threshold_percent": 8.0,
+    "active": true
+  },
+  {
     "url": "https://www.abc.cl/telefonia/celulares/smartphones/iphone-15-128gb-negro.html",
     "name": "iPhone 15 128GB - ABC",
     "target_price": 699990,
     "threshold_percent": 8.0,
-    "active": false
+    "active": true
+  },
+  {
+    "url": "https://www.abc.cl/telefonia/celulares/smartphones/iphone-14-128gb-medianoche.html",
+    "name": "iPhone 14 128GB - ABC",
+    "target_price": 599990,
+    "threshold_percent": 8.0,
+    "active": true
   },
   {
     "url": "https://www.entel.cl/equipos/apple/iphone-15-128gb/",
     "name": "iPhone 15 128GB - Entel",
     "target_price": 699990,
     "threshold_percent": 8.0,
-    "active": false
+    "active": true
+  },
+  {
+    "url": "https://www.entel.cl/equipos/apple/iphone-14-128gb/",
+    "name": "iPhone 14 128GB - Entel",
+    "target_price": 599990,
+    "threshold_percent": 8.0,
+    "active": true
+  },
+  {
+    "url": "https://articulo.mercadolibre.cl/MLC-1438920194-apple-iphone-15-128-gb-negro-_JM",
+    "name": "Apple iPhone 15 128GB - Mercado Libre",
+    "target_price": 699990,
+    "threshold_percent": 8.0,
+    "active": true
+  },
+  {
+    "url": "https://articulo.mercadolibre.cl/MLC-1438920195-apple-iphone-14-128-gb-medianoche-_JM",
+    "name": "Apple iPhone 14 128GB - Mercado Libre",
+    "target_price": 599990,
+    "threshold_percent": 8.0,
+    "active": true
+  },
+  {
+    "url": "https://maconline.com/iphone-15-128gb-negro",
+    "name": "Apple iPhone 15 128GB - MacOnline",
+    "target_price": 699990,
+    "threshold_percent": 8.0,
+    "active": true
+  },
+  {
+    "url": "https://maconline.com/iphone-14-128gb-medianoche",
+    "name": "Apple iPhone 14 128GB - MacOnline",
+    "target_price": 599990,
+    "threshold_percent": 8.0,
+    "active": true
+  },
+  {
+    "url": "https://maconline.com/iphone-16-128gb-negro",
+    "name": "Apple iPhone 16 128GB - MacOnline",
+    "target_price": 849990,
+    "threshold_percent": 8.0,
+    "active": true
+  },
+  {
+    "url": "https://aufbau.cl/products/iphone-15-128gb-negro",
+    "name": "Apple iPhone 15 128GB - Aufbau",
+    "target_price": 699990,
+    "threshold_percent": 8.0,
+    "active": true
+  },
+  {
+    "url": "https://aufbau.cl/products/iphone-14-128gb-medianoche",
+    "name": "Apple iPhone 14 128GB - Aufbau",
+    "target_price": 599990,
+    "threshold_percent": 8.0,
+    "active": true
+  },
+  {
+    "url": "https://aufbau.cl/products/iphone-16-128gb-negro",
+    "name": "Apple iPhone 16 128GB - Aufbau",
+    "target_price": 849990,
+    "threshold_percent": 8.0,
+    "active": true
+  },
+  {
+    "url": "https://www.pcfactory.cl/producto/52110-apple-iphone-15-128gb-negro",
+    "name": "Apple iPhone 15 128GB - PC Factory",
+    "target_price": 699990,
+    "threshold_percent": 8.0,
+    "active": true
+  },
+  {
+    "url": "https://www.pcfactory.cl/producto/48110-apple-iphone-14-128gb-medianoche",
+    "name": "Apple iPhone 14 128GB - PC Factory",
+    "target_price": 599990,
+    "threshold_percent": 8.0,
+    "active": true
+  },
+  {
+    "url": "https://www.lider.cl/catalogo/product/sku/1392810/apple-iphone-15-128gb-negro",
+    "name": "Apple iPhone 15 128GB - Lider",
+    "target_price": 699990,
+    "threshold_percent": 8.0,
+    "active": true
+  },
+  {
+    "url": "https://www.lider.cl/catalogo/product/sku/1292810/apple-iphone-14-128gb-medianoche",
+    "name": "Apple iPhone 14 128GB - Lider",
+    "target_price": 599990,
+    "threshold_percent": 8.0,
+    "active": true
+  },
+  {
+    "url": "https://gsmpro.cl/products/apple-iphone-15-128gb",
+    "name": "Apple iPhone 15 128GB - GSMPro",
+    "target_price": 699990,
+    "threshold_percent": 8.0,
+    "active": true
+  },
+  {
+    "url": "https://gsmpro.cl/products/apple-iphone-14-128gb",
+    "name": "Apple iPhone 14 128GB - GSMPro",
+    "target_price": 599990,
+    "threshold_percent": 8.0,
+    "active": true
+  },
+  {
+    "url": "https://www.winpy.cl/venta/apple-iphone-15-128gb-negro",
+    "name": "Apple iPhone 15 128GB - Winpy",
+    "target_price": 699990,
+    "threshold_percent": 8.0,
+    "active": true
+  },
+  {
+    "url": "https://www.winpy.cl/venta/apple-iphone-14-128gb-medianoche",
+    "name": "Apple iPhone 14 128GB - Winpy",
+    "target_price": 599990,
+    "threshold_percent": 8.0,
+    "active": true
   },
   {
     "url": "https://www.theway.cl/preventa-16092026-pokemon-tcg-30th-celebration-elite-trainer-box-ingles",

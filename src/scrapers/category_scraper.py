@@ -22,6 +22,8 @@ from src.scrapers.base import (
     is_pokemon_sealed_target,
     POKEMON_ETB_MAX_PRICE,
     POKEMON_ETB_30_MAX_PRICE,
+    is_iphone_target,
+    get_iphone_target_price,
 )
 from src.scrapers.category_config import CategoryItem, load_categories_catalog
 from src.scrapers.store_config import find_store_rule_by_id, find_store_rule_for_url
@@ -754,6 +756,11 @@ class CategoryCrawlerService:
                     catalog_discount = round(((prod.normal_price - prod.price) / prod.normal_price) * 100, 1)
 
                 is_etb_target = is_pokemon_sealed_target(prod.title) or (existing and is_pokemon_sealed_target(existing.nombre))
+                is_iphone = is_iphone_target(prod.title) or (existing and is_iphone_target(existing.nombre))
+
+                # Si se sincroniza la categoría especializada de iphones, filtrar accesorios y modelos anteriores
+                if cat_item.id == "iphones" and not is_iphone:
+                    continue
 
                 if existing:
                     # Actualizar metadatos si era necesario
@@ -773,6 +780,14 @@ class CategoryCrawlerService:
                     if is_etb_target:
                         if existing.precio_objetivo is None or existing.precio_objetivo > POKEMON_ETB_MAX_PRICE:
                             existing.precio_objetivo = POKEMON_ETB_MAX_PRICE
+                            modified = True
+                    elif is_iphone:
+                        iphone_target = get_iphone_target_price(existing.nombre or prod.title)
+                        if iphone_target and (existing.precio_objetivo is None or existing.precio_objetivo > iphone_target):
+                            existing.precio_objetivo = iphone_target
+                            modified = True
+                        if not existing.categoria:
+                            existing.categoria = "iPhones y Celulares"
                             modified = True
 
                     old_price = existing.precio_actual
@@ -883,7 +898,16 @@ class CategoryCrawlerService:
                         total_updated += 1
                 else:
                     clean_title = BaseScraper.clean_product_title(prod.title)
-                    target_price = POKEMON_ETB_MAX_PRICE if is_etb_target else None
+                    is_iphone_new = is_iphone_target(prod.title)
+                    if cat_item.id == "iphones" and not is_iphone_new:
+                        continue
+
+                    target_price = None
+                    if is_etb_target:
+                        target_price = POKEMON_ETB_MAX_PRICE
+                    elif is_iphone_new:
+                        target_price = get_iphone_target_price(prod.title)
+
                     new_prod = Product(
                         url_original=prod_url_clean,
                         nombre=clean_title,
@@ -899,16 +923,17 @@ class CategoryCrawlerService:
                     session.add(new_prod)
                     total_added += 1
 
-                    # Alerta instantánea para ETB de Pokémon TCG por debajo del precio objetivo o descuentos de catálogo
+                    # Alerta instantánea para ETB Pokémon o iPhone por debajo de precio objetivo o descuentos de catálogo
                     etb_target_hit = bool(is_etb_target and prod.price and prod.price <= POKEMON_ETB_MAX_PRICE)
+                    iphone_target_hit = bool(is_iphone_new and prod.price and target_price and prod.price <= target_price)
                     catalog_discount_hit = bool(catalog_discount and prod.price and catalog_discount >= cat_item.default_threshold_percent)
 
-                    if (etb_target_hit or catalog_discount_hit) and self.notifier:
+                    if (etb_target_hit or iphone_target_hit or catalog_discount_hit) and self.notifier:
                         ref_price = (
                             prod.normal_price
                             or (prod.price / (1 - (catalog_discount / 100)))
                             if catalog_discount
-                            else (POKEMON_ETB_MAX_PRICE if etb_target_hit else prod.price)
+                            else (POKEMON_ETB_MAX_PRICE if etb_target_hit else (target_price if iphone_target_hit else prod.price))
                         )
                         disc_calc = (
                             catalog_discount

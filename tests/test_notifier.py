@@ -70,3 +70,43 @@ def test_telegram_message_price_error_and_category():
     assert "<s>$1.000.000</s>" in msg
     assert "<b>$300.000</b>" in msg
 
+
+def test_telegram_message_iphone_alerts():
+    """Verifica que las alertas de iPhone 14+ generen cabeceras, botones y categorías especializadas."""
+    notifier = TelegramNotifier()
+
+    # Caso 1: iPhone que alcanza el precio objetivo
+    target_payload = AlertPayload(
+        title="Apple iPhone 15 128GB Negro",
+        store="Falabella",
+        old_price=799990.0,
+        new_price=689990.0,
+        discount_percent=13.8,
+        affiliate_url="https://falabella.com/p/iphone15?aff_source=tag",
+        is_all_time_low=True,
+        target_price=699990.0,
+    )
+    target_msg = notifier.format_message(target_payload)
+    assert "ALERTA IPHONE: PRECIO OBJETIVO ALCANZADO EN FALABELLA" in target_msg
+    assert "Apple iPhone 15 (Serie 14+)" in target_msg
+    assert "IPHONE alcanzó precio objetivo por $689.990" in target_msg
+
+    keyboard = notifier.build_keyboard(target_payload)
+    btn = keyboard.inline_keyboard[0][0]
+    assert "Comprar iPhone en Falabella" in btn.text
+
+    # Caso 2: iPhone con oferta estándar (sin target price previo alcanzado)
+    offer_payload = AlertPayload(
+        title="Apple iPhone 16 Pro 128GB Titanio",
+        store="MacOnline",
+        old_price=1229990.0,
+        new_price=1049990.0,
+        discount_percent=14.6,
+        affiliate_url="https://maconline.com/iphone-16-pro",
+        is_all_time_low=False,
+    )
+    offer_msg = notifier.format_message(offer_payload)
+    assert "OFERTA DESTACADA IPHONE EN MACONLINE" in offer_msg
+    assert "Apple iPhone 16 (Serie 14+)" in offer_msg
+
+

@@ -336,4 +336,49 @@ async def test_etb_30_auto_target_price_and_alert_below_91k(test_session: AsyncS
     mock_notifier.send_alert.assert_called_once()
 
 
+@pytest.mark.asyncio
+async def test_iphone_price_drop_triggers_target_alert(test_session: AsyncSession):
+    """Verifica que un iPhone 14+ sin target asignado adopte el target correspondiente y alerte si cae por debajo."""
+    mock_notifier = TelegramNotifier()
+    mock_notifier.send_alert = AsyncMock(return_value=True)
+
+    service = PriceTrackingService(notifier=mock_notifier)
+
+    product = Product(
+        url_original="https://www.falabella.com/falabella-cl/product/16886361/Apple-iPhone-15-128GB",
+        nombre="Apple iPhone 15 128GB Negro",
+        tienda="Falabella",
+        precio_actual=799990.0,
+        precio_minimo=799990.0,
+        precio_objetivo=None,
+        umbral_descuento_porcentaje=10.0,
+        activo=True,
+    )
+    test_session.add(product)
+    await test_session.flush()
+
+    # Cae a 679.990 CLP (< target de 699.990 CLP)
+    mock_item = ScrapedItem(
+        title="Apple iPhone 15 128GB Negro",
+        price=679990.0,
+        affiliate_url="https://www.falabella.com/falabella-cl/product/16886361/Apple-iPhone-15-128GB?aff_source=tag",
+    )
+
+    with patch("src.services.price_service.get_scraper_for_url") as mock_get_scraper:
+        mock_scraper = AsyncMock()
+        mock_scraper.scrape = AsyncMock(return_value=mock_item)
+        mock_get_scraper.return_value = mock_scraper
+
+        alerted, payload = await service.process_product(test_session, product)
+
+    assert alerted is True
+    assert product.precio_objetivo == 699990.0
+    assert product.categoria == "iPhones y Celulares"
+    assert payload is not None
+    assert payload.new_price == 679990.0
+    assert payload.target_price == 699990.0
+    mock_notifier.send_alert.assert_called_once()
+
+
+
 

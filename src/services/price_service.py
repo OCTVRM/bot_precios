@@ -13,6 +13,8 @@ from src.scrapers.base import (
     is_pokemon_sealed_target,
     POKEMON_ETB_MAX_PRICE,
     POKEMON_ETB_30_MAX_PRICE,
+    is_iphone_target,
+    get_iphone_target_price,
 )
 from src.scrapers.registry import get_scraper_for_url
 from src.services.notifier import AlertPayload, TelegramNotifier
@@ -70,6 +72,12 @@ class PriceTrackingService:
                 product.precio_objetivo = POKEMON_ETB_MAX_PRICE
             if not product.categoria:
                 product.categoria = "Pokémon TCG y Cartas Coleccionables"
+        elif is_iphone_target(product.nombre or item.title):
+            iphone_target = get_iphone_target_price(product.nombre or item.title)
+            if iphone_target and (product.precio_objetivo is None or product.precio_objetivo > iphone_target):
+                product.precio_objetivo = iphone_target
+            if not product.categoria:
+                product.categoria = "iPhones y Celulares"
 
         # Registrar historial de precio
         history_entry = PriceHistory(
@@ -253,6 +261,10 @@ class PriceTrackingService:
             if is_pokemon_sealed_target(name):
                 if target_price is None or target_price > POKEMON_ETB_MAX_PRICE:
                     target_price = POKEMON_ETB_MAX_PRICE
+            elif is_iphone_target(name):
+                iphone_target = get_iphone_target_price(name)
+                if iphone_target and (target_price is None or target_price > iphone_target):
+                    target_price = iphone_target
 
             stmt = select(Product).where(Product.url_original == url)
             product = (await session.execute(stmt)).scalar_one_or_none()
@@ -270,6 +282,14 @@ class PriceTrackingService:
                     if not product.categoria:
                         product.categoria = "Pokémon TCG y Cartas Coleccionables"
                         modified = True
+                elif is_iphone_target(name or product.nombre):
+                    iphone_target = get_iphone_target_price(name or product.nombre)
+                    if iphone_target and (product.precio_objetivo is None or product.precio_objetivo > iphone_target):
+                        product.precio_objetivo = iphone_target
+                        modified = True
+                    if not product.categoria:
+                        product.categoria = "iPhones y Celulares"
+                        modified = True
                 elif target_price is not None and product.precio_objetivo != target_price:
                     product.precio_objetivo = target_price
                     modified = True
@@ -285,7 +305,11 @@ class PriceTrackingService:
                 # Nuevo producto
                 scraper = get_scraper_for_url(url)
                 store = scraper.store_name
-                prod_cat = "Pokémon TCG y Cartas Coleccionables" if (is_pokemon_sealed_target(name) or "pokemon" in (name or "").lower()) else None
+                prod_cat = None
+                if is_pokemon_sealed_target(name) or "pokemon" in (name or "").lower():
+                    prod_cat = "Pokémon TCG y Cartas Coleccionables"
+                elif is_iphone_target(name):
+                    prod_cat = "iPhones y Celulares"
                 new_prod = Product(
                     url_original=url,
                     nombre=name or f"Producto {store}",

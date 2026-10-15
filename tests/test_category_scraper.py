@@ -1,7 +1,8 @@
 import json
 import pytest
 from unittest.mock import AsyncMock, patch
-from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from src.database import Base
 from src.models import Product
 from src.scrapers.category_config import (
@@ -418,6 +419,108 @@ def test_is_pokemon_etb_general_detection():
     # Casos que no son ETBs
     assert not is_pokemon_etb("Pokemon TCG Sleeved Booster Pack")
     assert not is_pokemon_etb("Carpeta Cartas Tcg 900 Bolsillos")
+
+
+def test_iphones_category_configuration():
+    """Verifica que la categoría iphones esté configurada con todas las tiendas de celulares."""
+    catalog = load_categories_catalog(force_reload=True)
+    cat = find_category_by_id("iphones", catalog)
+    assert cat is not None
+    assert cat.active is True
+    assert cat.default_threshold_percent == 10.0
+    assert cat.error_threshold_percent == 40.0
+
+    expected_stores = {
+        "falabella",
+        "paris",
+        "ripley",
+        "hites",
+        "entel",
+        "abc",
+        "mercadolibre",
+        "maconline",
+        "aufbau",
+        "pcfactory",
+        "lider",
+        "gsmpro",
+        "winpy",
+    }
+    assert expected_stores.issubset(set(cat.stores.keys()))
+
+
+@pytest.mark.asyncio
+async def test_iphones_category_filter_in_crawler():
+    """Verifica que al sincronizar la categoría iphones, se descarten accesorios y modelos antiguos."""
+    from src.scrapers.category_scraper import ScrapedCategoryProduct
+
+    engine = create_async_engine("sqlite+aiosqlite:///:memory:", echo=False)
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
+    session_maker = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
+    crawler = CategoryCrawlerService()
+
+    mock_items = [
+        ScrapedCategoryProduct(
+            url="https://falabella.com/p/iphone15",
+            title="Apple iPhone 15 128GB Negro",
+            price=699990.0,
+            normal_price=799990.0,
+        ),
+        ScrapedCategoryProduct(
+            url="https://falabella.com/p/iphone14",
+            title="Apple iPhone 14 128GB Medianoche",
+            price=579990.0,
+            normal_price=649990.0,
+        ),
+        ScrapedCategoryProduct(
+            url="https://falabella.com/p/carcasa15",
+            title="Carcasa Silicone Case para iPhone 15 Pro Max",
+            price=19990.0,
+            normal_price=29990.0,
+        ),
+        ScrapedCategoryProduct(
+            url="https://falabella.com/p/iphone12",
+            title="Apple iPhone 12 64GB Reacondicionado",
+            price=329990.0,
+            normal_price=399990.0,
+        ),
+        ScrapedCategoryProduct(
+            url="https://falabella.com/p/mica16",
+            title="Mica Vidrio Templado para iPhone 16 Pro",
+            price=6990.0,
+            normal_price=9990.0,
+        ),
+    ]
+
+    async with session_maker() as session:
+        with patch.object(crawler.scraper, "fetch_html", new_callable=AsyncMock) as mock_fetch, \
+             patch.object(crawler.scraper, "parse_category_page", return_value=mock_items):
+            mock_fetch.return_value = "<html>mock</html>"
+            added, updated = await crawler.sync_category(session, "iphones", max_products=10)
+
+        # Deben agregarse exactamente los 2 iPhones (14 y 15), descartando la carcasa, la mica y el iPhone 12
+        assert added == 2
+        assert updated == 0
+
+        stmt = select(Product)
+        products = (await session.execute(stmt)).scalars().all()
+        titles = [p.nombre for p in products]
+        assert any("iPhone 15" in t for t in titles)
+        assert any("iPhone 14" in t for t in titles)
+        assert not any("Carcasa" in t for t in titles)
+        assert not any("Mica" in t for t in titles)
+        assert not any("iPhone 12" in t for t in titles)
+
+        # Comprobar que adoptaron su precio objetivo automáticamente
+        for p in products:
+            if "iPhone 15" in p.nombre:
+                assert p.precio_objetivo == 699990.0
+            elif "iPhone 14" in p.nombre:
+                assert p.precio_objetivo == 599990.0
+
+    await engine.dispose()
+
 
 
 
