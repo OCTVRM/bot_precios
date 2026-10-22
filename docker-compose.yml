@@ -12,5 +12,7 @@ services:
     volumes:
       # Persistencia de base de datos local si se utiliza SQLite
       - ./data:/app/data
+    ports:
+      - "10000:10000"
     environment:
       - PYTHONUNBUFFERED=1
