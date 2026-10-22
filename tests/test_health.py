@@ -26,6 +26,9 @@ async def test_health_endpoints():
         data_health = await resp_health.json()
         assert data_health["status"] == "healthy"
         assert "timestamp" in data_health
+        assert "database" in data_health
+        assert "telegram" in data_health
+        assert "is_sqlite" in data_health["database"]
 
         # Test método HEAD en / y /health
         resp_head_root = await client.head("/")
@@ -40,5 +43,9 @@ async def test_health_endpoints():
 
         resp_ping = await client.get("/ping")
         assert resp_ping.status == 200
+
+        # Test endpoint diagnóstico de Telegram
+        resp_tg = await client.get("/health/test-telegram")
+        assert resp_tg.status in (200, 400, 500)
     finally:
         await client.close()

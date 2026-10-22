@@ -1,9 +1,11 @@
 import abc
+import asyncio
 import logging
 import random
 import re
 from dataclasses import dataclass
 from typing import Dict, Optional
+from urllib.parse import urlparse
 import httpx
 from src.config import settings
 
@@ -68,20 +70,44 @@ class BaseScraper(abc.ABC):
         Descarga el HTML de la página objetivo vía HTTPx.
         Si use_dynamic es True o la página requiere renderizado JS,
         prepara la invocación con Playwright.
+        Incluye reintento automático con backoff y rotación ante respuestas 403/429.
         """
         if use_dynamic:
             return await self.fetch_html_dynamic(url)
 
         headers = self.get_headers()
-        async with httpx.AsyncClient(
-            headers=headers,
-            timeout=settings.REQUEST_TIMEOUT,
-            follow_redirects=True,
-            verify=True,
-        ) as client:
-            response = await client.get(url)
-            response.raise_for_status()
-            return response.text
+        parsed = urlparse(url)
+        headers["Referer"] = f"{parsed.scheme}://{parsed.netloc}/"
+        headers["Accept-Encoding"] = "gzip, deflate, br"
+
+        max_attempts = 2
+        for attempt in range(max_attempts):
+            try:
+                async with httpx.AsyncClient(
+                    headers=headers,
+                    timeout=settings.REQUEST_TIMEOUT,
+                    follow_redirects=True,
+                    verify=True,
+                ) as client:
+                    response = await client.get(url)
+                    if response.status_code in (403, 429) and attempt < max_attempts - 1:
+                        logger.warning(
+                            f"[{self.store_name}] HTTP {response.status_code} recibido para {url}. "
+                            f"Reintentando con backoff y nuevo User-Agent..."
+                        )
+                        await asyncio.sleep(random.uniform(1.5, 3.0))
+                        headers = self.get_headers()
+                        headers["Referer"] = "https://www.google.cl/"
+                        continue
+                    response.raise_for_status()
+                    return response.text
+            except httpx.HTTPStatusError as ex:
+                if attempt < max_attempts - 1 and ex.response.status_code in (403, 429):
+                    await asyncio.sleep(random.uniform(1.5, 3.0))
+                    headers = self.get_headers()
+                    headers["Referer"] = "https://www.google.cl/"
+                    continue
+                raise
 
     async def fetch_html_dynamic(self, url: str) -> str:
         """

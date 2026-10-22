@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import random
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from src.config import settings
@@ -60,7 +61,7 @@ class PriceTrackerScheduler:
                         break
 
                     try:
-                        await asyncio.sleep(0.5)
+                        await asyncio.sleep(random.uniform(0.6, 1.4))
                         async with get_db_session() as item_session:
                             prod = await item_session.get(Product, product_id)
                             if prod and prod.activo:

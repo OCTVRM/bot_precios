@@ -24,8 +24,24 @@ class Settings(BaseSettings):
     @field_validator("DATABASE_URL", mode="before")
     @classmethod
     def normalize_database_url(cls, v: str) -> str:
-        """Asegura que URLs de PostgreSQL siempre utilicen el dialecto asyncpg requerido."""
+        """Asegura que URLs de PostgreSQL siempre utilicen el dialecto asyncpg requerido y busca nombres alternativos."""
+        import os
+        if not v or v == "sqlite+aiosqlite:///./bot_precios.db":
+            for env_name in [
+                "DATABASE_URL",
+                "SUPABASE_DATABASE_URL",
+                "SUPABASE_DB_URL",
+                "POSTGRES_URL",
+                "DATABASE_PUBLIC_URL",
+                "POSTGRESQL_URL",
+            ]:
+                candidate = os.getenv(env_name)
+                if candidate:
+                    v = candidate
+                    break
+
         if isinstance(v, str):
+            v = v.strip().strip("'").strip('"')
             if v.startswith("postgres://"):
                 v = v.replace("postgres://", "postgresql+asyncpg://", 1)
             elif v.startswith("postgresql://") and not v.startswith("postgresql+asyncpg://"):
@@ -41,6 +57,32 @@ class Settings(BaseSettings):
         default="",
         description="ID del canal o grupo de Telegram donde se emitirán las alertas",
     )
+
+    @field_validator("TELEGRAM_BOT_TOKEN", mode="before")
+    @classmethod
+    def normalize_telegram_bot_token(cls, v: str) -> str:
+        """Permite nombres alternativos comunes y elimina comillas residuales."""
+        import os
+        if not v:
+            for alt in ["TELEGRAM_BOT_TOKEN", "TELEGRAM_TOKEN", "BOT_TOKEN"]:
+                cand = os.getenv(alt)
+                if cand:
+                    v = cand
+                    break
+        return str(v or "").strip().strip("'").strip('"')
+
+    @field_validator("TELEGRAM_CHAT_ID", mode="before")
+    @classmethod
+    def normalize_telegram_chat_id(cls, v: str) -> str:
+        """Permite nombres alternativos y elimina comillas residuales."""
+        import os
+        if not v:
+            for alt in ["TELEGRAM_CHAT_ID", "TELEGRAM_CHANNEL_ID", "CHAT_ID", "CHANNEL_ID"]:
+                cand = os.getenv(alt)
+                if cand:
+                    v = cand
+                    break
+        return str(v or "").strip().strip("'").strip('"')
     TELEGRAM_ADMIN_ID: Optional[int] = Field(
         default=None,
         description="ID numérico de Telegram del administrador para aprobar comprobantes de pago",
